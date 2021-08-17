@@ -1,6 +1,5 @@
 package com.revature.dto;
 
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -10,64 +9,76 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+@Table("sprint")
+public class SprintDTO {
 
-
-	
-	@Table("sprint")
-	public class SprintDTO {
-		
 	@PrimaryKey
-	@Column("name")
-	private String name;
-	@Column
+	@Column("id")
 	private UUID id;
+	@Column
+	private String name;
 	private String description;
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private LocalTime startTime;
 	private LocalTime endTime;
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public UUID getId() {
 		return id;
 	}
+
 	public void setId(UUID id) {
 		this.id = id;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public LocalDate getStartDate() {
 		return startDate;
 	}
+
 	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
+
 	public LocalDate getEndDate() {
 		return endDate;
 	}
+
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
+
 	public LocalTime getStartTime() {
 		return startTime;
 	}
+
 	public void setStartTime(LocalTime startTime) {
 		this.startTime = startTime;
 	}
+
 	public LocalTime getEndTime() {
 		return endTime;
 	}
+
 	public void setEndTime(LocalTime endTime) {
 		this.endTime = endTime;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -81,6 +92,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 		result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -127,20 +139,11 @@ import org.springframework.data.cassandra.core.mapping.Table;
 			return false;
 		return true;
 	}
+
 	@Override
 	public String toString() {
 		return "SprintDTO [name=" + name + ", id=" + id + ", description=" + description + ", startDate=" + startDate
 				+ ", endDate=" + endDate + ", startTime=" + startTime + ", endTime=" + endTime + "]";
 	}
-
-	
-
-	
-	
-
-
-	
-	
-	
 
 }

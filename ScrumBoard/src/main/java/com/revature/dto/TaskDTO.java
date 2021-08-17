@@ -25,11 +25,11 @@ public class TaskDTO {
 	private LocalDate endDate;
 	private LocalTime startTime;
 	private LocalTime endTime;
-	
+
 	public TaskDTO() {
-		
+
 	}
-	
+
 	public TaskDTO(Task task) {
 		this.id = task.getId();
 		this.name = task.getName();
@@ -131,7 +131,5 @@ public class TaskDTO {
 				+ ", startDate=" + startDate + ", endDate=" + endDate + ", startTime=" + startTime + ", endTime="
 				+ endTime + "]";
 	}
-	
-	
-	
+
 }

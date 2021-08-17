@@ -21,9 +21,10 @@ public class UserDTO {
 	private String firstName;
 	private String lastName;
 	private UserType type;
-	
-	public UserDTO() { }
-	
+
+	public UserDTO() {
+	}
+
 	public UserDTO(User user) {
 		this.username = user.getUsername();
 		this.password = user.getPassword();
