@@ -1,10 +1,12 @@
 package com.revature.services;
 
-import java.util.List;
 import java.util.UUID;
 
 import com.revature.beans.Notification;
 import com.revature.beans.User;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface NotificationService {
 
@@ -25,7 +27,7 @@ public interface NotificationService {
 	 * @return The notifications that the user has not seen yet
 	 */
 
-	List<Notification> checkNotifications(User user);
+	Flux<Notification> checkNotifications(User user);
 
 	/**
 	 * Allows a user to find a notification by a particular UUID
@@ -36,6 +38,6 @@ public interface NotificationService {
 	 *         specified parameters
 	 */
 
-	Notification checkNotificationByID(User user, UUID id);
+	Mono<Notification> checkNotificationByID(User user, UUID id);
 
 }
