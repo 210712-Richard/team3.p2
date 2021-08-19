@@ -1,4 +1,4 @@
-package com.revature.dto;
+package com.revature.beans;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -6,47 +6,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
-import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
-import org.springframework.data.cassandra.core.mapping.Table;
+public class SprintHistory {
 
-import com.revature.beans.SprintStatus;
-
-@Table("sprints")
-public class SprintDTO {
-
-	@PrimaryKeyColumn(name = "scrumboardId", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-	private UUID scrumboardID;
-	@Column("id") 
-	private UUID id;
-	@Column("name") 
 	private String name;
-	@Column("description") 
 	private String description;
-	@Column("startdate") 
+	private UUID scrumboardID;
+	private UUID id;
 	private LocalDate startDate;
-	@Column("enddate") 
 	private LocalDate endDate;
-	@Column("starttime") 
 	private LocalTime startTime;
-	@Column("endTime") 
 	private LocalTime endTime;
-	@Column("taskids")
-	private List<UUID> taskIds;
-	@PrimaryKeyColumn(name = "status", ordinal = 1, type = PrimaryKeyType.CLUSTERED)
+	private List<Task> tasks;
 	private SprintStatus status;
 
-	public SprintDTO() {
+	public SprintHistory() {
 		super();
-	}
-	
-	public UUID getScrumboardID() {
-		return scrumboardID;
-	}
-
-	public void setScrumboardID(UUID scrumboardID) {
-		this.scrumboardID = scrumboardID;
 	}
 
 	public String getName() {
@@ -57,20 +31,28 @@ public class SprintDTO {
 		this.name = name;
 	}
 
-	public UUID getId() {
-		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
-	}
-
 	public String getDescription() {
 		return description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public UUID getScrumboardID() {
+		return scrumboardID;
+	}
+
+	public void setScrumboardID(UUID scrumboardID) {
+		this.scrumboardID = scrumboardID;
+	}
+
+	public UUID getId() {
+		return id;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
 	}
 
 	public LocalDate getStartDate() {
@@ -105,12 +87,12 @@ public class SprintDTO {
 		this.endTime = endTime;
 	}
 
-	public List<UUID> getTaskIds() {
-		return taskIds;
+	public List<Task> getTaskIds() {
+		return tasks;
 	}
 
-	public void setTaskIds(List<UUID> taskIds) {
-		this.taskIds = taskIds;
+	public void setTaskIds(List<Task> tasks) {
+		this.tasks = tasks;
 	}
 
 	public SprintStatus getStatus() {
@@ -123,8 +105,7 @@ public class SprintDTO {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(description, endDate, endTime, id, name, scrumboardID, startDate, startTime, status,
-				taskIds);
+		return Objects.hash(description, endDate, endTime, id, name, scrumboardID, startDate, startTime, status, tasks);
 	}
 
 	@Override
@@ -135,19 +116,18 @@ public class SprintDTO {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SprintDTO other = (SprintDTO) obj;
+		SprintHistory other = (SprintHistory) obj;
 		return Objects.equals(description, other.description) && Objects.equals(endDate, other.endDate)
 				&& Objects.equals(endTime, other.endTime) && Objects.equals(id, other.id)
 				&& Objects.equals(name, other.name) && Objects.equals(scrumboardID, other.scrumboardID)
 				&& Objects.equals(startDate, other.startDate) && Objects.equals(startTime, other.startTime)
-				&& status == other.status && Objects.equals(taskIds, other.taskIds);
+				&& status == other.status && Objects.equals(tasks, other.tasks);
 	}
 
 	@Override
 	public String toString() {
-		return "SprintDTO [scrumboardID=" + scrumboardID + ", id=" + id + ", name=" + name + ", description="
-				+ description + ", startDate=" + startDate + ", endDate=" + endDate + ", startTime=" + startTime
-				+ ", endTime=" + endTime + ", taskIds=" + taskIds + ", status=" + status + "]";
+		return "SprintHistory [name=" + name + ", description=" + description + ", scrumboardID=" + scrumboardID
+				+ ", id=" + id + ", startDate=" + startDate + ", endDate=" + endDate + ", startTime=" + startTime
+				+ ", endTime=" + endTime + ", tasks=" + tasks + ", status=" + status + "]";
 	}
-
 }

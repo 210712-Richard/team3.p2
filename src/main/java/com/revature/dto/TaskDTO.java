@@ -5,25 +5,37 @@ import java.time.LocalTime;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.data.cassandra.core.cql.Ordering;
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import com.revature.beans.Task;
 import com.revature.beans.TaskCompletionStatus;
+import com.revature.beans.TaskPriority;
 
 @Table("task")
 public class TaskDTO {
-	@PrimaryKey
-	@Column("id")
+	@PrimaryKeyColumn(name = "boardid", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+	private UUID boardid;
+	@PrimaryKeyColumn(name = "id", ordinal = 2, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.ASCENDING)
 	private UUID id;
-	@Column
+	@Column("name")
 	private String name;
+	@Column("description")
 	private String description;
+	@PrimaryKeyColumn(name = "status", ordinal = 1, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.ASCENDING)
 	private TaskCompletionStatus status;
+	@Column("priority")
+	private TaskPriority priorityStatus;
+	@Column("startdate")
 	private LocalDate startDate;
+	@Column("enddate")
 	private LocalDate endDate;
+	@Column("starttime")
 	private LocalTime startTime;
+	@Column("endtime")
 	private LocalTime endTime;
 
 	public TaskDTO() {
