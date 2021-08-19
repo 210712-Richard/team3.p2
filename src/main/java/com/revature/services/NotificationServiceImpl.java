@@ -68,8 +68,13 @@ public class NotificationServiceImpl implements NotificationService {
 	public Notification checkNotificationByID(User user, UUID id) {
 		
 		NotificationDTO databaseNote = nd.findById(id.toString()).orElse(null);
-		Notification note = databaseNote.getNotification();
-		return note;
+		try {
+			Notification note = databaseNote.getNotification();
+			return note;
+		} catch (NullPointerException n) {
+			log.warn("No notification found at user " + user.getUsername() + " and id " + id);
+			return null;
+		}
 	}
 
 }

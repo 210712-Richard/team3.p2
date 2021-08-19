@@ -32,7 +32,8 @@ public interface NotificationService {
 	 * 
 	 * @param user The user who the notification has been sent to
 	 * @param id   The UUID of the notification that the user wants to look at
-	 * @return The notification
+	 * @return The notification. Returns null if no notification exists with the
+	 *         specified parameters
 	 */
 
 	Notification checkNotificationByID(User user, UUID id);
