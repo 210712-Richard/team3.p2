@@ -20,10 +20,6 @@ public class UserDTO {
 	private String password;
 	@Column("email")
 	private String email;
-	@Column("firstname")
-	private String firstName;
-	@Column("lastname")
-	private String lastName;
 	@Column("type")
 	private UserType type;
 	@Column("boardids")
@@ -37,18 +33,15 @@ public class UserDTO {
 		super();
 	}
 
-	public UserDTO(String username, String password, String email, String firstName, String lastName, UserType type,
-			List<UUID> boardIds, List<UUID> taskIds, List<UUID> productIds) {
+	public UserDTO(User user) {
 		super();
-		this.username = username;
-		this.password = password;
-		this.email = email;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.type = type;
-		this.boardIds = boardIds;
-		this.taskIds = taskIds;
-		this.productIds = productIds;
+		this.username = user.getUsername();
+		this.password = user.getPassword();
+		this.email = user.getEmail();
+		this.type = user.getType();
+		this.boardIds = user.getBoardIds();
+		this.taskIds = user.getTaskIds();
+		this.productIds = user.getProductIds();
 	}
 	
 	public User getUser() {
@@ -87,21 +80,6 @@ public class UserDTO {
 		this.email = email;
 	}
 
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
 
 	public UserType getType() {
 		return type;
@@ -134,10 +112,19 @@ public class UserDTO {
 	public void setProductIds(List<UUID> productIds) {
 		this.productIds = productIds;
 	}
+	
+	public User getUser() {
+		User user = new User();
+		this.setUsername(username);
+		this.setPassword(password);
+		this.setEmail(email);
+		
+		return user;
+	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(boardIds, email, firstName, lastName, password, productIds, taskIds, type, username);
+		return Objects.hash(boardIds, email, password, productIds, taskIds, type, username);
 	}
 
 	@Override
@@ -150,7 +137,6 @@ public class UserDTO {
 			return false;
 		UserDTO other = (UserDTO) obj;
 		return Objects.equals(boardIds, other.boardIds) && Objects.equals(email, other.email)
-				&& Objects.equals(firstName, other.firstName) && Objects.equals(lastName, other.lastName)
 				&& Objects.equals(password, other.password) && Objects.equals(productIds, other.productIds)
 				&& Objects.equals(taskIds, other.taskIds) && type == other.type
 				&& Objects.equals(username, other.username);
@@ -158,8 +144,9 @@ public class UserDTO {
 
 	@Override
 	public String toString() {
-		return "UserDTO [username=" + username + ", password=" + password + ", email=" + email + ", firstName="
-				+ firstName + ", lastName=" + lastName + ", type=" + type + ", boardIds=" + boardIds + ", taskIds="
-				+ taskIds + ", productIds=" + productIds + "]";
+		return "UserDTO [username=" + username + ", password=" + password + ", email=" + email + ", type=" + type
+				+ ", boardIds=" + boardIds + ", taskIds=" + taskIds + ", productIds=" + productIds + "]";
 	}
+
+	
 }
