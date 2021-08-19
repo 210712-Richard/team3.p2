@@ -28,3 +28,4 @@ hs_err_pid*
 **/cassandra_truststore.jks
 **/sf-class2-root.crt
 **/temp_file.der
+/bin/
