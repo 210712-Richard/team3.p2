@@ -43,10 +43,12 @@ public class TaskDTO {
 	}
 
 	public TaskDTO(Task task) {
+		this.boardid = task.getBoardId();
 		this.id = task.getId();
 		this.name = task.getName();
 		this.description = task.getDescription();
 		this.status = task.getStatus();
+		this.priorityStatus = task.getPriorityStatus();
 		this.startDate = task.getStartDate();
 		this.endDate = task.getEndDate();
 		this.startTime = task.getStartTime();
@@ -119,7 +121,24 @@ public class TaskDTO {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(description, endDate, endTime, id, name, startDate, startTime, status);
+		return Objects.hash(boardid, description, endDate, endTime, id, name, priorityStatus, startDate, startTime,
+				status);
+	}
+	
+	public UUID getBoardid() {
+		return boardid;
+	}
+
+	public void setBoardid(UUID boardid) {
+		this.boardid = boardid;
+	}
+
+	public TaskPriority getPriorityStatus() {
+		return priorityStatus;
+	}
+
+	public void setPriorityStatus(TaskPriority priorityStatus) {
+		this.priorityStatus = priorityStatus;
 	}
 
 	@Override
@@ -131,17 +150,18 @@ public class TaskDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		TaskDTO other = (TaskDTO) obj;
-		return Objects.equals(description, other.description) && Objects.equals(endDate, other.endDate)
-				&& Objects.equals(endTime, other.endTime) && Objects.equals(id, other.id)
-				&& Objects.equals(name, other.name) && Objects.equals(startDate, other.startDate)
+		return Objects.equals(boardid, other.boardid) && Objects.equals(description, other.description)
+				&& Objects.equals(endDate, other.endDate) && Objects.equals(endTime, other.endTime)
+				&& Objects.equals(id, other.id) && Objects.equals(name, other.name)
+				&& priorityStatus == other.priorityStatus && Objects.equals(startDate, other.startDate)
 				&& Objects.equals(startTime, other.startTime) && status == other.status;
 	}
 
 	@Override
 	public String toString() {
-		return "TaskDTO [id=" + id + ", name=" + name + ", description=" + description + ", status=" + status
-				+ ", startDate=" + startDate + ", endDate=" + endDate + ", startTime=" + startTime + ", endTime="
-				+ endTime + "]";
+		return "TaskDTO [boardid=" + boardid + ", id=" + id + ", name=" + name + ", description=" + description
+				+ ", status=" + status + ", priorityStatus=" + priorityStatus + ", startDate=" + startDate
+				+ ", endDate=" + endDate + ", startTime=" + startTime + ", endTime=" + endTime + "]";
 	}
 
 }
