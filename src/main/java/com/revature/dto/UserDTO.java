@@ -112,15 +112,6 @@ public class UserDTO {
 	public void setProductIds(List<UUID> productIds) {
 		this.productIds = productIds;
 	}
-	
-	public User getUser() {
-		User user = new User();
-		this.setUsername(username);
-		this.setPassword(password);
-		this.setEmail(email);
-		
-		return user;
-	}
 
 	@Override
 	public int hashCode() {
