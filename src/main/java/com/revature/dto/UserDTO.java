@@ -8,6 +8,7 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+import com.revature.beans.User;
 import com.revature.beans.UserType;
 
 @Table("user")
@@ -48,6 +49,18 @@ public class UserDTO {
 		this.boardIds = boardIds;
 		this.taskIds = taskIds;
 		this.productIds = productIds;
+	}
+	
+	public User getUser() {
+		User u = new User();
+		u.setUsername(this.username);
+		u.setPassword(this.password);
+		u.setEmail(this.email);
+		u.setType(this.type);
+		u.setBoardIds(this.boardIds);
+		u.setTaskIds(this.taskIds);
+		u.setProductIds(this.productIds);
+		return u;
 	}
 
 	public String getUsername() {

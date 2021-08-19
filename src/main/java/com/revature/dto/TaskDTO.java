@@ -54,6 +54,22 @@ public class TaskDTO {
 		this.startTime = task.getStartTime();
 		this.endTime = task.getEndTime();
 	}
+	
+	public Task getTask() {
+		Task task = new Task();
+		task.setBoardId(this.boardid);
+		task.setId(this.id);
+		task.setName(this.name);
+		task.setDescription(this.description);
+		task.setStatus(this.status);
+		task.setPriorityStatus(this.priorityStatus);
+		task.setStartDate(this.startDate);
+		task.setEndDate(this.endDate);
+		task.setStartTime(this.startTime);
+		task.setEndTime(this.endTime);
+		return task;
+		
+	}
 
 	public UUID getId() {
 		return id;
