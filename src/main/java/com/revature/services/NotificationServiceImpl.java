@@ -14,6 +14,9 @@ import com.revature.beans.User;
 import com.revature.data.NotificationDAO;
 import com.revature.dto.NotificationDTO;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 /**
  * 
  * @author sidd
@@ -42,7 +45,7 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public List<Notification> checkNotifications(User user) {
+	public Flux<Notification> checkNotifications(User user) {
 
 		// The findAllByID function takes in a list of ids and returns all entities
 		// matching those ids. As such, it is necessary to make the username of the
@@ -61,11 +64,13 @@ public class NotificationServiceImpl implements NotificationService {
 				.stream()
 				.map(nDTO -> nDTO.getNotification())
 				.collect(Collectors.toList());
-		return notes;
+
+		nd.findAll()
+		
 	}
 
 	@Override
-	public Notification checkNotificationByID(User user, UUID id) {
+	public Mono<Notification> checkNotificationByID(User user, UUID id) {
 		
 		NotificationDTO databaseNote = nd.findById(id.toString()).orElse(null);
 		try {
