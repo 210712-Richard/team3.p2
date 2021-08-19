@@ -7,7 +7,7 @@ public class ScrumBoard {
 
 	private String name;
 	private UUID id;
-	private String ScrumMasterUsername;
+	private String scrumMasterUsername;
 	
 	public ScrumBoard() {
 		super();
@@ -30,16 +30,16 @@ public class ScrumBoard {
 	}
 
 	public String getScrumMasterUsername() {
-		return ScrumMasterUsername;
+		return scrumMasterUsername;
 	}
 
 	public void setScrumMasterUsername(String scrumMasterUsername) {
-		ScrumMasterUsername = scrumMasterUsername;
+		this.scrumMasterUsername = scrumMasterUsername;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(ScrumMasterUsername, id, name);
+		return Objects.hash(scrumMasterUsername, id, name);
 	}
 
 	@Override
@@ -51,13 +51,13 @@ public class ScrumBoard {
 		if (getClass() != obj.getClass())
 			return false;
 		ScrumBoard other = (ScrumBoard) obj;
-		return Objects.equals(ScrumMasterUsername, other.ScrumMasterUsername) && Objects.equals(id, other.id)
+		return Objects.equals(scrumMasterUsername, other.scrumMasterUsername) && Objects.equals(id, other.id)
 				&& Objects.equals(name, other.name);
 	}
 
 	@Override
 	public String toString() {
-		return "ScrumBoard [name=" + name + ", id=" + id + ", ScrumMasterUsername=" + ScrumMasterUsername + "]";
+		return "ScrumBoard [name=" + name + ", id=" + id + ", ScrumMasterUsername=" + scrumMasterUsername + "]";
 	}
 	
 	

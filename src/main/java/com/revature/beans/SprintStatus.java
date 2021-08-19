@@ -5,10 +5,10 @@ public enum SprintStatus {
 	PAST,
 
 	CURRENT {
-		private static final int limit = 1;
+		private static final int LIMIT = 1;
 
 		public int getLimit() {
-			return limit;
+			return LIMIT;
 		}
 	},
 
