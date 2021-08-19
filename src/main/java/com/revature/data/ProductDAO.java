@@ -1,5 +1,12 @@
 package com.revature.data;
 
-public interface ProductDAO {
+import org.springframework.data.cassandra.repository.CassandraRepository;
+
+import com.revature.dto.ProductDTO;
+
+public interface ProductDAO extends CassandraRepository<ProductDTO, String>{
+	
+
+ 
 
 }
