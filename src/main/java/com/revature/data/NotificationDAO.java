@@ -1,7 +1,7 @@
 package com.revature.data;
 
-import org.springframework.data.cassandra.repository.CassandraRepository;
+import org.springframework.data.cassandra.repository.ReactiveCassandraRepository;
 
 import com.revature.dto.NotificationDTO;
 
-public interface NotificationDAO extends CassandraRepository<NotificationDTO, String>{}
+public interface NotificationDAO extends ReactiveCassandraRepository<NotificationDTO, String>{}
