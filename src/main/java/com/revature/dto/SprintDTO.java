@@ -2,26 +2,52 @@ package com.revature.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-@Table("sprint")
+import com.revature.beans.SprintStatus;
+
+@Table("sprints")
 public class SprintDTO {
 
-	@PrimaryKey
-	@Column("id")
+	@PrimaryKeyColumn(name = "scrumboardId", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+	private UUID scrumboardID;
+	@Column("id") 
 	private UUID id;
-	@Column
+	@Column("name") 
 	private String name;
+	@Column("description") 
 	private String description;
+	@Column("startdate") 
 	private LocalDate startDate;
+	@Column("enddate") 
 	private LocalDate endDate;
+	@Column("starttime") 
 	private LocalTime startTime;
+	@Column("endTime") 
 	private LocalTime endTime;
+	@Column("taskids")
+	private List<UUID> taskIds;
+	@PrimaryKeyColumn(name = "status", ordinal = 1, type = PrimaryKeyType.CLUSTERED)
+	private SprintStatus status;
+
+	public SprintDTO() {
+		super();
+	}
+	
+	public UUID getScrumboardID() {
+		return scrumboardID;
+	}
+
+	public void setScrumboardID(UUID scrumboardID) {
+		this.scrumboardID = scrumboardID;
+	}
 
 	public String getName() {
 		return name;
@@ -79,18 +105,26 @@ public class SprintDTO {
 		this.endTime = endTime;
 	}
 
+	public List<UUID> getTaskIds() {
+		return taskIds;
+	}
+
+	public void setTaskIds(List<UUID> taskIds) {
+		this.taskIds = taskIds;
+	}
+
+	public SprintStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(SprintStatus status) {
+		this.status = status;
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
-		result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
-		result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
-		return result;
+		return Objects.hash(description, endDate, endTime, id, name, scrumboardID, startDate, startTime, status,
+				taskIds);
 	}
 
 	@Override
@@ -102,48 +136,18 @@ public class SprintDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		SprintDTO other = (SprintDTO) obj;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (endDate == null) {
-			if (other.endDate != null)
-				return false;
-		} else if (!endDate.equals(other.endDate))
-			return false;
-		if (endTime == null) {
-			if (other.endTime != null)
-				return false;
-		} else if (!endTime.equals(other.endTime))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (startDate == null) {
-			if (other.startDate != null)
-				return false;
-		} else if (!startDate.equals(other.startDate))
-			return false;
-		if (startTime == null) {
-			if (other.startTime != null)
-				return false;
-		} else if (!startTime.equals(other.startTime))
-			return false;
-		return true;
+		return Objects.equals(description, other.description) && Objects.equals(endDate, other.endDate)
+				&& Objects.equals(endTime, other.endTime) && Objects.equals(id, other.id)
+				&& Objects.equals(name, other.name) && Objects.equals(scrumboardID, other.scrumboardID)
+				&& Objects.equals(startDate, other.startDate) && Objects.equals(startTime, other.startTime)
+				&& status == other.status && Objects.equals(taskIds, other.taskIds);
 	}
 
 	@Override
 	public String toString() {
-		return "SprintDTO [name=" + name + ", id=" + id + ", description=" + description + ", startDate=" + startDate
-				+ ", endDate=" + endDate + ", startTime=" + startTime + ", endTime=" + endTime + "]";
+		return "SprintDTO [scrumboardID=" + scrumboardID + ", id=" + id + ", name=" + name + ", description="
+				+ description + ", startDate=" + startDate + ", endDate=" + endDate + ", startTime=" + startTime
+				+ ", endTime=" + endTime + ", taskIds=" + taskIds + ", status=" + status + "]";
 	}
 
 }
