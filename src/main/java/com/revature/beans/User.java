@@ -9,8 +9,6 @@ public class User {
 	private String username;
 	private String password;
 	private String email;
-	private String firstName;
-	private String lastName;
 	private UserType type;
 	private List<UUID> boardIds;
 	private List<UUID> taskIds;
@@ -42,22 +40,6 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 
 	public UserType getType() {
@@ -94,7 +76,7 @@ public class User {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(boardIds, email, firstName, lastName, password, productIds, taskIds, type, username);
+		return Objects.hash(boardIds, email, password, productIds, taskIds, type, username);
 	}
 
 	@Override
@@ -107,7 +89,6 @@ public class User {
 			return false;
 		User other = (User) obj;
 		return Objects.equals(boardIds, other.boardIds) && Objects.equals(email, other.email)
-				&& Objects.equals(firstName, other.firstName) && Objects.equals(lastName, other.lastName)
 				&& Objects.equals(password, other.password) && Objects.equals(productIds, other.productIds)
 				&& Objects.equals(taskIds, other.taskIds) && type == other.type
 				&& Objects.equals(username, other.username);
@@ -115,9 +96,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [username=" + username + ", password=" + password + ", email=" + email + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", type=" + type + ", boardIds=" + boardIds + ", taskIds=" + taskIds
-				+ ", productIds=" + productIds + "]";
+		return "User [username=" + username + ", password=" + password + ", email=" + email + ", type=" + type
+				+ ", boardIds=" + boardIds + ", taskIds=" + taskIds + ", productIds=" + productIds + "]";
 	}
 
 }

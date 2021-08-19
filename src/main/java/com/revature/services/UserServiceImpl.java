@@ -31,12 +31,10 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public User register(String username, String password, String email, String firstName, String lastName) {
+	public User register(String username, String password, String email) {
 		User user = new User();
 		user.setUsername(username);
 		user.setPassword(password);
-		user.setFirstName(firstName);
-		user.setLastName(lastName);
 		user.setEmail(email);
 		
 //		userDao.save(new UserDTO(user));
@@ -85,7 +83,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User changeUserCredentials(User user, String employee,
-			String password, String email, String firstName, String lastName, String type) {
+			String password, String email, String type) {
 		
 //		if (user.getType().equals("Admin")) {
 //			
