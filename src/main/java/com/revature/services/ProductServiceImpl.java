@@ -26,12 +26,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	
-	//Should be able to have multiple projects running at once, 
+	//Should be able to have multiple projects running at once, and developers can be part of multiple projects at the same time
 	// ??
-	
-	
-	
-    //and developers can be part of multiple projects at the same time
+
 	
 	
 	

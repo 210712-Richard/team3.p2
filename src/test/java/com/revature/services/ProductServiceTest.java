@@ -29,10 +29,9 @@ public class ProductServiceTest {
 	}
 	
 	@Test
-	public void testNewProduct() {
+	    void testNewProduct() {
 		service.addProduct(product);
 		ArgumentCaptor<ProductDTO> captor = ArgumentCaptor.forClass(ProductDTO.class);
-		
 		Mockito.verify(pd).save(captor.capture());
 	}
 	

@@ -10,20 +10,21 @@ import com.revature.beans.Product;
 
 @Table
 public class ProductDTO {
-	
+	//?? PrimaryKey
 	private String productOwner;
 	private Map<String, UUID> scrumMasterBoardMap;
 	private List<UUID> boardIds;
 	private List<String> usernames;
 	private Map<UUID, String> boardIdNameMap;
 	private String productName;
+	private UUID id;
 	
 	public ProductDTO(Product product) {
 		super();
+		this.productOwner = product.getProductOwner();
+		this.productName = product.getProductName();
+		
 	}
-
-
-	
 	
 	public String getProductOwner() {
 		return productOwner;
@@ -67,7 +68,7 @@ public class ProductDTO {
 	public void setId(UUID id) {
 		this.id = id;
 	}
-	private UUID id;
+
 
 
 	@Override
