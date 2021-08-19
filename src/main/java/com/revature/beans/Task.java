@@ -21,7 +21,7 @@ public class Task {
 	public Task() {
 		super();
 	}
-
+	
 	public UUID getBoardId() {
 		return boardId;
 	}

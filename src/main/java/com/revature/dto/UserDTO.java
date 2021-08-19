@@ -43,6 +43,18 @@ public class UserDTO {
 		this.taskIds = user.getTaskIds();
 		this.productIds = user.getProductIds();
 	}
+	
+	public User getUser() {
+		User u = new User();
+		u.setUsername(this.username);
+		u.setPassword(this.password);
+		u.setEmail(this.email);
+		u.setType(this.type);
+		u.setBoardIds(this.boardIds);
+		u.setTaskIds(this.taskIds);
+		u.setProductIds(this.productIds);
+		return u;
+	}
 
 	public String getUsername() {
 		return username;
@@ -99,15 +111,6 @@ public class UserDTO {
 
 	public void setProductIds(List<UUID> productIds) {
 		this.productIds = productIds;
-	}
-	
-	public User getUser() {
-		User user = new User();
-		this.setUsername(username);
-		this.setPassword(password);
-		this.setEmail(email);
-		
-		return user;
 	}
 
 	@Override

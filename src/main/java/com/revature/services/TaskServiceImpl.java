@@ -9,15 +9,19 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.beans.Sprint;
 import com.revature.beans.Task;
 import com.revature.beans.TaskCompletionStatus;
 import com.revature.beans.TaskPriority;
+import com.revature.beans.User;
 import com.revature.data.SprintDAO;
 import com.revature.data.TaskDAO;
 import com.revature.data.UserDAO;
 import com.revature.dto.SprintDTO;
 import com.revature.dto.TaskDTO;
 import com.revature.dto.UserDTO;
+
+import reactor.core.publisher.Mono;
 
 @Service
 public class TaskServiceImpl implements TaskService{
@@ -37,19 +41,22 @@ public class TaskServiceImpl implements TaskService{
 	
 	
 	@Override
-	public void moveTask(UUID taskId, TaskCompletionStatus status) {
+	public Mono<Task> moveTask(UUID taskId, TaskCompletionStatus status) {
 		//Move task within scrumboard by changing the status
-		Optional<TaskDTO> t = taskDAO.findById(taskId.toString());
-		TaskDTO task = t.get();
-		if(t.get() == null) {
-			return;
+		Mono<TaskDTO> t = taskDAO.findById(taskId.toString());
+		TaskDTO task = t.block();
+		if(t.block() == null) {
+			return null;
 		}
 		task.setStatus(status);
 		taskDAO.save(task);
+		return taskDAO.findById(taskId.toString()).map(tasks -> tasks.getTask());
+		
 	}
 
 	@Override
-	public void addToProductBackLog(UUID product, Task task) {
+	public Mono<Task> addToProductBackLog(UUID product, Task task) {
+		return null;
 		//New task added to product backlog
 		/*
 		 * How do i do this without a list of tasks in product object
@@ -59,56 +66,55 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	@Override
-	public void makePriority(UUID taskId, TaskPriority priority) {
+	public Mono<Task> makePriority(UUID taskId, TaskPriority priority) {
 		//Change priority status of an existing task
-		Optional<TaskDTO> t = taskDAO.findById(taskId.toString());
-		if(t.get() == null) {
-			return;
+		Mono<TaskDTO> t = taskDAO.findById(taskId.toString());
+		TaskDTO task = t.block();
+		if(t.block() == null) {
+			return null;
 		}
-		TaskDTO task = t.get();
 		task.setPriorityStatus(priority);
 		taskDAO.save(task);
+		return taskDAO.findById(taskId.toString()).map(tasks -> tasks.getTask());
+		
 	}
 
 	@Override
-	public void addToSprintBackLog(UUID sprintId, UUID taskId) {
+	public Mono<Sprint> addToSprintBackLog(UUID sprintId, UUID taskId) {
 		//Find Task set status to backlog
-		Optional<TaskDTO> t = taskDAO.findById(taskId.toString());
-		if(t.get() == null) {
-			return;
+		Mono<TaskDTO> t = taskDAO.findById(taskId.toString());
+		TaskDTO task = t.block();
+		if(t.block() == null) {
+			return null;
 		}
-		TaskDTO task = t.get();
 		task.setStatus(TaskCompletionStatus.BACKLOG);
 		
 		//Find sprint and add this task to the sprint's list of tasks
-		Optional<SprintDTO> sp = sprintDAO.findById(sprintId.toString());
-		if(sp.get() == null) {
-			return;
+		Mono<SprintDTO> sp = sprintDAO.findById(sprintId.toString());
+		if(sp.block() == null) {
+			return null;
 		}
-		SprintDTO sprint = sp.get();
+		SprintDTO sprint = sp.block();
 		sprint.getTaskIds().add(sprintId);
 		sprintDAO.save(sprint);
+		return sprintDAO.findById(sprintId.toString()).map(sprints -> sprints.getSprint());
 		
 		
 	}
 
 	@Override
-	public void assignTasks(UUID userId, UUID taskId) {
+	public Mono<User> assignTasks(UUID userId, UUID taskId) {
 		//Maybe put this under UserService since its updating a user's task list
-		
-		/*
-
-		Optional<UserDTO> u = userDAO.findById(userId.toString());
-		if(u.get() == null) {
-			return;
+		//Find user and add task id to the user's list of task ids
+		Mono<UserDTO> u = userDAO.findById(userId.toString());
+		UserDTO user = u.block();
+		if(u.block() == null) {
+			return null;
 		}
-		UserDTO user = u.get();
 		user.getTaskIds().add(taskId);
 		userDAO.save(user);
+		return userDAO.findById(userId.toString()).map(users -> users.getUser());
 		
-		*/
-		
-		//errors since DAO isn't set up
 	}
 
 }

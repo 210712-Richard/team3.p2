@@ -15,10 +15,12 @@ public class Product {
 	private Map<UUID, String> boardIdNameMap;
 	private String productName;
 	private UUID id;
+	private UUID masterBoardId;
 
 	public Product() {
 		super();
 	}
+	
 
 	public String getProductOwner() {
 		return productOwner;
@@ -76,10 +78,21 @@ public class Product {
 		this.id = id;
 	}
 
+	public UUID getMasterBoardId() {
+		return masterBoardId;
+	}
+
+	public void setMasterBoardId(UUID masterBoardId) {
+		this.masterBoardId = masterBoardId;
+	}
+
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(scrumMasterBoardMap, boardIdNameMap, boardIds, id, productName, productOwner, usernames);
+		return Objects.hash(boardIdNameMap, boardIds, id, masterBoardId, productName, productOwner, scrumMasterBoardMap,
+				usernames);
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -90,17 +103,19 @@ public class Product {
 		if (getClass() != obj.getClass())
 			return false;
 		Product other = (Product) obj;
-		return Objects.equals(scrumMasterBoardMap, other.scrumMasterBoardMap)
-				&& Objects.equals(boardIdNameMap, other.boardIdNameMap) && Objects.equals(boardIds, other.boardIds)
-				&& Objects.equals(id, other.id) && Objects.equals(productName, other.productName)
-				&& Objects.equals(productOwner, other.productOwner) && Objects.equals(usernames, other.usernames);
+		return Objects.equals(boardIdNameMap, other.boardIdNameMap) && Objects.equals(boardIds, other.boardIds)
+				&& Objects.equals(id, other.id) && Objects.equals(masterBoardId, other.masterBoardId)
+				&& Objects.equals(productName, other.productName) && Objects.equals(productOwner, other.productOwner)
+				&& Objects.equals(scrumMasterBoardMap, other.scrumMasterBoardMap)
+				&& Objects.equals(usernames, other.usernames);
 	}
+
 
 	@Override
 	public String toString() {
-		return "Product [productOwner=" + productOwner + ", ScrumMasterBoardMap=" + scrumMasterBoardMap + ", boardIds="
+		return "Product [productOwner=" + productOwner + ", scrumMasterBoardMap=" + scrumMasterBoardMap + ", boardIds="
 				+ boardIds + ", usernames=" + usernames + ", boardIdNameMap=" + boardIdNameMap + ", productName="
-				+ productName + ", id=" + id + "]";
+				+ productName + ", id=" + id + ", masterBoardId=" + masterBoardId + "]";
 	}
 
 }

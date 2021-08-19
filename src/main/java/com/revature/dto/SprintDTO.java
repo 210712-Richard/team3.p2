@@ -11,6 +11,7 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+import com.revature.beans.Sprint;
 import com.revature.beans.SprintStatus;
 
 @Table("sprints")
@@ -39,6 +40,31 @@ public class SprintDTO {
 
 	public SprintDTO() {
 		super();
+	}
+	
+	public SprintDTO(Sprint sprint) {
+		this.scrumboardID = sprint.getScrumboardID();
+		this.id = sprint.getId();
+		this.name = sprint.getName();
+		this.description = sprint.getDescription();
+		this.startDate = sprint.getStartDate();
+		this.endDate = sprint.getEndDate();
+		this.startTime = sprint.getStartTime();
+		this.endTime = sprint.getEndTime();
+	}
+	
+	public Sprint getSprint() {
+		Sprint sprint = new Sprint();
+		sprint.setScrumboardID(this.scrumboardID);
+		sprint.setId(this.getId());
+		sprint.setName(this.name);
+		sprint.setDescription(this.description);
+		sprint.setStartDate(this.startDate);
+		sprint.setEndDate(this.endDate);
+		sprint.setStartTime(this.startTime);
+		sprint.setEndTime(this.endTime);
+		
+		return sprint;
 	}
 	
 	public UUID getScrumboardID() {
@@ -120,7 +146,7 @@ public class SprintDTO {
 	public void setStatus(SprintStatus status) {
 		this.status = status;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(description, endDate, endTime, id, name, scrumboardID, startDate, startTime, status,
