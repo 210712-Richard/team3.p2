@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.revature.beans.Product;
 import com.revature.data.ProductDAO;
-import com.revature.data.ProductDao;
 import com.revature.dto.ProductDTO;
 
 @Service
