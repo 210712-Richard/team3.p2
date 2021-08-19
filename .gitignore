@@ -1,5 +1,8 @@
-# Compiled class file
+# Compiled filed
 *.class
+build/
+/bin1/
+java/build/**
 
 # Log file
 *.log
@@ -29,3 +32,13 @@ hs_err_pid*
 **/sf-class2-root.crt
 **/temp_file.der
 /bin/
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+# Inclusions
+!lib/**
