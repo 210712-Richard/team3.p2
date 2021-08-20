@@ -62,7 +62,7 @@ public class NotificationServiceImpl implements NotificationService {
 		// of NotificationDTO. I am then mapping that DTO to a regular 
 		// Notification and returning that as a Mono.
 		
-		return nd.findByUsernameAndUUID(user.getUsername(), id).map(dto -> dto.getNotification());
+		return nd.findByUsernameAndId(user.getUsername(), id).map(dto -> dto.getNotification());
 	}
 
 }
