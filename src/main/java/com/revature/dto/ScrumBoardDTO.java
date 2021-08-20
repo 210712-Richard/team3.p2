@@ -10,7 +10,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import com.revature.beans.ScrumBoard;
 
-@Table
+@Table("scrumboards")
 public class ScrumBoardDTO {
 
 	@PrimaryKeyColumn(name = "board_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
