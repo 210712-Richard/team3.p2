@@ -15,11 +15,11 @@ import com.revature.beans.Task;
 import com.revature.beans.TaskCompletionStatus;
 import com.revature.beans.TaskPriority;
 
-@Table("task")
+@Table("tasks")
 public class TaskDTO {
-	@PrimaryKeyColumn(name = "boardid", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+	@PrimaryKeyColumn(name = "board_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
 	private UUID boardid;
-	@PrimaryKeyColumn(name = "id", ordinal = 2, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.ASCENDING)
+	@PrimaryKeyColumn(name = "task_id", ordinal = 2, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.ASCENDING)
 	private UUID id;
 	@Column("name")
 	private String name;
@@ -29,13 +29,13 @@ public class TaskDTO {
 	private TaskCompletionStatus status;
 	@Column("priority")
 	private TaskPriority priorityStatus;
-	@Column("startdate")
+	@Column("start_date")
 	private LocalDate startDate;
-	@Column("enddate")
+	@Column("end_date")
 	private LocalDate endDate;
-	@Column("starttime")
+	@Column("start_time")
 	private LocalTime startTime;
-	@Column("endtime")
+	@Column("end_time")
 	private LocalTime endTime;
 
 	public TaskDTO() {

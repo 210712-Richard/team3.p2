@@ -11,7 +11,7 @@ import org.springframework.data.cassandra.core.mapping.Table;
 
 import com.revature.beans.Product;
 
-@Table
+@Table("products")
 public class ProductDTO {
 	@PrimaryKeyColumn(name = "product_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
 	private UUID id;
