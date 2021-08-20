@@ -9,7 +9,7 @@ import java.util.UUID;
 public class Product {
 
 	private String productOwner;
-	private Map<String, UUID> scrumMasterBoardMap;
+	private Map<UUID, String> scrumMasterBoardMap;
 	private List<UUID> boardIds;
 	private List<String> usernames;
 	private Map<UUID, String> boardIdNameMap;
@@ -30,11 +30,11 @@ public class Product {
 		this.productOwner = productOwner;
 	}
 
-	public Map<String, UUID> getScrumMasterBoardMap() {
+	public Map<UUID, String> getScrumMasterBoardMap() {
 		return scrumMasterBoardMap;
 	}
 
-	public void setScrumMasterBoardMap(Map<String, UUID> scrumMasterBoardMap) {
+	public void setScrumMasterBoardMap(Map<UUID, String> scrumMasterBoardMap) {
 		this.scrumMasterBoardMap = scrumMasterBoardMap;
 	}
 

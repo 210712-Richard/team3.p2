@@ -17,23 +17,19 @@ import com.revature.beans.SprintStatus;
 @Table("sprints")
 public class SprintDTO {
 
-	@PrimaryKeyColumn(name = "scrumboardId", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+	@PrimaryKeyColumn(name = "scrumboard_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
 	private UUID scrumboardID;
-	@Column("id") 
+	@Column("sprint_id") 
 	private UUID id;
-	@Column("name") 
-	private String name;
-	@Column("description") 
-	private String description;
-	@Column("startdate") 
+	@Column("start_date") 
 	private LocalDate startDate;
-	@Column("enddate") 
+	@Column("end_date") 
 	private LocalDate endDate;
-	@Column("starttime") 
+	@Column("start_time") 
 	private LocalTime startTime;
-	@Column("endTime") 
+	@Column("end_time") 
 	private LocalTime endTime;
-	@Column("taskids")
+	@Column("task_ids")
 	private List<UUID> taskIds;
 	@PrimaryKeyColumn(name = "status", ordinal = 1, type = PrimaryKeyType.CLUSTERED)
 	private SprintStatus status;
@@ -45,8 +41,6 @@ public class SprintDTO {
 	public SprintDTO(Sprint sprint) {
 		this.scrumboardID = sprint.getScrumboardID();
 		this.id = sprint.getId();
-		this.name = sprint.getName();
-		this.description = sprint.getDescription();
 		this.startDate = sprint.getStartDate();
 		this.endDate = sprint.getEndDate();
 		this.startTime = sprint.getStartTime();
@@ -57,8 +51,6 @@ public class SprintDTO {
 		Sprint sprint = new Sprint();
 		sprint.setScrumboardID(this.scrumboardID);
 		sprint.setId(this.getId());
-		sprint.setName(this.name);
-		sprint.setDescription(this.description);
 		sprint.setStartDate(this.startDate);
 		sprint.setEndDate(this.endDate);
 		sprint.setStartTime(this.startTime);
@@ -75,28 +67,12 @@ public class SprintDTO {
 		this.scrumboardID = scrumboardID;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public UUID getId() {
 		return id;
 	}
 
 	public void setId(UUID id) {
 		this.id = id;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public LocalDate getStartDate() {
@@ -149,8 +125,7 @@ public class SprintDTO {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(description, endDate, endTime, id, name, scrumboardID, startDate, startTime, status,
-				taskIds);
+		return Objects.hash(endDate, endTime, id, scrumboardID, startDate, startTime, status, taskIds);
 	}
 
 	@Override
@@ -162,18 +137,17 @@ public class SprintDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		SprintDTO other = (SprintDTO) obj;
-		return Objects.equals(description, other.description) && Objects.equals(endDate, other.endDate)
-				&& Objects.equals(endTime, other.endTime) && Objects.equals(id, other.id)
-				&& Objects.equals(name, other.name) && Objects.equals(scrumboardID, other.scrumboardID)
+		return Objects.equals(endDate, other.endDate) && Objects.equals(endTime, other.endTime)
+				&& Objects.equals(id, other.id) && Objects.equals(scrumboardID, other.scrumboardID)
 				&& Objects.equals(startDate, other.startDate) && Objects.equals(startTime, other.startTime)
 				&& status == other.status && Objects.equals(taskIds, other.taskIds);
 	}
 
 	@Override
 	public String toString() {
-		return "SprintDTO [scrumboardID=" + scrumboardID + ", id=" + id + ", name=" + name + ", description="
-				+ description + ", startDate=" + startDate + ", endDate=" + endDate + ", startTime=" + startTime
-				+ ", endTime=" + endTime + ", taskIds=" + taskIds + ", status=" + status + "]";
+		return "SprintDTO [scrumboardID=" + scrumboardID + ", id=" + id + ", startDate=" + startDate + ", endDate="
+				+ endDate + ", startTime=" + startTime + ", endTime=" + endTime + ", taskIds=" + taskIds + ", status="
+				+ status + "]";
 	}
 
 }

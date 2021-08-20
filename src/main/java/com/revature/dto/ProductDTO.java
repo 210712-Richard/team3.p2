@@ -4,26 +4,52 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import com.revature.beans.Product;
 
 @Table
 public class ProductDTO {
-	//?? PrimaryKey
-	private String productOwner;
-	private Map<String, UUID> scrumMasterBoardMap;
-	private List<UUID> boardIds;
-	private List<String> usernames;
-	private Map<UUID, String> boardIdNameMap;
-	private String productName;
+	@PrimaryKeyColumn(name = "product_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
 	private UUID id;
+	@Column("product_owner")
+	private String productOwner;
+	@Column("board_id_to_scrum_username")
+	private Map<UUID, String> scrumMasterBoardMap;
+	@Column("scrum_boards")
+	private List<UUID> boardIds;
+	@Column("users")
+	private List<String> usernames;
+	@Column("board_id_to_board_name")
+	private Map<UUID, String> boardIdNameMap;
+	@Column("product_name")
+	private String productName;
+	
 	
 	public ProductDTO(Product product) {
 		super();
+		this.id = product.getId();
 		this.productOwner = product.getProductOwner();
+		this.scrumMasterBoardMap = product.getScrumMasterBoardMap();
+		this.boardIds = product.getBoardIds();
+		this.usernames = product.getUsernames();
+		this.boardIdNameMap = product.getBoardIdNameMap();
 		this.productName = product.getProductName();
-		
+	}
+	
+	public Product getProduct() {
+		Product product = new Product();
+		product.setId(id);
+		product.setProductOwner(productOwner);
+		product.setScrumMasterBoardMap(scrumMasterBoardMap);
+		product.setBoardIds(boardIds);
+		product.setUsernames(usernames);
+		product.setBoardIdNameMap(boardIdNameMap);
+		product.setProductName(productName);
+		return product;
 	}
 	
 	public String getProductOwner() {
@@ -32,10 +58,10 @@ public class ProductDTO {
 	public void setProductOwner(String productOwner) {
 		this.productOwner = productOwner;
 	}
-	public Map<String, UUID> getScrumMasterBoardMap() {
+	public Map<UUID, String> getScrumMasterBoardMap() {
 		return scrumMasterBoardMap;
 	}
-	public void setScrumMasterBoardMap(Map<String, UUID> scrumMasterBoardMap) {
+	public void setScrumMasterBoardMap(Map<UUID, String> scrumMasterBoardMap) {
 		this.scrumMasterBoardMap = scrumMasterBoardMap;
 	}
 	public List<UUID> getBoardIds() {
