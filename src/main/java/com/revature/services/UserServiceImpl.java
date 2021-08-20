@@ -1,5 +1,6 @@
 package com.revature.services;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +8,8 @@ import com.revature.beans.User;
 import com.revature.beans.UserType;
 import com.revature.data.UserDAO;
 import com.revature.dto.UserDTO;
+
+import reactor.core.publisher.Mono;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -20,14 +23,11 @@ public class UserServiceImpl implements UserService{
 		
 	}
 	@Override
-	public User login(String name) {
-//		UserDTO databaseUser = userDao.findbyId(name).orElse(null);
-//		
-//		User user = databaseUser.getUser(); //I think we need to add get user in userDTO
-//		
-//		return user;
-		// just setting to null so it doesn't give me an error
-		return null;
+	public Mono<User> login(String name) {
+		Mono<User> userMono = userDao.findById(name).map(user -> user.getUser());
+		
+		
+		return userMono;
 	}
 
 	@Override
@@ -37,72 +37,55 @@ public class UserServiceImpl implements UserService{
 		user.setPassword(password);
 		user.setEmail(email);
 		
-//		userDao.save(new UserDTO(user));
+		userDao.save(new UserDTO(user));
+
 //		uncomment this when DTO is finished
 		
 		return user;
 	}
 
 	@Override
-	public User roleChange(User user, String employee, String type) {
+	public void roleChange(User user, User employee, String type) {
 		
-//		if (user.getType().equals("Admin")) {
-//			
-//			User emp = userDao.findById(employee);
-//			
-//			if (!emp.getType().equals("Admin")) {
-//				emp.setType(UserType.valueOf(type));
-//				
-//				userDao.save(new UserDTO(emp)); 
-//				return emp;
-//				
-//			}else {
-//				return null;
-//			}
-//		}else {
-//			return null; 
-//		}
-// 		uncomment this code once the DTO and User DAO are good to go
+		if (user.getType().equals(UserType.valueOf("Admin"))) {
+			
+			employee.setType(UserType.valueOf(type));
+			
+			
+		}else {
+			return; 
+		}
 		
-		return null;
 	}
 
 	@Override
-	public User viewUser(User user, String employee) {
-//		if (user.getType().equals("Admin")) {
-//			
-//			User emp = userDao.findById(employee);
-//			return emp; 
-//		}else{
-//			return null}
-		
-//		uncomment this code once the DTO and User DAO are good to go
-		
-		return null;
+	public Mono<UserDTO> viewUser(User user, String employee) {
+		if (user.getType().equals(UserType.valueOf("Admin"))) {
+			
+			Mono<UserDTO> emp = userDao.findById(employee);
+			
+			emp.subscribe();
+			return emp;
+			
+			
+		}else{
+			return null;
+			}
 	}
 
 	@Override
-	public User changeUserCredentials(User user, String employee,
+	public User changeUserCredentials(User user, User employee,
 			String password, String email, String type) {
 		
-//		if (user.getType().equals("Admin")) {
-//			
-//			User emp = userDao.findById(employee);
-//			
-//				emp.setFirstName(firstName);
-//				emp.setLastName(lastName);
-//				emp.setPassword(password);
-//				emp.setEmail(email);
-//				emp.setType(UserType.valueOf(type));
-//				
-//				userDao.save(new UserDTO(emp)); 
-//				return emp;
-//				
-//		
-//		}else {
-//			return null; 
-//		}
-//		uncomment this code once the DTO and User DAO are good to go
+		if (user.getType().equals(UserType.valueOf("Admin"))) {
+		
+		employee.setType(UserType.valueOf(type));
+		employee.setPassword(password);
+		employee.setEmail(email);
+		
+					}else {
+						return null; 
+					}
 		
 		return null;
 	}
