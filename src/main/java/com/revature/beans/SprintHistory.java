@@ -8,8 +8,6 @@ import java.util.UUID;
 
 public class SprintHistory {
 
-	private String name;
-	private String description;
 	private UUID scrumboardID;
 	private UUID id;
 	private LocalDate startDate;
@@ -23,20 +21,12 @@ public class SprintHistory {
 		super();
 	}
 
-	public String getName() {
-		return name;
+	public List<Task> getTasks() {
+		return tasks;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
 	}
 
 	public UUID getScrumboardID() {
@@ -105,7 +95,7 @@ public class SprintHistory {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(description, endDate, endTime, id, name, scrumboardID, startDate, startTime, status, tasks);
+		return Objects.hash(endDate, endTime, id, scrumboardID, startDate, startTime, status, tasks);
 	}
 
 	@Override
@@ -117,17 +107,16 @@ public class SprintHistory {
 		if (getClass() != obj.getClass())
 			return false;
 		SprintHistory other = (SprintHistory) obj;
-		return Objects.equals(description, other.description) && Objects.equals(endDate, other.endDate)
-				&& Objects.equals(endTime, other.endTime) && Objects.equals(id, other.id)
-				&& Objects.equals(name, other.name) && Objects.equals(scrumboardID, other.scrumboardID)
+		return Objects.equals(endDate, other.endDate) && Objects.equals(endTime, other.endTime)
+				&& Objects.equals(id, other.id) && Objects.equals(scrumboardID, other.scrumboardID)
 				&& Objects.equals(startDate, other.startDate) && Objects.equals(startTime, other.startTime)
 				&& status == other.status && Objects.equals(tasks, other.tasks);
 	}
 
 	@Override
 	public String toString() {
-		return "SprintHistory [name=" + name + ", description=" + description + ", scrumboardID=" + scrumboardID
-				+ ", id=" + id + ", startDate=" + startDate + ", endDate=" + endDate + ", startTime=" + startTime
-				+ ", endTime=" + endTime + ", tasks=" + tasks + ", status=" + status + "]";
+		return "SprintHistory [scrumboardID=" + scrumboardID + ", id=" + id + ", startDate=" + startDate + ", endDate="
+				+ endDate + ", startTime=" + startTime + ", endTime=" + endTime + ", tasks=" + tasks + ", status="
+				+ status + "]";
 	}
 }
