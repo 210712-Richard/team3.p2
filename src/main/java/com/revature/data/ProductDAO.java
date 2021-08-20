@@ -6,7 +6,4 @@ import com.revature.dto.ProductDTO;
 
 public interface ProductDAO extends ReactiveCassandraRepository<ProductDTO, String>{
 	
-
- 
-
 }
