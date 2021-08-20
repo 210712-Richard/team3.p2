@@ -22,11 +22,11 @@ public class UserDTO {
 	private String email;
 	@Column("type")
 	private UserType type;
-	@Column("boardids")
+	@Column("board_ids")
 	private List<UUID> boardIds;
-	@Column("taskids")
+	@Column("task_ids")
 	private List<UUID> taskIds;
-	@Column("productids")
+	@Column("product_ids")
 	private List<UUID> productIds;
 
 	public UserDTO() {
