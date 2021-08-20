@@ -1,5 +1,6 @@
 package com.revature.beans;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -8,6 +9,7 @@ public class ScrumBoard {
 	private String name;
 	private UUID id;
 	private String scrumMasterUsername;
+	private List<String> users;
 	
 	public ScrumBoard() {
 		super();
@@ -37,9 +39,17 @@ public class ScrumBoard {
 		this.scrumMasterUsername = scrumMasterUsername;
 	}
 
+	public List<String> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<String> users) {
+		this.users = users;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(scrumMasterUsername, id, name);
+		return Objects.hash(id, name, scrumMasterUsername, users);
 	}
 
 	@Override
@@ -51,15 +61,13 @@ public class ScrumBoard {
 		if (getClass() != obj.getClass())
 			return false;
 		ScrumBoard other = (ScrumBoard) obj;
-		return Objects.equals(scrumMasterUsername, other.scrumMasterUsername) && Objects.equals(id, other.id)
-				&& Objects.equals(name, other.name);
+		return Objects.equals(id, other.id) && Objects.equals(name, other.name)
+				&& Objects.equals(scrumMasterUsername, other.scrumMasterUsername) && Objects.equals(users, other.users);
 	}
 
 	@Override
 	public String toString() {
-		return "ScrumBoard [name=" + name + ", id=" + id + ", ScrumMasterUsername=" + scrumMasterUsername + "]";
+		return "ScrumBoard [name=" + name + ", id=" + id + ", scrumMasterUsername=" + scrumMasterUsername + ", users="
+				+ users + "]";
 	}
-	
-	
-
 }

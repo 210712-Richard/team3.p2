@@ -1,10 +1,13 @@
 package com.revature.services;
 
+import org.springframework.stereotype.Service;
+
 import com.revature.beans.User;
 import com.revature.dto.UserDTO;
 
 import reactor.core.publisher.Mono;
 
+@Service
 public interface UserService {
 	
 	Mono<User> login (String name);
