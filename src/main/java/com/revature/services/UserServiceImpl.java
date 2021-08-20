@@ -3,6 +3,7 @@ package com.revature.services;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,8 +49,7 @@ public class UserServiceImpl implements UserService{
 			User user = tuple.getT2();
 			List<Task> t = tuple.getT1();
 			List<UUID> taskId = t.stream()
-								.map(task -> task.getId())
-								.toList(); 
+								.map(task -> task.getId()).collect(Collectors.toList()); 
 			user.setTaskIds(taskId);
 			return user;
 		});
