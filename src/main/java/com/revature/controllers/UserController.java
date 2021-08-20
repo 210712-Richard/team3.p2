@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.WebSession;
 
 import com.revature.beans.Notification;
+import com.revature.beans.User;
 import com.revature.services.NotificationService;
 import com.revature.services.UserService;
 
@@ -42,6 +45,20 @@ public class UserController {
 	public ResponseEntity<Mono<Notification>> getNotificationById(@PathVariable("id") String id, WebSession session) {
 		return ResponseEntity
 				.ok(notificationService.checkNotificationByID(session.getAttribute("loggedUser"), UUID.fromString(id)));
+	}
+	//As a user I can login
+	@PostMapping 
+	public ResponseEntity<Mono<User>> login (@RequestBody User user, WebSession session){
+		log.trace("User login method");
+		
+		Mono<User> loggedUser = userService.login(user.getUsername());
+		
+		if (loggedUser == null) {
+			return ResponseEntity.notFound().build();
+		}
+		session.getAttributes().put("loggedUser", user);
+		
+		return ResponseEntity.ok(loggedUser);
 	}
 
 }
