@@ -1,9 +1,11 @@
 package com.revature.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
@@ -31,7 +33,25 @@ public class UserDTO {
 
 	public UserDTO() {
 		super();
+		this.type = UserType.DEVELOPER;
+		this.boardIds = new ArrayList<UUID>();
+		this.taskIds = new ArrayList<UUID>();
+		this.productIds = new ArrayList<UUID>();
 	}
+	
+	@Autowired
+	public UserDTO(String username, String password, String email, UserType type, List<UUID> boardIds,
+			List<UUID> taskIds, List<UUID> productIds) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.type = type;
+		this.boardIds = boardIds;
+		this.taskIds = taskIds;
+		this.productIds = productIds;
+	}
+
 
 	public UserDTO(User user) {
 		super();
