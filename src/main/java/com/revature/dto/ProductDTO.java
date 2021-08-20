@@ -2,6 +2,7 @@ package com.revature.dto;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
@@ -27,6 +28,8 @@ public class ProductDTO {
 	private Map<UUID, String> boardIdNameMap;
 	@Column("product_name")
 	private String productName;
+	@Column("master_board_id")
+	private UUID masterBoardID;
 	
 	
 	public ProductDTO(Product product) {
@@ -38,6 +41,7 @@ public class ProductDTO {
 		this.usernames = product.getUsernames();
 		this.boardIdNameMap = product.getBoardIdNameMap();
 		this.productName = product.getProductName();
+		this.masterBoardID = product.getMasterBoardId();
 	}
 	
 	public Product getProduct() {
@@ -49,6 +53,7 @@ public class ProductDTO {
 		product.setUsernames(usernames);
 		product.setBoardIdNameMap(boardIdNameMap);
 		product.setProductName(productName);
+		product.setMasterBoardId(masterBoardID);
 		return product;
 	}
 	
@@ -95,20 +100,18 @@ public class ProductDTO {
 		this.id = id;
 	}
 
+	public UUID getMasterBoardID() {
+		return masterBoardID;
+	}
 
+	public void setMasterBoardID(UUID masterBoardID) {
+		this.masterBoardID = masterBoardID;
+	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((boardIdNameMap == null) ? 0 : boardIdNameMap.hashCode());
-		result = prime * result + ((boardIds == null) ? 0 : boardIds.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((productName == null) ? 0 : productName.hashCode());
-		result = prime * result + ((productOwner == null) ? 0 : productOwner.hashCode());
-		result = prime * result + ((scrumMasterBoardMap == null) ? 0 : scrumMasterBoardMap.hashCode());
-		result = prime * result + ((usernames == null) ? 0 : usernames.hashCode());
-		return result;
+		return Objects.hash(boardIdNameMap, boardIds, id, masterBoardID, productName, productOwner, scrumMasterBoardMap,
+				usernames);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -119,48 +122,17 @@ public class ProductDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		ProductDTO other = (ProductDTO) obj;
-		if (boardIdNameMap == null) {
-			if (other.boardIdNameMap != null)
-				return false;
-		} else if (!boardIdNameMap.equals(other.boardIdNameMap))
-			return false;
-		if (boardIds == null) {
-			if (other.boardIds != null)
-				return false;
-		} else if (!boardIds.equals(other.boardIds))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (productName == null) {
-			if (other.productName != null)
-				return false;
-		} else if (!productName.equals(other.productName))
-			return false;
-		if (productOwner == null) {
-			if (other.productOwner != null)
-				return false;
-		} else if (!productOwner.equals(other.productOwner))
-			return false;
-		if (scrumMasterBoardMap == null) {
-			if (other.scrumMasterBoardMap != null)
-				return false;
-		} else if (!scrumMasterBoardMap.equals(other.scrumMasterBoardMap))
-			return false;
-		if (usernames == null) {
-			if (other.usernames != null)
-				return false;
-		} else if (!usernames.equals(other.usernames))
-			return false;
-		return true;
+		return Objects.equals(boardIdNameMap, other.boardIdNameMap) && Objects.equals(boardIds, other.boardIds)
+				&& Objects.equals(id, other.id) && Objects.equals(masterBoardID, other.masterBoardID)
+				&& Objects.equals(productName, other.productName) && Objects.equals(productOwner, other.productOwner)
+				&& Objects.equals(scrumMasterBoardMap, other.scrumMasterBoardMap)
+				&& Objects.equals(usernames, other.usernames);
 	}
 	@Override
 	public String toString() {
-		return "ProductDTO [productOwner=" + productOwner + ", scrumMasterBoardMap=" + scrumMasterBoardMap
-				+ ", boardIds=" + boardIds + ", usernames=" + usernames + ", boardIdNameMap=" + boardIdNameMap
-				+ ", productName=" + productName + ", id=" + id + "]";
+		return "ProductDTO [id=" + id + ", productOwner=" + productOwner + ", scrumMasterBoardMap="
+				+ scrumMasterBoardMap + ", boardIds=" + boardIds + ", usernames=" + usernames + ", boardIdNameMap="
+				+ boardIdNameMap + ", productName=" + productName + ", masterBoardID=" + masterBoardID + "]";
 	}
 
 	
