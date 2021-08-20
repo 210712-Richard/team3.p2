@@ -1,5 +1,6 @@
 package com.revature.beans;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -16,6 +17,10 @@ public class User {
 
 	public User() {
 		super();
+		this.type = UserType.DEVELOPER;
+		this.boardIds = new ArrayList<UUID>();
+		this.taskIds = new ArrayList<UUID>();
+		this.productIds = new ArrayList<UUID>();
 	}
 
 	public String getUsername() {

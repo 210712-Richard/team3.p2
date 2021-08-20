@@ -1,7 +1,5 @@
 package com.revature.util;
 
-import java.util.logging.LogManager;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.cassandra.SessionFactory;
@@ -28,8 +26,8 @@ public class CassandraUtil {
 		
 		CqlSessionFactoryBean factory = new CqlSessionFactoryBean();
 		DriverConfigLoader loader = DriverConfigLoader.fromClasspath("application.conf");
-		factory.setSessionBuilderConfigurer(builder -> builder.withConfigLoader(loader).withKeyspace("gacha"));
-		factory.setKeyspaceName("gacha");
+		factory.setSessionBuilderConfigurer(builder -> builder.withConfigLoader(loader).withKeyspace("team3_project2"));
+		factory.setKeyspaceName("team3_project2");
 		
 		return factory;
 	}
