@@ -5,3 +5,4 @@ Given url 'http://localhost:8080/scrums/assign/id/users/username'
 And request { id : '123', username : 'test'}
 When method patch
 Then status 200
+
