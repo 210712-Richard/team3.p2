@@ -8,8 +8,6 @@ import java.util.UUID;
 
 public class Sprint {
 
-	private String name;
-	private String description;
 	private UUID scrumboardID;
 	private UUID id;
 	private LocalDate startDate;
@@ -21,22 +19,6 @@ public class Sprint {
 
 	public Sprint() {
 		super();
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public UUID getScrumboardID() {
@@ -105,8 +87,7 @@ public class Sprint {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(description, endDate, endTime, id, name, scrumboardID, startDate, startTime, status,
-				taskIds);
+		return Objects.hash(endDate, endTime, id, scrumboardID, startDate, startTime, status, taskIds);
 	}
 
 	@Override
@@ -118,18 +99,17 @@ public class Sprint {
 		if (getClass() != obj.getClass())
 			return false;
 		Sprint other = (Sprint) obj;
-		return Objects.equals(description, other.description) && Objects.equals(endDate, other.endDate)
-				&& Objects.equals(endTime, other.endTime) && Objects.equals(id, other.id)
-				&& Objects.equals(name, other.name) && Objects.equals(scrumboardID, other.scrumboardID)
+		return Objects.equals(endDate, other.endDate) && Objects.equals(endTime, other.endTime)
+				&& Objects.equals(id, other.id) && Objects.equals(scrumboardID, other.scrumboardID)
 				&& Objects.equals(startDate, other.startDate) && Objects.equals(startTime, other.startTime)
 				&& status == other.status && Objects.equals(taskIds, other.taskIds);
 	}
 
 	@Override
 	public String toString() {
-		return "Sprint [name=" + name + ", description=" + description + ", scrumboardID=" + scrumboardID + ", id=" + id
-				+ ", startDate=" + startDate + ", endDate=" + endDate + ", startTime=" + startTime + ", endTime="
-				+ endTime + ", taskIds=" + taskIds + ", status=" + status + "]";
+		return "Sprint [scrumboardID=" + scrumboardID + ", id=" + id + ", startDate=" + startDate + ", endDate="
+				+ endDate + ", startTime=" + startTime + ", endTime=" + endTime + ", taskIds=" + taskIds + ", status="
+				+ status + "]";
 	}
 
 }

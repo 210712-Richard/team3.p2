@@ -98,8 +98,6 @@ public class TaskServiceImpl implements TaskService{
 		sprint.getTaskIds().add(sprintId);
 		sprintDAO.save(sprint);
 		return sprintDAO.findById(sprintId.toString()).map(sprints -> sprints.getSprint());
-		
-		
 	}
 
 	@Override
@@ -114,7 +112,6 @@ public class TaskServiceImpl implements TaskService{
 		user.getTaskIds().add(taskId);
 		userDAO.save(user);
 		return userDAO.findById(userId.toString()).map(users -> users.getUser());
-		
+	
 	}
-
 }
