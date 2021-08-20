@@ -9,5 +9,5 @@ import com.revature.dto.NotificationDTO;
 import reactor.core.publisher.Mono;
 
 public interface NotificationDAO extends ReactiveCassandraRepository<NotificationDTO, String>{
-	Mono<NotificationDTO> findByUsernameAndUUID(String username, UUID id);
+	Mono<NotificationDTO> findByUsernameAndId(String username, UUID id);
 }
