@@ -11,22 +11,32 @@ import com.revature.data.UserDAO;
 import reactor.core.publisher.Mono;
 
 @Service
-public class ScrumServiceImpl implements ScrumService{
-	
+public class ScrumServiceImpl implements ScrumService {
+
 	private UserDAO userDao;
-	
+
 	@Autowired
-	public ScrumServiceImpl(UserDAO userDao){
+	public ScrumServiceImpl(UserDAO userDao) {
 		this.userDao = userDao;
 	}
+
 	@Override
 	public Mono<User> assignTasks(UUID taskId, String username) {
-		
+
 		return userDao.findById(username).map(dto -> {
-			System.out.println(dto);
 			dto.getTaskIds().add(taskId);
 			userDao.save(dto);
 			return dto.getUser();
 		});
+	}
+	
+	@Override
+	public Mono<User> removeTasks(UUID id, String username){
+		return userDao.findById(username)
+				.map(dto -> {
+					dto.getTaskIds()
+						.removeIf(p-> p.equals(id));
+					return dto.getUser();
+				});
 	}
 }

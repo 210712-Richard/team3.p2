@@ -20,4 +20,7 @@ public interface TaskService {
 	
 	Mono<Sprint> addToSprintBackLog(UUID sprint, UUID taskId);	
 	
+	Mono<User> assignTasks(UUID taskId, String username);
+	
+	Mono<User> removeTasks(UUID id, String username);
 }
