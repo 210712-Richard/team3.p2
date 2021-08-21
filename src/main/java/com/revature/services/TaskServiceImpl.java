@@ -43,15 +43,12 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Mono<Task> moveTask(UUID taskId, TaskCompletionStatus status) {
 		//Move task within scrumboard by changing the status
-		Mono<TaskDTO> t = taskDAO.findById(taskId.toString());
-		TaskDTO task = t.block();
-		if(t.block() == null) {
-			return null;
-		}
-		task.setStatus(status);
-		taskDAO.save(task);
-		return taskDAO.findById(taskId.toString()).map(tasks -> tasks.getTask());
-		
+		return taskDAO.findById(taskId.toString()).map(dto -> {
+			dto.setStatus(status);
+			taskDAO.save(dto);
+			return dto.getTask();
+		});
+			
 	}
 
 	@Override
@@ -68,50 +65,29 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Mono<Task> makePriority(UUID taskId, TaskPriority priority) {
 		//Change priority status of an existing task
-		Mono<TaskDTO> t = taskDAO.findById(taskId.toString());
-		TaskDTO task = t.block();
-		if(t.block() == null) {
-			return null;
-		}
-		task.setPriorityStatus(priority);
-		taskDAO.save(task);
-		return taskDAO.findById(taskId.toString()).map(tasks -> tasks.getTask());
+		return taskDAO.findById(taskId.toString()).map(dto -> {
+			dto.setPriorityStatus(priority);
+			taskDAO.save(dto);
+			return dto.getTask();
+		});
 		
 	}
 
 	@Override
 	public Mono<Sprint> addToSprintBackLog(UUID sprintId, UUID taskId) {
 		//Find Task set status to backlog
-		Mono<TaskDTO> t = taskDAO.findById(taskId.toString());
-		TaskDTO task = t.block();
-		if(t.block() == null) {
-			return null;
-		}
-		task.setStatus(TaskCompletionStatus.BACKLOG);
+		taskDAO.findById(taskId.toString()).map(dto -> {
+			dto.setStatus(TaskCompletionStatus.BACKLOG);
+			taskDAO.save(dto);
+			return dto.getTask();
+		});
 		
 		//Find sprint and add this task to the sprint's list of tasks
-		Mono<SprintDTO> sp = sprintDAO.findById(sprintId.toString());
-		if(sp.block() == null) {
-			return null;
-		}
-		SprintDTO sprint = sp.block();
-		sprint.getTaskIds().add(sprintId);
-		sprintDAO.save(sprint);
-		return sprintDAO.findById(sprintId.toString()).map(sprints -> sprints.getSprint());
+		return sprintDAO.findById(sprintId.toString()).map(dto -> {
+			dto.getTaskIds().add(taskId);
+			sprintDAO.save(dto);
+			return dto.getSprint();
+		});
 	}
 
-	@Override
-	public Mono<User> assignTasks(UUID userId, UUID taskId) {
-		//Maybe put this under UserService since its updating a user's task list
-		//Find user and add task id to the user's list of task ids
-		Mono<UserDTO> u = userDAO.findById(userId.toString());
-		UserDTO user = u.block();
-		if(u.block() == null) {
-			return null;
-		}
-		user.getTaskIds().add(taskId);
-		userDAO.save(user);
-		return userDAO.findById(userId.toString()).map(users -> users.getUser());
-	
-	}
 }

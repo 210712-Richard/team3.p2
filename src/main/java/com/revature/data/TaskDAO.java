@@ -9,5 +9,5 @@ import com.revature.dto.TaskDTO;
 import reactor.core.publisher.Mono;
 
 public interface TaskDAO extends ReactiveCassandraRepository<TaskDTO, String>{
-	Mono<TaskDTO> findByUUID(UUID id);
+	Mono<TaskDTO> findById(UUID id);
 }

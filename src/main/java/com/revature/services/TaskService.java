@@ -18,9 +18,6 @@ public interface TaskService {
 	
 	Mono<Task> makePriority(UUID taskId, TaskPriority priority);
 	
-	Mono<Sprint> addToSprintBackLog(UUID sprint, UUID taskId);
-	
-	Mono<User> assignTasks(UUID user, UUID taskId);
-	
+	Mono<Sprint> addToSprintBackLog(UUID sprint, UUID taskId);	
 	
 }
