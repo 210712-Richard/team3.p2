@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService{
 		Mono<List<Task>> tasklist = Flux.from(userDao.findById(name))
 				.map(user -> user.getTaskIds())
 				.flatMap(l -> Flux.fromIterable(l))
-				.flatMap(uuid -> taskDao.findByUUID(uuid))
+				.flatMap(uuid -> taskDao.findById(uuid))
 				.map(task -> task.getTask())
 				.collectList();
 		
