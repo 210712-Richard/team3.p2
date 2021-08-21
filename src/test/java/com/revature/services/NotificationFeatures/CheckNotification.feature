@@ -16,28 +16,20 @@
 #""
 ## (Comments)
 #Sample Feature Definition Template
-@tag
-Feature: Title of your feature
-  I want to use this template for my feature file
+Feature: Check my notifications as a logged in user
 
-  @tag1
-  Scenario: Title of your scenario
-    Given I want to write a step with precondition
-    And some other precondition
-    When I complete action
-    And some other action
-    And yet another action
-    Then I validate the outcomes
-    And check more outcomes
+Scenario: Log in as a user
+	Given url loginUrl
+	And request { username : 'test_username', password : 'test_password' }
+	When method POST
+	Then status 200
+	And match response contains { username : 'test_username', password : 'test_password' }
+	And match responseCookies contains { SESSION : '#notnull' }
+	And def sessionCookie = responseCookies.SESSION
 
-  @tag2
-  Scenario Outline: Title of your scenario outline
-    Given I want to write a step with <name>
-    When I check for the <value> in step
-    Then I verify the <status> in step
-
-    Examples: 
-      | name  | value | status  |
-      | name1 |     5 | success |
-      | name2 |     7 | Fail    |
-
+Scenario: Check notifications
+	Given url loginUrl + '/notifications'
+	And request { }
+	When method GET
+	Then status 200
+	And match response contains { username : 'test_username', message : 'this is a test notification' }
