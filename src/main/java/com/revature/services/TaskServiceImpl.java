@@ -1,7 +1,5 @@
 package com.revature.services;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,9 +15,6 @@ import com.revature.beans.User;
 import com.revature.data.SprintDAO;
 import com.revature.data.TaskDAO;
 import com.revature.data.UserDAO;
-import com.revature.dto.SprintDTO;
-import com.revature.dto.TaskDTO;
-import com.revature.dto.UserDTO;
 
 import reactor.core.publisher.Mono;
 
@@ -89,5 +84,24 @@ public class TaskServiceImpl implements TaskService{
 			return dto.getSprint();
 		});
 	}
+	
+	@Override
+	public Mono<User> assignTasks(UUID taskId, String username) {
 
+		return userDAO.findById(username).map(dto -> {
+			dto.getTaskIds().add(taskId);
+			userDAO.save(dto);
+			return dto.getUser();
+		});
+	}
+	
+	@Override
+	public Mono<User> removeTasks(UUID id, String username){
+		return userDAO.findById(username)
+				.map(dto -> {
+					dto.getTaskIds()
+						.removeIf(p-> p.equals(id));
+					return dto.getUser();
+				});
+	}
 }

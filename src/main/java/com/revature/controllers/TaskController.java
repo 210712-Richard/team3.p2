@@ -5,9 +5,10 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,6 +90,22 @@ public class TaskController {
 			}
 		});
 
+	}
+	
+	@PatchMapping(value = "/assign/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Mono<ResponseEntity<User>> assignTask(@PathVariable("id") UUID id, @PathVariable("username") String username, WebSession session){
+		//check if user has selected a product, scrum and is the scrum master.
+		return taskService.assignTasks(id, username)
+				.map( user -> ResponseEntity.ok(user))
+				.defaultIfEmpty(ResponseEntity.status(404).build());
+	}
+	
+	@PatchMapping(value = "/remove/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Mono<ResponseEntity<User>> removeTask(@PathVariable("id") UUID id, @PathVariable("username") String username, WebSession session){
+		//check if user has selected a product, scrum and is the scrum master.
+		return taskService.removeTasks(id, username)
+				.map( user -> ResponseEntity.ok(user))
+				.defaultIfEmpty(ResponseEntity.status(404).build());
 	}
 	
 }

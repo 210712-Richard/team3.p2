@@ -25,18 +25,19 @@ public class ScrumController {
 	ScrumController(ScrumService scrumService){
 		this.scrumService = scrumService;
 	}
-	
 	@PatchMapping(value = "/assign/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Mono<ResponseEntity<User>> assignTask(@PathVariable("id") UUID id, @PathVariable("username") String username){
-		if(id == null || username == null) {
-			System.out.println("null");
-		}
-		return scrumService.assignTasks(id, username).map( user ->{
-			if(user == null) {
-				return ResponseEntity.status(402).build();
-			}else {
-				return ResponseEntity.ok(user);
-			}
-		});
+
+		return scrumService.assignTasks(id, username)
+				.map( user -> ResponseEntity.ok(user))
+				.defaultIfEmpty(ResponseEntity.status(404).build());
+	}
+	
+	@PatchMapping(value = "/remove/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Mono<ResponseEntity<User>> removeTask(@PathVariable("id") UUID id, @PathVariable("username") String username){
+
+		return scrumService.removeTasks(id, username)
+				.map( user -> ResponseEntity.ok(user))
+				.defaultIfEmpty(ResponseEntity.status(404).build());
 	}
 }

@@ -47,7 +47,7 @@ public class UserController {
 				.ok(notificationService.checkNotificationByID(session.getAttribute("loggedUser"), UUID.fromString(id)));
 	}
 	//As a user I can login
-	@PostMapping 
+	@PostMapping("/login") 
 	public ResponseEntity<Mono<User>> login (@RequestBody User user, WebSession session){
 		log.trace("User login method");
 		
