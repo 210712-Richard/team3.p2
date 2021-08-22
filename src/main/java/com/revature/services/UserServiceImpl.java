@@ -34,26 +34,7 @@ public class UserServiceImpl implements UserService{
 	}
 	@Override
 	public Mono<User> login(String name) {
-		Mono<User> userMono = userDao.findById(name).map(user -> user.getUser());
-		
-		Mono<List<Task>> tasklist = Flux.from(userDao.findById(name))
-				.map(user -> user.getTaskIds())
-				.flatMap(l -> Flux.fromIterable(l))
-				.flatMap(uuid -> taskDao.findById(uuid))
-				.map(task -> task.getTask())
-				.collectList();
-		
-		Mono<Tuple2<List<Task>, User>> userBuild = tasklist.zipWith(userMono);
-		
-		Mono<User> returnedUser = userBuild.map(tuple -> {
-			User user = tuple.getT2();
-			List<Task> t = tuple.getT1();
-			List<UUID> taskId = t.stream()
-								.map(task -> task.getId()).collect(Collectors.toList()); 
-			user.setTaskIds(taskId);
-			return user;
-		});
-		return returnedUser;
+		return userDao.findById(name).map(user -> user.getUser());
 	}
 
 	@Override

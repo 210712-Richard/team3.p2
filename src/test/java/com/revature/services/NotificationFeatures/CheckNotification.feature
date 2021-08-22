@@ -28,8 +28,13 @@ Scenario: Log in as a user
 	And def sessionCookie = responseCookies.SESSION
 
 Scenario: Check notifications
-	Given url loginUrl + '/notifications'
-	And request { }
+	Given url baseUrl + '/users/notifications'
+	And def signin = call read('classpath:login/login.feature')
+	And request {}
+	And cookie SESSION = signin.sessionCookie
 	When method GET
 	Then status 200
-	And match response contains { username : 'test_username', message : 'this is a test notification' }
+	And match response contains { username : 'test_username', message : 'this is a test notification', id : '#ignore' }
+	
+	
+	
