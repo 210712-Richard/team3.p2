@@ -39,7 +39,7 @@ public class ProductController {
 		});
 	}
 
-	@PutMapping("/{username}/{id}/add/")
+	@PutMapping("/add/{username}/{id}/")
 	public ResponseEntity<Product> addById(@RequestBody Product product,
 			@PathVariable("username") User user, @PathVariable("id") UUID id, WebSession session) {
 		User loggedUser = (User) session.getAttribute("loggedUser");
@@ -50,7 +50,7 @@ public class ProductController {
 		return ResponseEntity.ok(product);
 	}
 	
-	@PutMapping("/{username}/{id}/remove/")
+	@PutMapping("/remove/{username}/{id}/")
 	public ResponseEntity<Product> removeById(@RequestBody Product product,
 			@PathVariable("username") User user, @PathVariable("id") UUID id, WebSession session) {
 		User loggedUser = (User) session.getAttribute("loggedUser");
