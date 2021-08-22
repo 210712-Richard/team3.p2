@@ -49,10 +49,12 @@ public class NotificationServiceImpl implements NotificationService {
 		// function. Then, we filter the flux down into only notifications where
 		// the username matches the one for the user that is supplied.
 		
-		return nd.findAll()
-				.map(dto -> dto.getNotification())
-				.filter(note -> note.getUsername().equals(user.getUsername()));
+		return nd.findById(user.getUsername()).map(dto -> dto.getNotification()).flux();
 		
+//		return nd.findAll()
+//				.map(dto -> dto.getNotification())
+//				.filter(note -> note.getUsername().equals(user.getUsername()));
+//		
 	}
 
 	@Override

@@ -37,14 +37,25 @@ public class UserController {
 	// As a user, I can read and access notifications
 
 	@GetMapping("/notifications")
-	public ResponseEntity<Flux<Notification>> getNotifications(WebSession session) {
-		return ResponseEntity.ok(notificationService.checkNotifications(session.getAttribute("loggedUser")));
+	public Flux<ResponseEntity<Notification>> getNotifications(WebSession session) {
+		return notificationService.checkNotifications(session.getAttribute("loggedUser")).map(note -> {
+			if (note == null) {
+				return ResponseEntity.status(402).build();
+			} else {
+				return ResponseEntity.ok(note);
+			}
+		});
 	}
 
 	@GetMapping("/notifications/{id}")
-	public ResponseEntity<Mono<Notification>> getNotificationById(@PathVariable("id") String id, WebSession session) {
-		return ResponseEntity
-				.ok(notificationService.checkNotificationByID(session.getAttribute("loggedUser"), UUID.fromString(id)));
+	public Mono<ResponseEntity<Notification>> getNotificationById(@PathVariable("id") String id, WebSession session) {
+		return notificationService.checkNotificationByID(session.getAttribute("loggedUser"), UUID.fromString(id)).map(note -> {
+			if (note == null) {
+				return ResponseEntity.status(402).build();
+			} else {
+				return ResponseEntity.ok(note);
+			}
+		});
 	}
 	//As a user I can login
 	@PostMapping("/login") 
