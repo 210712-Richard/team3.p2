@@ -7,6 +7,6 @@ Given url loginUrl
 And request {username: 'test_username'}
 When method post
 Then status 200
-And match response contains {username: 'test_username', type: 'developer'}
+And match response contains {username: 'test_username'}
 And match responseCookies contains {SESSION: '#notnull'}
 And def sessionCookie = responseCookies.SESSION
