@@ -30,7 +30,7 @@ public class ProductServiceTest {
 	
 	@Test
 	    void testNewProduct() {
-		service.addProduct(product);
+		service.createNewProduct(product);
 		ArgumentCaptor<ProductDTO> captor = ArgumentCaptor.forClass(ProductDTO.class);
 		Mockito.verify(pd).save(captor.capture());
 	}
