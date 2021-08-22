@@ -3,6 +3,8 @@ package Aspects;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.WebSession;
 
@@ -21,7 +23,7 @@ public class Authentication {
 
 	// Handler methods are void
 	@Around("loggedInHook()")
-	public void checkLoggedIn(ProceedingJoinPoint pjp) throws Throwable {
+	public ResponseEntity<Object> checkLoggedIn(ProceedingJoinPoint pjp) throws Throwable {
 		WebSession session = null;
 		// We know this method should only be applied to Handler methods,
 		// so there should be a websession.
@@ -29,15 +31,14 @@ public class Authentication {
 		
 		User loggedUser = session.getAttribute("loggedUser");
 		// Checking if logged in
-		if (loggedUser == null) {
-			session.invalidate();
-			return;
-		} else {
-			pjp.proceed(); // We are logged in. Call the method.
+		if (loggedUser != null) {
+			pjp.proceed(); 
+			return null;
 		}
+		return ResponseEntity.status(401).build();
 	}
 	@Around("developerHook()")
-	public void checkDeveloper(ProceedingJoinPoint pjp) throws Throwable{
+	public ResponseEntity<Object> checkDeveloper(ProceedingJoinPoint pjp) throws Throwable{
 		WebSession session = null;
 		// We know this method should only be applied to Handler methods,
 		// so there should be a websession.
@@ -48,13 +49,13 @@ public class Authentication {
 				.filter(user -> user.equals(loggedUser.getUsername()))
 				.findFirst().isPresent()) {
 			pjp.proceed();
+			return null;
 		}
-		session.invalidate();
-		return;
+		return ResponseEntity.status(401).build();
 	}
 	
 	@Around("scrumMasterHook()")
-	public void checkscrumMaster(ProceedingJoinPoint pjp) throws Throwable{
+	public ResponseEntity<Object> checkscrumMaster(ProceedingJoinPoint pjp) throws Throwable{
 		
 		WebSession session = null;
 		// We know this method should only be applied to Handler methods,
@@ -63,14 +64,15 @@ public class Authentication {
 		
 		User loggedUser = session.getAttribute("loggedUser");
 		ScrumBoard board = session.getAttribute("selectedBoard");
-		if(board.getScrumMasterUsername().equals(loggedUser.getUsername()))
+		if(board.getScrumMasterUsername().equals(loggedUser.getUsername())) {
 			pjp.proceed();
-		session.invalidate();
-		return;
+			return null;
+		}
+		return ResponseEntity.status(401).build();
 		
 	}
 	@Around("productMasterHook()")
-	public void checkproductMaster(ProceedingJoinPoint pjp) throws Throwable{
+	public ResponseEntity<Object> checkproductMaster(ProceedingJoinPoint pjp) throws Throwable{
 		
 		WebSession session = null;
 		// We know this method should only be applied to Handler methods,
@@ -79,9 +81,13 @@ public class Authentication {
 		
 		User loggedUser = session.getAttribute("loggedUser");
 		Product product = session.getAttribute("selectedProduct");
-		if(product.getProductOwner().equals(loggedUser.getUsername()))
+		if(product.getProductOwner().equals(loggedUser.getUsername())) {
 			pjp.proceed();
-		session.invalidate();
-		return;	
+			return null;
+		}
+		return ResponseEntity.status(401).build();	
 	}
+	
+	@Pointcut("@annotation(com.revature.aspects.LoggedIn)")
+	public void loggedInHook() {/* Hook for loggedIn*/}
 }
