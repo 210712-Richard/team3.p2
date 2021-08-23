@@ -16,11 +16,31 @@ public class Product {
 	private String productName;
 	private UUID id;
 	private UUID masterBoardId;
-
+	
+	
+	
 	public Product() {
 		super();
 	}
 	
+	
+	
+
+	public Product(String productOwner, Map<UUID, String> scrumMasterBoardMap, List<UUID> boardIds,
+			List<String> usernames, Map<UUID, String> boardIdNameMap, String productName, UUID id, UUID masterBoardId) {
+		super();
+		this.productOwner = productOwner;
+		this.scrumMasterBoardMap = scrumMasterBoardMap;
+		this.boardIds = boardIds;
+		this.usernames = usernames;
+		this.boardIdNameMap = boardIdNameMap;
+		this.productName = productName;
+		this.id = id;
+		this.masterBoardId = masterBoardId;
+	}
+
+
+
 
 	public String getProductOwner() {
 		return productOwner;
