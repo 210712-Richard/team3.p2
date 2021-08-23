@@ -30,11 +30,14 @@ public class UserServiceImpl implements UserService{
 		super();
 		this.userDao = userDao;
 		this.taskDao = taskDao;
-		
 	}
+	
 	@Override
 	public Mono<User> login(String username, String password) {
-		return userDao.findByUsernameAndPassword(username, password).map(userdto -> userdto.getUser());
+		Mono<UserDTO> userData = userDao.findById(username);
+		return userData
+				.filter(dto -> dto.getPassword().equals(password))
+				.map(dto -> dto.getUser()).or(null);
 	}
 
 	@Override

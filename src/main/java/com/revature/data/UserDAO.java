@@ -9,6 +9,4 @@ import com.revature.dto.UserDTO;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface UserDAO extends ReactiveCassandraRepository<UserDTO, String>{
-	Mono<UserDTO> findByUsernameAndPassword(String username, String password);
-}
+public interface UserDAO extends ReactiveCassandraRepository<UserDTO, String>{ }
