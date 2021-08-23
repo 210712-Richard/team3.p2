@@ -58,61 +58,63 @@ public class UserController {
 		if (loggedUser == null) {
 			return Mono.just(ResponseEntity.status(403).build());
 		}
-		return notificationService.checkNotificationByID(session.getAttribute("loggedUser"), UUID.fromString(id)).map(note -> {
-			if (note == null) {
-				return ResponseEntity.status(402).build();
-			} else {
-				return ResponseEntity.ok(note);
-			}
-		});
+		return notificationService.checkNotificationByID(session.getAttribute("loggedUser"), UUID.fromString(id))
+				.map(note -> {
+					if (note == null) {
+						return ResponseEntity.status(402).build();
+					} else {
+						return ResponseEntity.ok(note);
+					}
+				});
 	}
-	//As a user I can login
-	@PostMapping("/users")
-	public ResponseEntity<Mono<User>> login (@RequestBody User user, WebSession session){
-		
-		Mono<User> loggedUser = userService.login(user.getUsername(), user.getPassword());
-		System.out.println(user);
-		System.out.println(loggedUser);
-		if (loggedUser == null) {
-			return ResponseEntity.notFound().build();
-		}
-		session.getAttributes().put("loggedUser", loggedUser);
-		return ResponseEntity.ok(loggedUser);
+
+	// As a user I can login
+	@PostMapping("/login")
+	public Mono<ResponseEntity<User>> login(@RequestBody User user, WebSession session) {
+		return userService.login(user.getUsername(), user.getPassword())
+				.map(u -> {
+					session.getAttributes().put("loggedUser", u);
+					return ResponseEntity.ok(u);
+				})
+				.switchIfEmpty(Mono.just(ResponseEntity.status(401).build()));
 	}
-	//As a User I can logout
+
+	// As a User I can logout
 	@DeleteMapping
-	public ResponseEntity<Void> logout(WebSession session){
+	public ResponseEntity<Void> logout(WebSession session) {
 		session.invalidate();
 		return ResponseEntity.noContent().build();
 	}
-	
-	//As a user I can register an account
-	@PutMapping(value="{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> register(@RequestBody User user, @PathVariable("username") String username){
-		//getting the data from the new user 
+
+	// As a user I can register an account
+	@PutMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> register(@RequestBody User user, @PathVariable("username") String username) {
+		// getting the data from the new user
 		try {
 			User newUser = userService.register(username, user.getPassword(), user.getEmail());
 			return ResponseEntity.ok(newUser);
-		}catch(Exception e) {
-			return ResponseEntity.status(500).contentType(MediaType.TEXT_HTML).body("<html><body><div>Failed to make user</div></body></html>");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).contentType(MediaType.TEXT_HTML)
+					.body("<html><body><div>Failed to make user</div></body></html>");
 		}
 	}
-	
-	//As an Admin I can view a user
+
+	// As an Admin I can view a user
 	@GetMapping("{employee}")
-	public ResponseEntity<Mono<UserDTO>> getCurrentUsers(@PathVariable("username") String employee, WebSession session){
+	public ResponseEntity<Mono<UserDTO>> getCurrentUsers(@PathVariable("username") String employee,
+			WebSession session) {
 		User loggedUser = (User) session.getAttribute("loggedUser");
-		//checking if logged user is an admin
-		if(!loggedUser.getType().equals(UserType.ADMIN)) {
+		// checking if logged user is an admin
+		if (!loggedUser.getType().equals(UserType.ADMIN)) {
 			return ResponseEntity.status(403).build();
-		}else {
+		} else {
 			Mono<UserDTO> employeeData = userService.viewUser(loggedUser, employee);
 			return ResponseEntity.ok(employeeData);
 		}
 	}
-	
-	//As an Admin I can change user roles
-	
-	//As an Admin I can change user credentials
-	
+
+	// As an Admin I can change user roles
+
+	// As an Admin I can change user credentials
+
 }
