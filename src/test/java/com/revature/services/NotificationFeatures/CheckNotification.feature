@@ -35,6 +35,9 @@ Scenario: Check notifications
 	When method GET
 	Then status 200
 	And match response contains { username : 'test_username', message : 'this is a test notification', id : '#ignore' }
+
+Scenario: Check a particular notification
+	Given url baseUrl + '/users/notifications/'
 	
 	
 	
