@@ -33,8 +33,8 @@ public class UserServiceImpl implements UserService{
 		
 	}
 	@Override
-	public Mono<User> login(String name) {
-		return userDao.findById(name).map(user -> user.getUser());
+	public Mono<User> login(String username, String password) {
+		return userDao.findByUsernameAndPassword(username, password).map(userdto -> userdto.getUser());
 	}
 
 	@Override

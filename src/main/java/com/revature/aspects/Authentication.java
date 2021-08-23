@@ -92,11 +92,11 @@ public class Authentication {
 	public void loggedInHook() {/* Hook for loggedIn*/}
 	
 	@Pointcut("@annotation(com.revature.aspects.IsDeveloper)")
-	public void isDeveloperHook() {/* Hook for IsDeveloper*/}
+	public void developerHook() {/* Hook for IsDeveloper*/}
 	
 	@Pointcut("@annotation(com.revature.aspects.IsScrumMaster)")
-	public void isScrumMasterHook() {/* Hook for IsScrumMaster */}
+	public void scrumMasterHook() {/* Hook for IsScrumMaster */}
 	
-	@Pointcut("@annotatio(com.revature.aspects.IsProductMaster")
-	public void isProductMasterHook() {/* Hook for IsProductMaster */}
+	@Pointcut("@annotation(com.revature.aspects.IsProductMaster)")
+	public void productMasterHook() {/* Hook for IsProductMaster */}
 }
