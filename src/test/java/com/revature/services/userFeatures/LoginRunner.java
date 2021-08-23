@@ -1,4 +1,4 @@
-package com.revature.services.UserFeatures;
+package com.revature.services.userFeatures;
 
 import com.intuit.karate.junit5.Karate;
 
