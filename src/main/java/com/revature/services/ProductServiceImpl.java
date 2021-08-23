@@ -1,5 +1,7 @@
 package com.revature.services;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.revature.beans.Product;
 import com.revature.beans.User;
 import com.revature.data.ProductDAO;
+import com.revature.data.UserDAO;
 import com.revature.dto.ProductDTO;
 
 import reactor.core.publisher.Mono;
@@ -21,6 +24,8 @@ import reactor.core.publisher.Mono;
 @Service
 public class ProductServiceImpl implements ProductService {
 	private ProductDAO productDao;
+	private UserDAO userDAO;
+	private User user;
 	
 
 	
@@ -32,14 +37,27 @@ public class ProductServiceImpl implements ProductService {
 	
 	/**
 	 * @param product
-	 * @return
-	 * Product owner can add new product
 	 */
+
 	@Override
-	public Mono<Product> createNewProduct(Product product) {
-		return productDao.save(new ProductDTO(product))
-				.map((dto) -> dto.getProduct());
-		}
+	public Product createNewProduct(UUID id, String productOwner, Map<UUID, String> scrumMasterBoardMap, List<UUID> boardIds,
+			List<String> usernames, Map<UUID, String> boardIdNameMap, String productName, UUID masterBoardID) {
+		Product product = new Product();
+		product.setId(id);
+		product.setProductOwner(productOwner);
+		product.setScrumMasterBoardMap(scrumMasterBoardMap);
+		product.setBoardIds(boardIds);
+		product.setUsernames(usernames);
+		product.setBoardIdNameMap(boardIdNameMap);
+		product.setProductName(productName);
+		product.setMasterBoardId(masterBoardID);
+	    productDao.save(new ProductDTO(product));
+	    return product;
+		
+		
+	}
+//		
+//		}
 	
 	
 	
@@ -47,17 +65,17 @@ public class ProductServiceImpl implements ProductService {
 	 * @param user
 	 * @param id
 	 * @return
-	 * Developer can add themselves to products by product id
+	 * User can add themselves to products by product id
 	 */
-	@Override
-	public Mono<Product> addProductById (User user, UUID id) {
-		return productDao.findById(id)
-				.map(dto -> {
-		        (user.getProductIds()).add(id);
-			    productDao.save(dto);
-			    return dto.getProduct();
-		    });
-	     }
+//	@Override
+//	public Mono<Product> addProductById (User user, UUID id) {
+//		return productDao.findById(id)
+//				.map(dto -> {
+//		        (user.getProductIds()).add(id);
+//			    productDao.save(dto);
+//			    return dto.getProduct();
+//		    });
+//	     }
 		
 
 	
@@ -67,13 +85,38 @@ public class ProductServiceImpl implements ProductService {
 	 * @return
 	 * Developer can remove themselves from products by product id
 	 */
+
+
 	@Override
-	public Mono<Product> removeProductById(User user, UUID id) {
+	public Mono<User> removeProductById(String username, UUID id) {
+		return userDAO.findById(username)
+				.map(dto -> {
+			dto.getProductIds()
+			.removeIf(p -> p.equals(id));
+			return dto.getUser();
+			
+		});
+				
+				
+//				productDao.findById(user.getUsername(),id)
+//				.map(dto -> {
+//			    (user.getProductIds()).remove(id);
+//				productDao.save(dto);
+//				return dto.getProduct();
+//			});
+		}
+
+	@Override
+	public Mono<Product> addProductById(String username, UUID id) {
 		return productDao.findById(id)
 				.map(dto -> {
-			    (user.getProductIds()).remove(id);
-				productDao.save(dto);
-				return dto.getProduct();
-			});
-		}
+		        (user.getProductIds()).add(id);
+			    productDao.save(dto);
+			    return dto.getProduct();
+		    });
+	     }
+		
 	}
+
+
+	

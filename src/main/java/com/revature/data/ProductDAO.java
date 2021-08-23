@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 public interface ProductDAO extends ReactiveCassandraRepository<ProductDTO, String>{
 	Mono<ProductDTO> findById(UUID id);
 
+	Mono<ProductDTO> findById(String username, UUID id);
+
 	
 }
 

@@ -32,6 +32,21 @@ public class ProductDTO {
 	private UUID masterBoardID;
 	
 	
+	
+	
+	public ProductDTO(UUID id, String productOwner, Map<UUID, String> scrumMasterBoardMap, List<UUID> boardIds,
+			List<String> usernames, Map<UUID, String> boardIdNameMap, String productName, UUID masterBoardID) {
+		super();
+		this.id = id;
+		this.productOwner = productOwner;
+		this.scrumMasterBoardMap = scrumMasterBoardMap;
+		this.boardIds = boardIds;
+		this.usernames = usernames;
+		this.boardIdNameMap = boardIdNameMap;
+		this.productName = productName;
+		this.masterBoardID = masterBoardID;
+	}
+
 	public ProductDTO(Product product) {
 		super();
 		this.id = product.getId();

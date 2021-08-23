@@ -2,7 +2,7 @@ package com.revature.services.ProductFeatures;
 
 import com.intuit.karate.junit5.Karate;
 
-public class CreateProductRunner {
+public class ProductRunner {
 	
 	@Karate.Test
 	Karate testAssignFeature() {
