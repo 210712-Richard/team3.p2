@@ -62,7 +62,7 @@ public class UserController {
 		});
 	}
 	//As a user I can login
-	@PostMapping
+	@PostMapping("/users")
 	public ResponseEntity<Mono<User>> login (@RequestBody User user, WebSession session){
 		log.trace("User login method");
 		
