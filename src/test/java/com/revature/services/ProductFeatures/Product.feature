@@ -21,7 +21,9 @@ Scenario: As a product owner I can add new product
     And cookie SESSION = signin.sessionCookie
     When method POST
     Then status 200
-    #Test passes when logged in 
+    
+    
+    #Test passes when logged in type = Product_Owner
     
 #
 #Scenario: As a product owner I can add developers to products
