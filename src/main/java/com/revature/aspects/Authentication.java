@@ -1,4 +1,4 @@
-package Aspects;
+package com.revature.aspects;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
