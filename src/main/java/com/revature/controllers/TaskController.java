@@ -18,6 +18,7 @@ import org.springframework.web.server.WebSession;
 import com.revature.beans.Product;
 import com.revature.beans.Sprint;
 import com.revature.beans.Task;
+import com.revature.beans.TaskCompletionStatus;
 import com.revature.beans.TaskPriority;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
@@ -35,16 +36,16 @@ public class TaskController {
 	
 	
 	//As a developer, I can move my task on the scrumboard
-	@PutMapping("/{taskId}")
-	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("taskId") UUID taskId, @RequestBody Task task, WebSession session){
-		User loggedUser = (User) session.getAttribute("loggedUser");
-		if(loggedUser == null || !UserType.DEVELOPER.equals(loggedUser.getType())) {
-			return Mono.just(ResponseEntity.status(403).build());
-		}
-		return taskService.moveTask(taskId, task.getStatus()).map((s) -> {
+	@PatchMapping(value = "/move/{boardId}/{taskId}/{status}", produces = MediaType.APPLICATION_NDJSON_VALUE)
+	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("taskId") String taskId, @PathVariable("boardId") String boardId, @PathVariable("status") TaskCompletionStatus status, @RequestBody Task task, WebSession session){
+		System.out.println("Move task controller");
+		System.out.println(task.getStatus().getClass());
+		return taskService.moveTask(UUID.fromString(boardId), UUID.fromString(taskId), status, task.getStatus()).map((s) -> {
 			if(s == null) {
 				return ResponseEntity.status(409).build();
 			} else {
+				System.out.println("HERE");
+				System.out.println(s);
 				return ResponseEntity.ok(s);
 			}
 		});

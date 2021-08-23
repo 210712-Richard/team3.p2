@@ -99,4 +99,5 @@ public class Authentication {
 	
 	@Pointcut("@annotatio(com.revature.aspects.IsProductMaster")
 	public void isProductMasterHook() {/* Hook for IsProductMaster */}
+	
 }

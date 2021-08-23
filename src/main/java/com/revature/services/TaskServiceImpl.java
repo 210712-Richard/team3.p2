@@ -36,11 +36,16 @@ public class TaskServiceImpl implements TaskService{
 	
 	
 	@Override
-	public Mono<Task> moveTask(UUID taskId, TaskCompletionStatus status) {
+	public Mono<Task> moveTask(UUID boardid, UUID taskId, TaskCompletionStatus status, TaskCompletionStatus newStatus) {
 		//Move task within scrumboard by changing the status
-		return taskDAO.findById(taskId.toString()).map(dto -> {
-			dto.setStatus(status);
+		System.out.println("Move task service");
+		System.out.println(boardid.toString() +" "   + status.toString() + " " +taskId.toString());
+		return taskDAO.findByBoardidAndStatusAndId(boardid, status.toString(), taskId).map(dto -> {
+			taskDAO.delete(dto);
+			dto.setStatus(newStatus);
 			taskDAO.save(dto);
+			System.out.println("Calling get task");
+			System.out.println(dto.getTask());
 			return dto.getTask();
 		});
 			

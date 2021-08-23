@@ -11,8 +11,14 @@ import com.revature.beans.User;
 import reactor.core.publisher.Mono;
 
 public interface TaskService {
-	
-	Mono<Task> moveTask(UUID taskId, TaskCompletionStatus status);
+	/**
+	 * 
+	 * @param boardId
+	 * @param taskId
+	 * @param status
+	 * @return
+	 */
+	Mono<Task> moveTask(UUID boardId, UUID taskId, TaskCompletionStatus status, TaskCompletionStatus newStatus);
 	
 	Mono<Task> addToProductBackLog(UUID product, Task task);
 	
