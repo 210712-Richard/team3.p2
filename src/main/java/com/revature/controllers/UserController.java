@@ -69,15 +69,14 @@ public class UserController {
 	//As a user I can login
 	@PostMapping("/users")
 	public ResponseEntity<Mono<User>> login (@RequestBody User user, WebSession session){
-		log.trace("User login method");
 		
-		Mono<User> loggedUser = userService.login(user.getUsername());
-		
+		Mono<User> loggedUser = userService.login(user.getUsername(), user.getPassword());
+		System.out.println(user);
+		System.out.println(loggedUser);
 		if (loggedUser == null) {
 			return ResponseEntity.notFound().build();
 		}
-		session.getAttributes().put("loggedUser", user);
-		
+		session.getAttributes().put("loggedUser", loggedUser);
 		return ResponseEntity.ok(loggedUser);
 	}
 	//As a User I can logout
