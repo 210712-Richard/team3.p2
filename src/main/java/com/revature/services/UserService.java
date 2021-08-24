@@ -28,20 +28,21 @@ public interface UserService {
 	 *  Allows admin to change employee.  String employee is the employee being searched
 	 */
 	
-	void roleChange(User user, User employee, String type);
+	User roleChange(User user, User employee, String type);
 	
 	/*
 	 * Allows admin to view employee. String employee is the employee being searched
 	 */
 	
-	Mono<UserDTO> viewUser (User user, String employee);
+	Mono<User> viewUser (User user, String employee);
 	
 	/*
 	 * requires all of fields need to create a user so that an Admin 
 	 * 	can change employee's info. String employee is the username of the employee 
 	 * will be changed.
 	 */
-	User changeUserCredentials(User user, User employee,
+	User changeUserCredentials(User user, UserDTO employee,
 			String password, String email, String type);
 	
+
 }
