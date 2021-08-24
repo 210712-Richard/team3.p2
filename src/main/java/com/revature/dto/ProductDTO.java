@@ -14,21 +14,21 @@ import com.revature.beans.Product;
 
 @Table("products")
 public class ProductDTO {
-	@PrimaryKeyColumn(name = "product_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+	@PrimaryKeyColumn(name = "productid", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
 	private UUID id;
-	@Column("product_owner")
+	@Column("productowner")
 	private String productOwner;
-	@Column("board_id_to_scrum_username")
+	@Column("boardidtoscrumusername")
 	private Map<UUID, String> scrumMasterBoardMap;
-	@Column("scrum_boards")
+	@Column("scrumboards")
 	private List<UUID> boardIds;
 	@Column("users")
 	private List<String> usernames;
-	@Column("board_id_to_board_name")
+	@Column("boardidtoboardname")
 	private Map<UUID, String> boardIdNameMap;
-	@Column("product_name")
+	@Column("productname")
 	private String productName;
-	@Column("master_board_id")
+	@Column("masterboardid")
 	private UUID masterBoardID;
 	
 	

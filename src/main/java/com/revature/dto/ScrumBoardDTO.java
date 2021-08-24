@@ -13,11 +13,11 @@ import com.revature.beans.ScrumBoard;
 @Table("scrumboards")
 public class ScrumBoardDTO {
 
-	@PrimaryKeyColumn(name = "board_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+	@PrimaryKeyColumn(name = "boardid", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
 	private UUID boardId;
 	@Column("name")
 	private String name;
-	@Column("scrum_master")
+	@Column("scrummaster")
 	private String scrumMaster;
 
 	public ScrumBoardDTO(ScrumBoard board) {
