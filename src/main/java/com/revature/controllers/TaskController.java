@@ -38,14 +38,10 @@ public class TaskController {
 	//As a developer, I can move my task on the scrumboard
 	@PatchMapping(value = "/move/{boardId}/{taskId}/{status}", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("taskId") String taskId, @PathVariable("boardId") String boardId, @PathVariable("status") TaskCompletionStatus status, @RequestBody Task task, WebSession session){
-		System.out.println("Move task controller");
-		System.out.println(task.getStatus().getClass());
 		return taskService.moveTask(UUID.fromString(boardId), UUID.fromString(taskId), status, task.getStatus()).map((s) -> {
 			if(s == null) {
 				return ResponseEntity.status(409).build();
 			} else {
-				System.out.println("HERE");
-				System.out.println(s);
 				return ResponseEntity.ok(s);
 			}
 		});

@@ -1,4 +1,4 @@
-package com.revature.services.TaskFeatures;
+package com.revature.services.taskFeatures;
 
 import com.intuit.karate.junit5.Karate;
 

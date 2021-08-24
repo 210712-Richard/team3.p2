@@ -10,7 +10,16 @@ import reactor.core.publisher.Mono;
 @Service
 public interface UserService {
 	
-	Mono<User> login (String name);
+	/**
+	 * Logs in a specific user
+	 * 
+	 * @param username The username of the user
+	 * @param password The password of the user
+	 * @return A mono of the user that is being logged in, once the system 
+	 * queries the database
+	 */
+	
+	Mono<User> login (String username, String password);
 	
 	User register(String username, String password, 
 			String email);

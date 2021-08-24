@@ -29,25 +29,22 @@ public class TaskServiceImpl implements TaskService{
 	
 	
 	@Autowired
-	public TaskServiceImpl(TaskDAO taskDAO) {
-		super();
-		this.taskDAO = taskDAO;
-	}
-	
+    public TaskServiceImpl(TaskDAO taskDAO, SprintDAO sprintDAO, UserDAO userDAO) {
+        super();
+        this.taskDAO = taskDAO;
+        this.sprintDAO = sprintDAO;
+        this.userDAO = userDAO;
+    }
 	
 	@Override
 	public Mono<Task> moveTask(UUID boardid, UUID taskId, TaskCompletionStatus status, TaskCompletionStatus newStatus) {
 		//Move task within scrumboard by changing the status
-		System.out.println("Move task service");
-		System.out.println(boardid.toString() +" "   + status.toString() + " " +taskId.toString());
-		return taskDAO.findByBoardidAndStatusAndId(boardid, status.toString(), taskId).map(dto -> {
-			taskDAO.delete(dto);
+		return taskDAO.findByBoardidAndStatusAndId(boardid, status.toString(), taskId).flatMap(dto -> {
+			taskDAO.delete(dto).subscribe();
 			dto.setStatus(newStatus);
-			taskDAO.save(dto);
-			System.out.println("Calling get task");
-			System.out.println(dto.getTask());
-			return dto.getTask();
-		});
+			System.out.println(dto);
+			return taskDAO.save(dto);
+		}).map(t -> t.getTask());
 			
 	}
 
@@ -65,29 +62,28 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Mono<Task> makePriority(UUID taskId, TaskPriority priority) {
 		//Change priority status of an existing task
-		return taskDAO.findById(taskId.toString()).map(dto -> {
+		return taskDAO.findById(taskId.toString()).flatMap(dto -> {
 			dto.setPriorityStatus(priority);
-			taskDAO.save(dto);
-			return dto.getTask();
-		});
+			return taskDAO.save(dto);
+		}).map(t -> t.getTask());
 		
 	}
 
 	@Override
 	public Mono<Sprint> addToSprintBackLog(UUID sprintId, UUID taskId) {
 		//Find Task set status to backlog
-		taskDAO.findById(taskId.toString()).map(dto -> {
+		taskDAO.findById(taskId.toString()).flatMap(dto -> {
 			dto.setStatus(TaskCompletionStatus.BACKLOG);
-			taskDAO.save(dto);
-			return dto.getTask();
-		});
+			return taskDAO.save(dto);
+		}).map(t -> t.getTask());
+		
 		
 		//Find sprint and add this task to the sprint's list of tasks
-		return sprintDAO.findById(sprintId.toString()).map(dto -> {
+		return sprintDAO.findById(sprintId.toString()).flatMap(dto -> {
 			dto.getTaskIds().add(taskId);
-			sprintDAO.save(dto);
-			return dto.getSprint();
-		});
+			return sprintDAO.save(dto);
+		}).map(t -> t.getSprint());
+		
 	}
 	
 	@Override
