@@ -112,19 +112,32 @@ public class UserController {
 	
 	// As an Admin I can view a user
 	@GetMapping("{employee}")
-	public ResponseEntity<Mono<UserDTO>> getCurrentUsers(@PathVariable("username") String employee,
+	public ResponseEntity<Mono<User>> getCurrentUsers(@PathVariable("employee") String employee,
 			WebSession session) {
 		User loggedUser = (User) session.getAttribute("loggedUser");
 		// checking if logged user is an admin
 		if (!loggedUser.getType().equals(UserType.ADMIN)) {
 			return ResponseEntity.status(403).build();
 		} else {
-			Mono<UserDTO> employeeData = userService.viewUser(loggedUser, employee);
+			Mono<User> employeeData = userService.viewUser(loggedUser, employee);
 			return ResponseEntity.ok(employeeData);
 		}
 	}
 
 	// As an Admin I can change user roles
+	@PostMapping ("{employee}/newRole/{role}")
+	public ResponseEntity<User> changeUserRole(@PathVariable("employee")String employee, @PathVariable("role") String role, WebSession session){
+		
+		User loggedUser = (User) session.getAttribute("loggedUser");
+		
+		User employeeData = userService.viewUser(loggedUser, employee).block();
+		
+		User changedEmp = userService.roleChange(loggedUser, employeeData, role);
+	
+		return ResponseEntity.ok(changedEmp);
+		
+		
+	}
 
 	// As an Admin I can change user credentials
 

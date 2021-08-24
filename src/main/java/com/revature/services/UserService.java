@@ -38,6 +38,31 @@ public interface UserService {
 	User register(String username, String password, String email);
 
 	/**
+	 * Allows Admin to view user
+	 * 
+	 * @param user The admin user account
+	 * @param employee The name of the employee being searched
+	 * @return The employee information as a User object
+	 */
+	Mono<User> viewUser (User user, String employee);
+	
+	/**
+	 * Allows Admin to change credentials of a user
+	 * 
+	 * @param user The admin user's account
+	 * @param employee the UserDTO of the employee's information
+	 * @param password the new password for the employee
+	 * @param email the new email of the employee
+	 * @param type the new type of the employee
+	 * @return User the updated user of the employee
+	 */
+	
+	void changeUserCredentials(User user, UserDTO employee,
+			String password, String email, String type);
+	
+
+	
+	/**
 	 * Allows an admin user to change the UserType of a user
 	 * 
 	 * @param user
@@ -45,39 +70,19 @@ public interface UserService {
 	 * @String type
 	 */
 
-	void roleChange(User user, User employee, String type);
+	User roleChange(User user, User employee, String type);
+	
 
-	/**
-	 * Allows an admin to view a particular user
-	 * 
-	 * @param user
-	 * @param employee
-	 */
+	
 
-	Mono<UserDTO> viewUser(User user, String employee);
-
-	/**
-	 * Allows an admin to change the credentials of a user
-	 * 
-	 * @param user
-	 * @param employee
-	 * @param password
-	 * @param email
-	 * @param type
-	 * @return
-	 */
-
-	User changeUserCredentials(User user, User employee, String password, String email, String type);
-
+// THE 4 METHODS BELOW MAY BE BETTER CANDIDATES FOR OTHER SERVICE LAYERS, PENDING DISCUSSION
+	
 	/**
 	 * Allows a user to view all the products that they are involved with
 	 * 
 	 * @param user The user who wants to check their products
 	 * @return A flux of all products that the user is involved with
 	 */
-
-// THE 4 METHODS BELOW MAY BE BETTER CANDIDATES FOR OTHER SERVICE LAYERS, PENDING DISCUSSION
-	
 	Flux<Product> viewProducts(User user);
 
 	/**
@@ -109,4 +114,5 @@ public interface UserService {
 	 */
 
 	Mono<ScrumBoard> selectScrumBoard(User user, UUID boardId);
+
 }
