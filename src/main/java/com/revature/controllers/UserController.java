@@ -88,16 +88,13 @@ public class UserController {
 	}
 
 	// As a user I can register an account
-	@PutMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> register(@RequestBody User user, @PathVariable("username") String username) {
-		// getting the data from the new user
-		try {
-			User newUser = userService.register(username, user.getPassword(), user.getEmail());
-			return ResponseEntity.ok(newUser);
-		} catch (Exception e) {
-			return ResponseEntity.status(500).contentType(MediaType.TEXT_HTML)
-					.body("<html><body><div>Failed to make user</div></body></html>");
-		}
+	@PutMapping(value = "register", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Mono<ResponseEntity<User>> register(@RequestBody User user, WebSession session) {
+		// getting the data from the new user\
+		return userService.register(user).map(u ->{
+				session.getAttributes().put("loggedUser", u);
+				return ResponseEntity.ok(u);
+		}).switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
 
 	// As a user, I can select a product
