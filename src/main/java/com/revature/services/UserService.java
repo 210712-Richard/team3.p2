@@ -30,12 +30,10 @@ public interface UserService {
 	 * Registers a user and puts it in the database
 	 * 
 	 * @param username The username of the user being registered
-	 * @param password The password of the user being registered
-	 * @param email    The email of the user being registered
 	 * @return The registered user as a User object.
 	 */
 
-	User register(String username, String password, String email);
+	Mono<User> register(User user);
 
 	/**
 	 * Allows Admin to view user

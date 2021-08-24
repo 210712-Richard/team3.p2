@@ -45,15 +45,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User register(String username, String password, String email) {
-		User user = new User();
-		user.setUsername(username);
-		user.setPassword(password);
-		user.setEmail(email);
+	public Mono<User> register(User user) {
 
-		userDao.save(new UserDTO(user));
+		return userDao.save(new UserDTO(user)).map(u->u.getUser());
 
-		return user;
 	}
 
 	@Override
