@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
@@ -13,43 +12,30 @@ import org.springframework.data.cassandra.core.mapping.Table;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
 
-@Table("user")
+@Table("users")
 public class UserDTO {
 
 	@PrimaryKey("username")
+	@Column
 	private String username;
 	@Column("password")
 	private String password;
 	@Column("email")
 	private String email;
-	@Column("type")
 	private UserType type;
-	@Column("board_ids")
-	private List<UUID> boardIds;
-	@Column("task_ids")
-	private List<UUID> taskIds;
-	@Column("product_ids")
-	private List<UUID> productIds;
+	@Column
+	private List<UUID> boardids;
+	@Column
+	private List<UUID> taskids;
+	@Column
+	private List<UUID> productids;
 
 	public UserDTO() {
-		super();
+//		super();
 		this.type = UserType.DEVELOPER;
-		this.boardIds = new ArrayList<UUID>();
-		this.taskIds = new ArrayList<UUID>();
-		this.productIds = new ArrayList<UUID>();
-	}
-	
-	@Autowired
-	public UserDTO(String username, String password, String email, UserType type, List<UUID> boardIds,
-			List<UUID> taskIds, List<UUID> productIds) {
-		super();
-		this.username = username;
-		this.password = password;
-		this.email = email;
-		this.type = type;
-		this.boardIds = boardIds;
-		this.taskIds = taskIds;
-		this.productIds = productIds;
+		this.boardids = new ArrayList<UUID>();
+		this.taskids = new ArrayList<UUID>();
+		this.productids = new ArrayList<UUID>();
 	}
 
 
@@ -59,9 +45,9 @@ public class UserDTO {
 		this.password = user.getPassword();
 		this.email = user.getEmail();
 		this.type = user.getType();
-		this.boardIds = user.getBoardIds();
-		this.taskIds = user.getTaskIds();
-		this.productIds = user.getProductIds();
+		this.boardids = user.getBoardIds();
+		this.taskids = user.getTaskIds();
+		this.productids = user.getProductIds();
 	}
 	
 	public User getUser() {
@@ -70,9 +56,9 @@ public class UserDTO {
 		u.setPassword(this.password);
 		u.setEmail(this.email);
 		u.setType(this.type);
-		u.setBoardIds(this.boardIds);
-		u.setTaskIds(this.taskIds);
-		u.setProductIds(this.productIds);
+		u.setBoardIds(this.boardids);
+		u.setTaskIds(this.taskids);
+		u.setProductIds(this.productids);
 		return u;
 	}
 
@@ -110,32 +96,38 @@ public class UserDTO {
 	}
 
 	public List<UUID> getBoardIds() {
-		return boardIds;
+		if(boardids == null)
+			return new ArrayList<UUID>();
+		return boardids;
 	}
 
 	public void setBoardIds(List<UUID> boardIds) {
-		this.boardIds = boardIds;
+		this.boardids = boardIds;
 	}
 
 	public List<UUID> getTaskIds() {
-		return taskIds;
+		if(taskids == null)
+			return new ArrayList<UUID>();
+		return taskids;
 	}
 
 	public void setTaskIds(List<UUID> taskIds) {
-		this.taskIds = taskIds;
+		this.taskids = taskIds;
 	}
 
 	public List<UUID> getProductIds() {
-		return productIds;
+		if(productids == null)
+			return new ArrayList<UUID>();
+		return productids;
 	}
 
 	public void setProductIds(List<UUID> productIds) {
-		this.productIds = productIds;
+		this.productids = productIds;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(boardIds, email, password, productIds, taskIds, type, username);
+		return Objects.hash(boardids, email, password, productids, taskids, type, username);
 	}
 
 	@Override
@@ -147,16 +139,16 @@ public class UserDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		UserDTO other = (UserDTO) obj;
-		return Objects.equals(boardIds, other.boardIds) && Objects.equals(email, other.email)
-				&& Objects.equals(password, other.password) && Objects.equals(productIds, other.productIds)
-				&& Objects.equals(taskIds, other.taskIds) && type == other.type
+		return Objects.equals(boardids, other.boardids) && Objects.equals(email, other.email)
+				&& Objects.equals(password, other.password) && Objects.equals(productids, other.productids)
+				&& Objects.equals(taskids, other.taskids) && type == other.type
 				&& Objects.equals(username, other.username);
 	}
 
 	@Override
 	public String toString() {
 		return "UserDTO [username=" + username + ", password=" + password + ", email=" + email + ", type=" + type
-				+ ", boardIds=" + boardIds + ", taskIds=" + taskIds + ", productIds=" + productIds + "]";
+				+ ", boardIds=" + boardids + ", taskIds=" + taskids + ", productIds=" + productids + "]";
 	}
 
 	
