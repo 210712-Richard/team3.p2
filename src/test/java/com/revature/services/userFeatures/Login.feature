@@ -1,4 +1,4 @@
-Feature: Login as test_username
+Feature: Login a User
 
   Scenario: send a request and login successfully
     Given url loginUrl + '/login'

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.WebSession;
 
 import com.revature.beans.Notification;
+import com.revature.beans.Product;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
 import com.revature.dto.UserDTO;
@@ -99,6 +100,16 @@ public class UserController {
 		}
 	}
 
+	// As a user, I can select a product
+	@PostMapping("/products/{product_id}")
+	public Mono<ResponseEntity<Product>> selectProduct(@PathVariable("product_id") String productId, WebSession session) {
+		User user = session.getAttribute("loggedUser");
+		return userService.selectProduct(user, UUID.fromString(productId)).map(product -> {
+			session.getAttributes().put("selectedProduct", product);
+			return ResponseEntity.ok(product);
+		}).switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
+	}
+	
 	// As an Admin I can view a user
 	@GetMapping("{employee}")
 	public ResponseEntity<Mono<UserDTO>> getCurrentUsers(@PathVariable("username") String employee,
