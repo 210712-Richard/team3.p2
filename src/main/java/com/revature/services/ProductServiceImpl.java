@@ -108,7 +108,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Mono<Product> addProductById(String username, UUID id) {
-		return productDao.findById(id)
+		return productDao.findByProductId(id)
 				.map(dto -> {
 		        (user.getProductIds()).add(id);
 			    productDao.save(dto);

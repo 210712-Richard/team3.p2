@@ -29,7 +29,7 @@ Scenario: Log in as a user
 
 Scenario: Check notifications
 	Given url baseUrl + '/users/notifications'
-	And def signin = call read('classpath:UserFeatures/Login.feature')
+	And def signin = call read('classpath:com/revature/services/userFeatures/Login.feature')
 	And request {}
 	And cookie SESSION = signin.sessionCookie
 	When method GET

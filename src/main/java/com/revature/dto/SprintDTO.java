@@ -17,19 +17,19 @@ import com.revature.beans.SprintStatus;
 @Table("sprints")
 public class SprintDTO {
 
-	@PrimaryKeyColumn(name = "scrumboard_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
+	@PrimaryKeyColumn(name = "scrumboardid", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
 	private UUID scrumboardID;
-	@Column("sprint_id") 
+	@Column("sprintid") 
 	private UUID id;
-	@Column("start_date") 
+	@Column("startdate") 
 	private LocalDate startDate;
-	@Column("end_date") 
+	@Column("enddate") 
 	private LocalDate endDate;
-	@Column("start_time") 
+	@Column("starttime") 
 	private LocalTime startTime;
-	@Column("end_time") 
+	@Column("endtime") 
 	private LocalTime endTime;
-	@Column("task_ids")
+	@Column("taskids")
 	private List<UUID> taskIds;
 	@PrimaryKeyColumn(name = "status", ordinal = 1, type = PrimaryKeyType.CLUSTERED)
 	private SprintStatus status;
