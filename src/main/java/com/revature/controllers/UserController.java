@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.WebSession;
 
 import com.revature.beans.Notification;
+import com.revature.beans.Product;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
 import com.revature.dto.UserDTO;
@@ -87,33 +88,53 @@ public class UserController {
 	}
 
 	// As a user I can register an account
-	@PutMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> register(@RequestBody User user, @PathVariable("username") String username) {
-		// getting the data from the new user
-		try {
-			User newUser = userService.register(username, user.getPassword(), user.getEmail());
-			return ResponseEntity.ok(newUser);
-		} catch (Exception e) {
-			return ResponseEntity.status(500).contentType(MediaType.TEXT_HTML)
-					.body("<html><body><div>Failed to make user</div></body></html>");
-		}
+	@PutMapping(value = "register", produces = MediaType.APPLICATION_JSON_VALUE)
+	public Mono<ResponseEntity<User>> register(@RequestBody User user, WebSession session) {
+		// getting the data from the new user\
+		return userService.register(user).map(u ->{
+				session.getAttributes().put("loggedUser", u);
+				return ResponseEntity.ok(u);
+		}).switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
 
+	// As a user, I can select a product
+	@PostMapping("/products/{product_id}")
+	public Mono<ResponseEntity<Product>> selectProduct(@PathVariable("product_id") String productId, WebSession session) {
+		User user = session.getAttribute("loggedUser");
+		return userService.selectProduct(user, UUID.fromString(productId)).map(product -> {
+			session.getAttributes().put("selectedProduct", product);
+			return ResponseEntity.ok(product);
+		}).switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
+	}
+	
 	// As an Admin I can view a user
 	@GetMapping("{employee}")
-	public ResponseEntity<Mono<UserDTO>> getCurrentUsers(@PathVariable("username") String employee,
+	public ResponseEntity<Mono<User>> getCurrentUsers(@PathVariable("employee") String employee,
 			WebSession session) {
 		User loggedUser = (User) session.getAttribute("loggedUser");
 		// checking if logged user is an admin
 		if (!loggedUser.getType().equals(UserType.ADMIN)) {
 			return ResponseEntity.status(403).build();
 		} else {
-			Mono<UserDTO> employeeData = userService.viewUser(loggedUser, employee);
+			Mono<User> employeeData = userService.viewUser(loggedUser, employee);
 			return ResponseEntity.ok(employeeData);
 		}
 	}
 
 	// As an Admin I can change user roles
+	@PostMapping ("{employee}/newRole/{role}")
+	public ResponseEntity<User> changeUserRole(@PathVariable("employee")String employee, @PathVariable("role") String role, WebSession session){
+		
+		User loggedUser = (User) session.getAttribute("loggedUser");
+		
+		User employeeData = userService.viewUser(loggedUser, employee).block();
+		
+		User changedEmp = userService.roleChange(loggedUser, employeeData, role);
+	
+		return ResponseEntity.ok(changedEmp);
+		
+		
+	}
 
 	// As an Admin I can change user credentials
 

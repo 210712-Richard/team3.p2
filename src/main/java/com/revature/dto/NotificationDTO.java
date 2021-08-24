@@ -15,7 +15,7 @@ public class NotificationDTO {
 
 	@PrimaryKeyColumn(name = "username", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
 	private String username;
-	@PrimaryKeyColumn(name = "notification_id", ordinal = 1, type = PrimaryKeyType.CLUSTERED)
+	@PrimaryKeyColumn(name = "notificationid", ordinal = 1, type = PrimaryKeyType.CLUSTERED)
 	private UUID id;
 	@Column("message")
 	private String message;

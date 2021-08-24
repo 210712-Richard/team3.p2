@@ -1,28 +1,31 @@
 package com.revature.services;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.revature.beans.Task;
+import com.revature.beans.Product;
+import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
+import com.revature.data.ProductDAO;
+import com.revature.data.ScrumBoardDAO;
 import com.revature.data.TaskDAO;
 import com.revature.data.UserDAO;
+import com.revature.dto.ProductDTO;
 import com.revature.dto.UserDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 
 @Service
 public class UserServiceImpl implements UserService {
 
 	private UserDAO userDao;
 	private TaskDAO taskDao;
+	private ProductDAO productDao;
+	private ScrumBoardDAO scrumDao;
 
 	@Autowired
 	public UserServiceImpl(UserDAO userDao, TaskDAO taskDao) {
@@ -35,55 +38,47 @@ public class UserServiceImpl implements UserService {
 	public Mono<User> login(String username, String password) {
 		Mono<UserDTO> userData = userDao.findById(username);
 		System.out.println(userData);
-		return userData
-				.filter(dto -> dto.getPassword().equals(password))
-				.map(dto -> {
-					System.out.println(dto);
-					return dto.getUser();
-				});
+		return userData.filter(dto -> dto.getPassword().equals(password)).map(dto -> {
+			System.out.println(dto);
+			return dto.getUser();
+		});
 	}
 
 	@Override
-	public User register(String username, String password, String email) {
-		User user = new User();
-		user.setUsername(username);
-		user.setPassword(password);
-		user.setEmail(email);
+	public Mono<User> register(User user) {
 
-		userDao.save(new UserDTO(user));
+		return userDao.save(new UserDTO(user)).map(u->u.getUser());
 
-		return user;
 	}
 
 	@Override
-	public void roleChange(User user, User employee, String type) {
+	public User roleChange(User user, User employee, String type) {
 
 		if (user.getType().equals(UserType.valueOf("Admin"))) {
 
 			employee.setType(UserType.valueOf(type));
 
-		} else {
-			return;
-		}
-
-	}
-
-	@Override
-	public Mono<UserDTO> viewUser(User user, String employee) {
-		if (user.getType().equals(UserType.valueOf("Admin"))) {
-
-			Mono<UserDTO> emp = userDao.findById(employee);
-
-			emp.subscribe();
-			return emp;
-
+			return employee;
 		} else {
 			return null;
 		}
+
 	}
 
 	@Override
-	public User changeUserCredentials(User user, User employee, String password, String email, String type) {
+	public Mono<User> viewUser(User user, String employee) {
+		
+
+			Mono<UserDTO> emp = userDao.findById(employee);
+			return emp
+					.map(dto -> {
+						return dto.getUser();
+					});
+	
+	}
+
+	@Override
+	public void changeUserCredentials(User user, UserDTO employee, String password, String email, String type) {
 
 		if (user.getType().equals(UserType.valueOf("Admin"))) {
 
@@ -91,11 +86,38 @@ public class UserServiceImpl implements UserService {
 			employee.setPassword(password);
 			employee.setEmail(email);
 
-		} else {
-			return null;
-		}
+		} 
 
+		
+	}
+
+
+	@Override
+	public Flux<Product> viewProducts(User user) {
+		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Mono<Product> selectProduct(User user, UUID productId) {
+		Mono<ProductDTO> productData = productDao.findById(productId);
+		System.out.println("found product " + productData);
+		return productData
+				.filter(dto -> dto.getUsernames().contains(user.getUsername()))
+				.map(dto -> dto.getProduct());
+	}
+
+	@Override
+	public Flux<ScrumBoard> viewScrumBoards(User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Mono<ScrumBoard> selectScrumBoard(User user, UUID boardId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
