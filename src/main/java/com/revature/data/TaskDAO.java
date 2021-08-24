@@ -14,6 +14,6 @@ import reactor.core.publisher.Mono;
 public interface TaskDAO extends ReactiveCassandraRepository<TaskDTO, String>{
 	Mono<TaskDTO> findById(UUID id);
 	Mono<TaskDTO> findByBoardid(UUID boardid);
-	@Query("Select * From team3_project2.tasks Where boardId = ?0 And status = ?1 And taskId = ?2")
+	@Query("Select * From team3_project2.tasks Where boardid = ?0 And status = ?1 And taskid = ?2")
 	Mono<TaskDTO> findByBoardidAndStatusAndId(UUID boardid, String status, UUID id);
 }
