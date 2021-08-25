@@ -1,11 +1,8 @@
 package com.revature.controllers;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,9 +31,8 @@ public class SprintController {
 	public Mono<ResponseEntity<Sprint>> createSprint(@RequestBody Sprint sprint, WebSession session){
 		sprint.setScrumboardID(session.getAttribute("selectedScrumBoard"));
 		return sprintService.createSpring(sprint)
-			.map( s -> {
-			return ResponseEntity.ok(s);
-		}).switchIfEmpty(Mono.just(ResponseEntity.status(401).build()));
+			.map( s -> ResponseEntity.ok(s))
+			.switchIfEmpty(Mono.just(ResponseEntity.status(401).build()));
 	}
 	@PatchMapping("/endCurrentSprint")
 	@IsScrumMaster
