@@ -19,6 +19,7 @@ public class Sprint {
 
 	public Sprint() {
 		super();
+		id = UUID.randomUUID();
 	}
 
 	public UUID getScrumboardID() {
