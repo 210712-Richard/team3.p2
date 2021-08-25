@@ -41,6 +41,6 @@ public class SprintController {
 	@PatchMapping("/endCurrentSprint")
 	@IsScrumMaster
 	public Mono<ResponseEntity<Sprint>> retireCurrentSprint(WebSession session){
-		return sprintService.retireCurrentSprint(session.getAttribute("selectedScrumBoard"));
+		return null;//sprintService.retireCurrentSprint(session.getAttribute("selectedScrumBoard"));
 	}
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.revature.beans.Sprint;
+import com.revature.beans.SprintStatus;
 import com.revature.data.SprintDAO;
 import com.revature.dto.SprintDTO;
 
@@ -34,7 +35,7 @@ public class SprintServiceImpl implements SprintService {
 	@Override
 	public Mono<Sprint> retireCurrentSprint(UUID boardId) {
 		
-		return sprintDao.f;
+		return null;//sprintDao.findByBoardIdAndStatus(boardId, SprintStatus.CURRENT);
 	}
 
 }
