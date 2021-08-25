@@ -22,7 +22,7 @@ public interface TaskService {
 	
 	Mono<Task> addToProductBackLog(UUID product, Task task);
 	
-	Mono<Task> makePriority(UUID taskId, TaskPriority priority);
+	Mono<Task> makePriority(UUID masterBoardId, UUID taskId, TaskPriority priority);
 	
 	Mono<Sprint> addToSprintBackLog(UUID sprint, UUID taskId);	
 	

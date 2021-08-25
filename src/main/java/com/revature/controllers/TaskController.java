@@ -38,6 +38,13 @@ public class TaskController {
 	//As a developer, I can move my task on the scrumboard
 	@PatchMapping(value = "/move/{boardId}/{taskId}/{status}", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("taskId") String taskId, @PathVariable("boardId") String boardId, @PathVariable("status") TaskCompletionStatus status, @RequestBody Task task, WebSession session){
+		/*
+		 * Authentication if not using aspect
+		User loggedUser = (User) session.getAttribute("loggedUser");
+		if(loggedUser == null || !UserType.DEVELOPER.equals(loggedUser.getType())) {
+			return Mono.just(ResponseEntity.status(403).build());
+		}
+		*/
 		return taskService.moveTask(UUID.fromString(boardId), UUID.fromString(taskId), status, task.getStatus()).map((s) -> {
 			if(s == null) {
 				return ResponseEntity.status(409).build();
@@ -56,13 +63,15 @@ public class TaskController {
 	
 	
 	//As a Product Owner, I can add a priority to an existing Product backlog task
-	@PutMapping("/{taskId}/priority")
-	public Mono<ResponseEntity<Task>> makePriority(@PathVariable ("taskId") UUID taskId, @RequestBody TaskPriority priority, WebSession session){
+	@PatchMapping(value = "/priority/{masterBoardId}/{taskId}/{priority}", produces = MediaType.APPLICATION_NDJSON_VALUE)
+	public Mono<ResponseEntity<Task>> makePriority(@PathVariable ("masterBoardId") String masterBoardId, @PathVariable ("taskId") String taskId, @PathVariable ("priority") TaskPriority priority, WebSession session){
+		/*
 		User loggedUser = (User) session.getAttribute("loggedUser");
 		if(loggedUser == null || !UserType.PRODUCT_OWNER.equals(loggedUser.getType())) {
 			return Mono.just(ResponseEntity.status(403).build());
 		}
-		return taskService.makePriority(taskId, priority).map((s) ->  {
+		*/
+		return taskService.makePriority(UUID.fromString(masterBoardId), UUID.fromString(taskId), priority).map((s) ->  {
 			if(s == null) {
 				return ResponseEntity.status(409).build();
 			} else {

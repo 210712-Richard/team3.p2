@@ -60,9 +60,9 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	@Override
-	public Mono<Task> makePriority(UUID taskId, TaskPriority priority) {
+	public Mono<Task> makePriority(UUID masterBoardId, UUID taskId, TaskPriority priority) {
 		//Change priority status of an existing task
-		return taskDAO.findById(taskId.toString()).flatMap(dto -> {
+		return taskDAO.findByBoardidAndStatusAndId(masterBoardId, "BACKLOG", taskId).flatMap(dto -> {
 			dto.setPriorityStatus(priority);
 			return taskDAO.save(dto);
 		}).map(t -> t.getTask());

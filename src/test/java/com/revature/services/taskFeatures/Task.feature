@@ -45,7 +45,7 @@ Background:
 	
 		Given url 'http://localhost:8080/tasks/move/6cbd7dc1-3be6-4dfc-b25e-b0f33ba8c3cd/99001ef7-db95-4efe-acd4-740f06c754d7/IN_PROGRESS'
 		#And path taskUuid()
-		And request { board_id : '6cbd7dc1-3be6-4dfc-b25e-b0f33ba8c3cd', status: 'COMPLETED', task_id: '99001ef7-db95-4efe-acd4-740f06c754d7'}
+		And request { boardId : '6cbd7dc1-3be6-4dfc-b25e-b0f33ba8c3cd', status: 'COMPLETED', taskId: '99001ef7-db95-4efe-acd4-740f06c754d7'}
 		When method patch
 		Then status 200
 		And match response contains { status: 'COMPLETED'}		
@@ -55,10 +55,18 @@ Background:
 	
 		Given url 'http://localhost:8080/tasks/move/6cbd7dc1-3be6-4dfc-b25e-b0f33ba8c3cd/99001ef7-db95-4efe-acd4-740f06c754d7/COMPLETED'
 		#And path taskUuid()
-		And request { board_id : '6cbd7dc1-3be6-4dfc-b25e-b0f33ba8c3cd', status: 'IN_PROGRESS', task_id: '99001ef7-db95-4efe-acd4-740f06c754d7'}
+		And request { boardId : '6cbd7dc1-3be6-4dfc-b25e-b0f33ba8c3cd', status: 'IN_PROGRESS', taskId: '99001ef7-db95-4efe-acd4-740f06c754d7'}
 		When method patch
 		Then status 200
 		And match response contains { status: 'IN_PROGRESS'}
 	
+	@Tag4
+	Scenario: As a Produdct Owner I can set priorities to existing backlog tasks
+	
+		Given url 'http://localhost:8080/tasks/priority/99001ef7-db95-4efe-acd4-740f06c754d7/HIGH'
+		And request { masterBoardId : 'd7167cb6-bb25-496e-b83a-b7222c9aca4a' }
+		When method patch
+		Then status 200
+		And match response contains { priorityStatus: 'HIGH' }
 		
 	
