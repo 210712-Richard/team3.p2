@@ -28,10 +28,12 @@ public class UserServiceImpl implements UserService {
 	private ScrumBoardDAO scrumDao;
 
 	@Autowired
-	public UserServiceImpl(UserDAO userDao, TaskDAO taskDao) {
+	public UserServiceImpl(UserDAO userDao, TaskDAO taskDao, ProductDAO productDao, ScrumBoardDAO scrumDao) {
 		super();
 		this.userDao = userDao;
 		this.taskDao = taskDao;
+		this.productDao = productDao;
+		this.scrumDao = scrumDao;
 	}
 
 	@Override
@@ -101,10 +103,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Mono<Product> selectProduct(User user, UUID productId) {
 		Mono<ProductDTO> productData = productDao.findById(productId);
-		System.out.println("found product " + productData);
 		return productData
-				.filter(dto -> dto.getUsernames().contains(user.getUsername()))
-				.map(dto -> dto.getProduct());
+				.flatMap(dto -> {
+					if (dto.getUsernames().contains(user.getUsername())) {
+						return Mono.just(dto.getProduct());
+					} else {
+						return Mono.empty();
+					}
+				});
 	}
 
 	@Override
