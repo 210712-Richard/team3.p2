@@ -17,7 +17,7 @@ Feature: Login a User
   
   
   Scenario: Send a request and successfully login as an ADMIN
-       Given url loginUrl
+    Given url loginUrl
     And request {username : 'admin', password : 'admin'}
     When method post
     Then status 200
