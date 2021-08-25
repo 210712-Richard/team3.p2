@@ -1,6 +1,8 @@
 package com.revature.services;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,12 +100,12 @@ public class TaskServiceImpl implements TaskService{
 	}
 	
 	@Override
-	public Mono<User> removeTasks(UUID id, String username){
-		return userDAO.findById(username)
-				.map(dto -> {
-					dto.getTaskIds()
-						.removeIf(p-> p.equals(id));
-					return dto.getUser();
-				});
+	public Mono<User> removeTasks(UUID id, String username) {
+		return userDAO.findById(username).flatMap(dto -> {
+			List<UUID> list = dto.getTaskIds().stream().collect(Collectors.toList());
+			list.removeIf(p->p.equals(id));
+			dto.setTaskIds(list);
+			return userDAO.save(dto);
+		}).map(u -> u.getUser());
 	}
 }
