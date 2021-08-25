@@ -127,8 +127,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Flux<ScrumBoard> viewScrumBoards(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		return Flux.fromStream(user.getBoardIds().stream())
+				.flatMap(id -> scrumDao.findByBoardId(id))
+				.map(dto -> dto.getScrumBoard());
 	}
 
 	@Override
