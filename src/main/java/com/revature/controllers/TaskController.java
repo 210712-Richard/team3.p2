@@ -20,6 +20,7 @@ import com.revature.beans.TaskPriority;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
 import com.revature.services.TaskService;
+import com.revature.util.WebSessionAttributes;
 
 import reactor.core.publisher.Mono;
 
@@ -34,7 +35,7 @@ public class TaskController {
 	//As a developer, I can move my task on the scrumboard
 	@PutMapping("/{taskId}")
 	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("taskId") UUID taskId, @RequestBody Task task, WebSession session){
-		User loggedUser = (User) session.getAttribute("loggedUser");
+		User loggedUser = (User) session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if(loggedUser == null || !UserType.DEVELOPER.equals(loggedUser.getType())) {
 			return Mono.just(ResponseEntity.status(403).build());
 		}
@@ -58,7 +59,7 @@ public class TaskController {
 	//As a Product Owner, I can add a priority to an existing Product backlog task
 	@PutMapping("/{taskId}/priority")
 	public Mono<ResponseEntity<Task>> makePriority(@PathVariable ("taskId") UUID taskId, @RequestBody TaskPriority priority, WebSession session){
-		User loggedUser = (User) session.getAttribute("loggedUser");
+		User loggedUser = (User) session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if(loggedUser == null || !UserType.PRODUCT_OWNER.equals(loggedUser.getType())) {
 			return Mono.just(ResponseEntity.status(403).build());
 		}
@@ -75,7 +76,7 @@ public class TaskController {
 	//As a Scrum Master, I can add to the Sprint backLog from the Product Backlog
 	@PutMapping("/{sprintId}/{taskId}")
 	public Mono<ResponseEntity<Sprint>> addToSprintBackLog(@PathVariable ("sprintId") UUID sprintId, @PathVariable ("taskId") UUID taskId, WebSession session){
-		User loggedUser = (User) session.getAttribute("loggedUser");
+		User loggedUser = (User) session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if(loggedUser == null || !UserType.SCRUM_MASTER.equals(loggedUser.getType())) {
 			return Mono.just(ResponseEntity.status(403).build());
 		}
