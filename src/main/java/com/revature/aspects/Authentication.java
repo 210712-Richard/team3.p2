@@ -86,11 +86,8 @@ public class Authentication {
 	@Around("productMasterHook()")
 	public ResponseEntity<Object> checkproductMaster(ProceedingJoinPoint pjp) throws Throwable{
 	
-		// We know this method should only be applied to Handler methods,
-		// so there should be a websession.
 		session = (WebSession) pjp.getTarget();
 		loggedUser = session.getAttribute(loginUserField);
-		User loggedUser = session.getAttribute("loggedUser");
 
 		Product product = session.getAttribute("selectedProduct");
 		if(product.getProductOwner().equals(loggedUser.getUsername())) {
