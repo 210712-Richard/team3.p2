@@ -1,6 +1,5 @@
 package com.revature.services;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +18,6 @@ import com.revature.beans.User;
 import com.revature.data.SprintDAO;
 import com.revature.data.TaskDAO;
 import com.revature.data.UserDAO;
-import com.revature.dto.UserDTO;
 
 import reactor.core.publisher.Mono;
 
@@ -103,11 +101,8 @@ public class TaskServiceImpl implements TaskService {
 	public Mono<User> removeTasks(UUID id, String username) {
 		return userDAO.findById(username).flatMap(dto -> {
 			List<UUID> list = dto.getTaskIds().stream().collect(Collectors.toList());
-			Collections.copy(list, dto.getTaskIds());
 			list.removeIf(p->p.equals(id));
 			dto.setTaskIds(list);
-			System.out.println(list);
-			System.out.println(dto.getUser().toString());
 			return userDAO.save(dto);
 		}).map(u -> u.getUser());
 	}

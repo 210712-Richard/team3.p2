@@ -30,6 +30,7 @@ public class Authentication {
 	
 	private static final Logger log = LogManager.getLogger(Authentication.class);
 	private User loggedUser;
+	private String loginUserField = "loggedUser";
 	private WebSession session;
 	private AdminDAO adminDAO;
 	
@@ -43,7 +44,7 @@ public class Authentication {
 	public ResponseEntity<Object> checkLoggedIn(ProceedingJoinPoint pjp) throws Throwable {
 		session = (WebSession) pjp.getTarget();
 		
-		loggedUser = session.getAttribute("loggedUser");
+		loggedUser = session.getAttribute(loginUserField);
 		// Checking if logged in
 		if (loggedUser != null) {
 			pjp.proceed(); 
@@ -54,7 +55,7 @@ public class Authentication {
 	@Around("developerHook()")
 	public ResponseEntity<Object> checkDeveloper(ProceedingJoinPoint pjp) throws Throwable{
 		session = (WebSession) pjp.getTarget();
-		loggedUser = session.getAttribute("loggedUser");
+		loggedUser = session.getAttribute(loginUserField);
 		ScrumBoard board = session.getAttribute("selectedBoard");
 		if(loggedUser == null || board == null) {
 			return ResponseEntity.status(401).build();
@@ -71,7 +72,7 @@ public class Authentication {
 		
 		session = (WebSession) pjp.getTarget();
 		
-		loggedUser = session.getAttribute("loggedUser");
+		loggedUser = session.getAttribute(loginUserField);
 		ScrumBoard board = session.getAttribute("selectedBoard");
 		if(loggedUser == null || board == null) {
 			return ResponseEntity.status(401).build();
@@ -88,7 +89,7 @@ public class Authentication {
 		
 		session = (WebSession) pjp.getTarget();
 		
-		loggedUser = session.getAttribute("loggedUser");
+		loggedUser = session.getAttribute(loginUserField);
 		Product product = session.getAttribute("selectedProduct");
 		if(loggedUser == null || product == null) {
 			return ResponseEntity.status(401).build();
@@ -102,8 +103,8 @@ public class Authentication {
 	
 	@Around("adminCheckHook()")
 	public Mono<ResponseEntity<Object>> adminCheck(ProceedingJoinPoint pjp) throws Throwable{
-		WebSession session = (WebSession) pjp.getTarget();
-		User loggedUser = session.getAttribute("loggedUser");
+		session = (WebSession) pjp.getTarget();
+		loggedUser = session.getAttribute(loginUserField);
 		if(loggedUser == null) {
 			return Mono.just(ResponseEntity.status(401).build());
 		}

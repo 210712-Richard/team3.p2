@@ -12,7 +12,7 @@ public class AdminDTO {
 	private String username;
 	
 	public AdminDTO() {
-		
+		super();
 	}
 
 	public String getUsername() {
