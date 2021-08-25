@@ -31,11 +31,10 @@ public class UserDTO {
 	private List<UUID> productids;
 
 	public UserDTO() {
-//		super();
 		this.type = UserType.DEVELOPER;
-		this.boardids = new ArrayList<UUID>();
-		this.taskids = new ArrayList<UUID>();
-		this.productids = new ArrayList<UUID>();
+		this.boardids = new ArrayList<>();
+		this.taskids = new ArrayList<>();
+		this.productids = new ArrayList<>();
 	}
 
 
@@ -97,7 +96,7 @@ public class UserDTO {
 
 	public List<UUID> getBoardIds() {
 		if(boardids == null)
-			return new ArrayList<UUID>();
+			return new ArrayList<>();
 		return boardids;
 	}
 
@@ -107,7 +106,7 @@ public class UserDTO {
 
 	public List<UUID> getTaskIds() {
 		if(taskids == null)
-			return new ArrayList<UUID>();
+			return new ArrayList<>();
 		return taskids;
 	}
 
@@ -117,7 +116,7 @@ public class UserDTO {
 
 	public List<UUID> getProductIds() {
 		if(productids == null)
-			return new ArrayList<UUID>();
+			return new ArrayList<>();
 		return productids;
 	}
 

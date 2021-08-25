@@ -28,20 +28,20 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
-	private static final Logger log = LogManager.getLogger(TaskController.class);
 	
 	@Autowired
 	private TaskService taskService;
+	private String loginedUser = "loggedUser";
 	
 	
 	//As a developer, I can move my task on the scrumboard
 	@PutMapping("/{taskId}")
 	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("taskId") UUID taskId, @RequestBody Task task, WebSession session){
-		User loggedUser = (User) session.getAttribute("loggedUser");
+		User loggedUser = (User) session.getAttribute(loginedUser);
 		if(loggedUser == null || !UserType.DEVELOPER.equals(loggedUser.getType())) {
 			return Mono.just(ResponseEntity.status(403).build());
 		}
-		return taskService.moveTask(taskId, task.getStatus()).map((s) -> {
+		return taskService.moveTask(taskId, task.getStatus()).map(s -> {
 			if(s == null) {
 				return ResponseEntity.status(409).build();
 			} else {
@@ -61,11 +61,11 @@ public class TaskController {
 	//As a Product Owner, I can add a priority to an existing Product backlog task
 	@PutMapping("/{taskId}/priority")
 	public Mono<ResponseEntity<Task>> makePriority(@PathVariable ("taskId") UUID taskId, @RequestBody TaskPriority priority, WebSession session){
-		User loggedUser = (User) session.getAttribute("loggedUser");
+		User loggedUser = (User) session.getAttribute(loginedUser);
 		if(loggedUser == null || !UserType.PRODUCT_OWNER.equals(loggedUser.getType())) {
 			return Mono.just(ResponseEntity.status(403).build());
 		}
-		return taskService.makePriority(taskId, priority).map((s) ->  {
+		return taskService.makePriority(taskId, priority).map(s ->  {
 			if(s == null) {
 				return ResponseEntity.status(409).build();
 			} else {
@@ -78,11 +78,11 @@ public class TaskController {
 	//As a Scrum Master, I can add to the Sprint backLog from the Product Backlog
 	@PutMapping("/{sprintId}/{taskId}")
 	public Mono<ResponseEntity<Sprint>> addToSprintBackLog(@PathVariable ("sprintId") UUID sprintId, @PathVariable ("taskId") UUID taskId, WebSession session){
-		User loggedUser = (User) session.getAttribute("loggedUser");
+		User loggedUser = (User) session.getAttribute(loginedUser);
 		if(loggedUser == null || !UserType.SCRUM_MASTER.equals(loggedUser.getType())) {
 			return Mono.just(ResponseEntity.status(403).build());
 		}
-		return taskService.addToSprintBackLog(sprintId, taskId).map((s) -> {
+		return taskService.addToSprintBackLog(sprintId, taskId).map(s -> {
 			if(s == null) {
 				return ResponseEntity.status(409).build();
 			} else {
@@ -97,7 +97,7 @@ public class TaskController {
 		//check if user has selected a product, scrum and is the scrum master.
 		return taskService.assignTasks(id, username)
 				.map( user -> ResponseEntity.ok(user))
-				.defaultIfEmpty(ResponseEntity.status(404).build());
+				.switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
 	
 	@PatchMapping(value = "/remove/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
