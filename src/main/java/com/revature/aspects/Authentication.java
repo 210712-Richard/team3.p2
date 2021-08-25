@@ -126,4 +126,7 @@ public class Authentication {
 	
 	@Pointcut("@annotation(com.revature.aspects.IsProductMaster)")
 	public void productMasterHook() {/* Hook for IsProductMaster */}
+	
+	@Pointcut("@annotation(com.revature.aspects.IsAdmin)")
+	public void adminCheckHook() {/* Hook for IsAdmin */}
 }
