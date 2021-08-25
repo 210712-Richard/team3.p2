@@ -18,9 +18,9 @@ public class User {
 	public User() {
 		super();
 		this.type = UserType.DEVELOPER;
-		this.boardIds = new ArrayList<>();
-		this.taskIds = new ArrayList<>();
-		this.productIds = new ArrayList<>();
+		this.boardIds = new ArrayList<UUID>();
+		this.taskIds = new ArrayList<UUID>();
+		this.productIds = new ArrayList<UUID>();
 	}
 
 	public String getUsername() {
