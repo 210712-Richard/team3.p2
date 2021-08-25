@@ -32,20 +32,19 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/users")
 public class UserController {
 
-	private UserService userService;
-	private NotificationService notificationService;
-	private String loginUserField = "loggedUser";
+	private static final Logger log = LogManager.getLogger(UserController.class);
+
 	@Autowired
-	public UserController(UserService userService, NotificationService notificationService) {
-		this.notificationService = notificationService;
-		this.userService = userService;
-	}
+	private UserService userService;
+
+	@Autowired
+	private NotificationService notificationService;
 
 	// As a user, I can read and access notifications
 
 	@GetMapping("/notifications")
 	public ResponseEntity<Flux<Notification>> getNotifications(WebSession session) {
-		User loggedUser = session.getAttribute(loginUserField);
+		User loggedUser = session.getAttribute("loggedUser");
 		System.out.println(loggedUser);
 		if (loggedUser == null) {
 			return ResponseEntity.status(403).build();
@@ -56,11 +55,11 @@ public class UserController {
 
 	@GetMapping("/notifications/{id}")
 	public Mono<ResponseEntity<Notification>> getNotificationById(@PathVariable("id") String id, WebSession session) {
-		User loggedUser = session.getAttribute(loginUserField);
+		User loggedUser = session.getAttribute("loggedUser");
 		if (loggedUser == null) {
 			return Mono.just(ResponseEntity.status(403).build());
 		}
-		return notificationService.checkNotificationByID(session.getAttribute(loginUserField), UUID.fromString(id))
+		return notificationService.checkNotificationByID(session.getAttribute("loggedUser"), UUID.fromString(id))
 				.map(note -> {
 					if (note == null) {
 						return ResponseEntity.status(402).build();
@@ -75,7 +74,7 @@ public class UserController {
 	public Mono<ResponseEntity<User>> login(@RequestBody User user, WebSession session) {
 		return userService.login(user.getUsername(), user.getPassword())
 				.map(u -> {
-					session.getAttributes().put(loginUserField, u);
+					session.getAttributes().put("loggedUser", u);
 					return ResponseEntity.ok(u);
 				})
 				.switchIfEmpty(Mono.just(ResponseEntity.status(401).build()));
@@ -93,7 +92,7 @@ public class UserController {
 	public Mono<ResponseEntity<User>> register(@RequestBody User user, WebSession session) {
 		// getting the data from the new user\
 		return userService.register(user).map(u ->{
-				session.getAttributes().put(loginUserField, u);
+				session.getAttributes().put("loggedUser", u);
 				return ResponseEntity.ok(u);
 		}).switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
@@ -101,7 +100,7 @@ public class UserController {
 	// As a user, I can select a product
 	@PostMapping("/products/{productId}")
 	public Mono<ResponseEntity<Product>> selectProduct(@PathVariable String productId, WebSession session) {
-		User user = session.getAttribute(loginUserField);
+		User user = session.getAttribute("loggedUser");
 		return userService.selectProduct(user, UUID.fromString(productId)).map(prod -> {
 			session.getAttributes().put("selectedProduct", prod);
 			return ResponseEntity.ok(prod);
@@ -123,7 +122,7 @@ public class UserController {
 	@GetMapping("{employee}")
 	public ResponseEntity<Mono<User>> getCurrentUsers(@PathVariable("employee") String employee,
 			WebSession session) {
-		User loggedUser = (User) session.getAttribute(loginUserField);
+		User loggedUser = (User) session.getAttribute("loggedUser");
 		// checking if logged user is an admin
 		if (!loggedUser.getType().equals(UserType.ADMIN)) {
 			return ResponseEntity.status(403).build();
@@ -137,7 +136,7 @@ public class UserController {
 	@PostMapping ("{employee}/newRole/{role}")
 	public ResponseEntity<User> changeUserRole(@PathVariable("employee")String employee, @PathVariable("role") String role, WebSession session){
 		
-		User loggedUser = (User) session.getAttribute(loginUserField);
+		User loggedUser = (User) session.getAttribute("loggedUser");
 		
 		User employeeData = userService.viewUser(loggedUser, employee).block();
 		
