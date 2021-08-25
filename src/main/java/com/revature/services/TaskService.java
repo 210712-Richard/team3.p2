@@ -7,16 +7,23 @@ import com.revature.beans.Task;
 import com.revature.beans.TaskCompletionStatus;
 import com.revature.beans.TaskPriority;
 import com.revature.beans.User;
+import com.revature.dto.TaskDTO;
 
 import reactor.core.publisher.Mono;
 
 public interface TaskService {
+	/**
+	 * 
+	 * @param boardId
+	 * @param taskId
+	 * @param status
+	 * @return
+	 */
+	Mono<Task> moveTask(UUID boardId, UUID taskId, TaskCompletionStatus status, TaskCompletionStatus newStatus);
 	
-	Mono<Task> moveTask(UUID taskId, TaskCompletionStatus status);
+	Mono<Task> addToProductBackLog(UUID product, TaskDTO task);
 	
-	Mono<Task> addToProductBackLog(UUID product, Task task);
-	
-	Mono<Task> makePriority(UUID taskId, TaskPriority priority);
+	Mono<Task> makePriority(UUID masterBoardId, UUID taskId, TaskPriority priority);
 	
 	Mono<Sprint> addToSprintBackLog(UUID sprint, UUID taskId);	
 	
