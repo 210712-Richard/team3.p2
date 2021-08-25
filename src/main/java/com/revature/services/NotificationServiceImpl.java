@@ -2,7 +2,8 @@ package com.revature.services;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.revature.beans.Notification;
@@ -22,10 +23,10 @@ import reactor.core.publisher.Mono;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
+	private static Logger log = LogManager.getLogger(NotificationServiceImpl.class);
 
 	private NotificationDAO nd;
-	
-	@Autowired
+
 	public NotificationServiceImpl(NotificationDAO nd) {
 		super();
 		this.nd = nd;

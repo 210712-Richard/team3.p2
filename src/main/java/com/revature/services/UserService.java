@@ -106,11 +106,12 @@ public interface UserService {
 	 * Allows a user to select a particular scrum board from the list of scrum
 	 * boards that they are a part of
 	 * 
-	 * @param user
-	 * @param boardId
-	 * @return
+	 * @param user The logged in user
+	 * @param product The currently selected product
+	 * @param boardId The id of the board that the user wants to check
+	 * @return A Mono of the board that the user selected
 	 */
 
-	Mono<ScrumBoard> selectScrumBoard(User user, UUID boardId);
+	Mono<ScrumBoard> selectScrumBoard(User user, Product product, UUID boardId);
 
 }

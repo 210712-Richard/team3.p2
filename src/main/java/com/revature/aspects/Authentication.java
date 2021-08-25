@@ -21,12 +21,12 @@ import reactor.core.publisher.Mono;
 /**
  * 
  * @author MuckJosh
- *	Used for authenticating user, and checks for developer,scrum master, product owner, and admin.
- *	
+ *	Used for authenticating user and 
  */
 @Aspect
 @Component
 public class Authentication {
+
 	
 	private static final Logger log = LogManager.getLogger(Authentication.class);
 	private User loggedUser;
@@ -39,12 +39,14 @@ public class Authentication {
 		this.adminDAO = adminDAO;
 	}
 
+
 	// Handler methods are void
 	@Around("loggedInHook()")
 	public ResponseEntity<Object> checkLoggedIn(ProceedingJoinPoint pjp) throws Throwable {
+
 		session = (WebSession) pjp.getTarget();
-		
 		loggedUser = session.getAttribute(loginUserField);
+
 		// Checking if logged in
 		if (loggedUser != null) {
 			pjp.proceed(); 
@@ -54,13 +56,13 @@ public class Authentication {
 	}
 	@Around("developerHook()")
 	public ResponseEntity<Object> checkDeveloper(ProceedingJoinPoint pjp) throws Throwable{
+
 		session = (WebSession) pjp.getTarget();
 		loggedUser = session.getAttribute(loginUserField);
 		ScrumBoard board = session.getAttribute("selectedBoard");
-		if(loggedUser == null || board == null) {
-			return ResponseEntity.status(401).build();
-		}
-		if(board.getUsers().stream().anyMatch(user -> user.equals(loggedUser.getUsername()))) {
+		if(board.getUsers().stream()
+				.filter(user -> user.equals(loggedUser.getUsername()))
+				.findFirst().isPresent()) {
 			pjp.proceed();
 			return null;
 		}
@@ -71,12 +73,9 @@ public class Authentication {
 	public ResponseEntity<Object> checkscrumMaster(ProceedingJoinPoint pjp) throws Throwable{
 		
 		session = (WebSession) pjp.getTarget();
-		
 		loggedUser = session.getAttribute(loginUserField);
+
 		ScrumBoard board = session.getAttribute("selectedBoard");
-		if(loggedUser == null || board == null) {
-			return ResponseEntity.status(401).build();
-		}
 		if(board.getScrumMasterUsername().equals(loggedUser.getUsername())) {
 			pjp.proceed();
 			return null;
@@ -86,14 +85,14 @@ public class Authentication {
 	}
 	@Around("productMasterHook()")
 	public ResponseEntity<Object> checkproductMaster(ProceedingJoinPoint pjp) throws Throwable{
-		
+	
+		// We know this method should only be applied to Handler methods,
+		// so there should be a websession.
 		session = (WebSession) pjp.getTarget();
-		
 		loggedUser = session.getAttribute(loginUserField);
+		User loggedUser = session.getAttribute("loggedUser");
+
 		Product product = session.getAttribute("selectedProduct");
-		if(loggedUser == null || product == null) {
-			return ResponseEntity.status(401).build();
-		}
 		if(product.getProductOwner().equals(loggedUser.getUsername())) {
 			pjp.proceed();
 			return null;
@@ -101,6 +100,7 @@ public class Authentication {
 		return ResponseEntity.status(401).build();	
 	}
 	
+
 	@Around("adminCheckHook()")
 	public Mono<ResponseEntity<Object>> adminCheck(ProceedingJoinPoint pjp) throws Throwable{
 		session = (WebSession) pjp.getTarget();
@@ -129,7 +129,4 @@ public class Authentication {
 	
 	@Pointcut("@annotation(com.revature.aspects.IsProductMaster)")
 	public void productMasterHook() {/* Hook for IsProductMaster */}
-	
-	@Pointcut("@annotation(com.revature.aspects.IsAdmin)")
-	public void adminCheckHook() {/* Hook for IsAdmin*/}
 }

@@ -21,6 +21,14 @@ public class SprintHistory {
 		super();
 	}
 
+	public List<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
+	}
+
 	public UUID getScrumboardID() {
 		return scrumboardID;
 	}

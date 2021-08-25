@@ -1,6 +1,5 @@
 package com.revature.services;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,11 +30,9 @@ public class TaskServiceImpl implements TaskService {
 	private UserDAO userDAO;
 
 	@Autowired
-	public TaskServiceImpl(TaskDAO taskDAO, SprintDAO sprintDAO, UserDAO userDAO) {
+	public TaskServiceImpl(TaskDAO taskDAO) {
 		super();
 		this.taskDAO = taskDAO;
-		this.sprintDAO = sprintDAO;
-		this.userDAO = userDAO;
 	}
 
 	@Override
@@ -89,12 +86,12 @@ public class TaskServiceImpl implements TaskService {
 
 	@Override
 	public Mono<User> assignTasks(UUID taskId, String username) {
-		return userDAO.findById(username).flatMap(dto -> {
-			List<UUID> list = dto.getTaskIds().stream().collect(Collectors.toList());
-			list.add(taskId);
-			dto.setTaskIds(list);
-			return userDAO.save(dto);
-		}).map(u -> u.getUser());
+
+		return userDAO.findById(username).map(dto -> {
+			dto.getTaskIds().add(taskId);
+			userDAO.save(dto);
+			return dto.getUser();
+		});
 	}
 
 	@Override
