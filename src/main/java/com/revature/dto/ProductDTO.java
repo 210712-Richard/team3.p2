@@ -1,5 +1,7 @@
 package com.revature.dto;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,8 +33,12 @@ public class ProductDTO {
 	@Column("masterboardid")
 	private UUID masterBoardID;
 	
-	
-	
+	public ProductDTO() {
+		this.scrumMasterBoardMap = new HashMap<UUID, String>();
+		this.boardIdNameMap = new HashMap<UUID, String>();
+		this.boardIds = new ArrayList<UUID>();
+		this.usernames = new ArrayList<String>();
+	}
 	
 	public ProductDTO(UUID id, String productOwner, Map<UUID, String> scrumMasterBoardMap, List<UUID> boardIds,
 			List<String> usernames, Map<UUID, String> boardIdNameMap, String productName, UUID masterBoardID) {

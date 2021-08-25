@@ -98,12 +98,12 @@ public class UserController {
 	}
 
 	// As a user, I can select a product
-	@PostMapping("/products/{product_id}")
-	public Mono<ResponseEntity<Product>> selectProduct(@PathVariable("product_id") String productId, WebSession session) {
+	@PostMapping("/products/{productId}")
+	public Mono<ResponseEntity<Product>> selectProduct(@PathVariable String productId, WebSession session) {
 		User user = session.getAttribute("loggedUser");
-		return userService.selectProduct(user, UUID.fromString(productId)).map(product -> {
-			session.getAttributes().put("selectedProduct", product);
-			return ResponseEntity.ok(product);
+		return userService.selectProduct(user, UUID.fromString(productId)).map(prod -> {
+			session.getAttributes().put("selectedProduct", prod);
+			return ResponseEntity.ok(prod);
 		}).switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
 	
