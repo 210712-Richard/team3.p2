@@ -7,6 +7,7 @@ import com.revature.beans.Task;
 import com.revature.beans.TaskCompletionStatus;
 import com.revature.beans.TaskPriority;
 import com.revature.beans.User;
+import com.revature.dto.TaskDTO;
 
 import reactor.core.publisher.Mono;
 
@@ -20,7 +21,7 @@ public interface TaskService {
 	 */
 	Mono<Task> moveTask(UUID boardId, UUID taskId, TaskCompletionStatus status, TaskCompletionStatus newStatus);
 	
-	Mono<Task> addToProductBackLog(UUID product, Task task);
+	Mono<Task> addToProductBackLog(UUID product, TaskDTO task);
 	
 	Mono<Task> makePriority(UUID masterBoardId, UUID taskId, TaskPriority priority);
 	

@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import com.revature.beans.TaskCompletionStatus;
 import com.revature.beans.TaskPriority;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
+import com.revature.dto.TaskDTO;
 import com.revature.services.TaskService;
 
 import reactor.core.publisher.Mono;
@@ -33,7 +35,7 @@ public class TaskController {
 	
 	
 	//As a developer, I can move my task on the scrumboard
-	@PatchMapping(value = "/move/{boardId}/{taskId}/{status}", produces = MediaType.APPLICATION_NDJSON_VALUE)
+	@PatchMapping(value = "/status/{boardId}/{taskId}/{status}", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("taskId") String taskId, @PathVariable("boardId") String boardId, @PathVariable("status") TaskCompletionStatus status, @RequestBody Task task, WebSession session){
 		/*
 		 * Authentication if not using aspect
@@ -52,10 +54,15 @@ public class TaskController {
 	}
 	
 	//As a Product Owner, I can add to the Product Backlog
-	@PutMapping("/{ProductId}")
-	public Mono<ResponseEntity<Object>> addToProductBackLog(@RequestBody Product product, Task task){
-		
-		return null;
+	@PostMapping("/{productId}")
+	public Mono<ResponseEntity<Object>> addToProductBackLog(@PathVariable("productId") UUID productId, @RequestBody TaskDTO task){
+		return taskService.addToProductBackLog(productId, task).map((s) -> {
+			if(s == null) {
+				return ResponseEntity.status(409).build();	
+			} else {
+				return ResponseEntity.ok(s);
+			}
+		});
 	}
 	
 	
