@@ -9,3 +9,5 @@ Background:
 	And cookie SESSION = signin.sessionCookie
 	When method delete
 	Then status 204
+
+	# lets see if this works
