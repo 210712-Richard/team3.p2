@@ -60,9 +60,7 @@ public class Authentication {
 		session = (WebSession) pjp.getTarget();
 		loggedUser = session.getAttribute(loginUserField);
 		ScrumBoard board = session.getAttribute("selectedBoard");
-		if(board.getUsers().stream()
-				.filter(user -> user.equals(loggedUser.getUsername()))
-				.findFirst().isPresent()) {
+		if(board.getUsers().stream().anyMatch(user -> user.equals(loggedUser.getUsername()))) {
 			pjp.proceed();
 			return null;
 		}

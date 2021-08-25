@@ -89,12 +89,12 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Override
 	public Mono<User> assignTasks(UUID taskId, String username) {
-
-		return userDAO.findById(username).map(dto -> {
-			dto.getTaskIds().add(taskId);
-			userDAO.save(dto);
-			return dto.getUser();
-		});
+		return userDAO.findById(username).flatMap(dto -> {
+			List<UUID> list = dto.getTaskIds().stream().collect(Collectors.toList());
+			list.add(taskId);
+			dto.setTaskIds(list);
+			return userDAO.save(dto);
+		}).map(u -> u.getUser());
 	}
 	
 	@Override

@@ -6,17 +6,20 @@
 @tag
 Feature: Sprints
 Background:
-			* def taskUuid = function(){ return java.util.UUID.fromString('99001ef7-db95-4efe-acd4-740f06c754d7')}
-
+			* def taskUuid = function(){ return java.util.UUID.fromString('')}
+			
+    
   @tag3
-  Scenario: As a Scrum Master send a patch request to users and receive the user with task
+  Scenario: As a Scrum Master send a post request to create a sprint
 		
-		Given url 'http://localhost:8080/scrums/assign/'
-		And path taskUuid()
-		And path 'users', 'test_username'
-		When method patch
+		Given url 'http://localhost:8080/sprints/'
+		And def signin = call read('classpath:userFeatures/login.feature')
+		And request {startDate:'2021-8-26', endDate:'2021-9-1', startTime:'09:00 AM',
+		endTime:'09:00AM'}
+		And cookie SESSION = signin.sessionCookie
+		When method post
 		Then status 200
-		And match response contains { username: 'test_username'}
+		And match response contains {}
 		
 		@Tag3
 		Scenario: As a Scrum Master send a patch request to a wrong users and a 404 
