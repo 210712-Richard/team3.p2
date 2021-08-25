@@ -2,8 +2,6 @@ package com.revature.controllers;
 
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +17,9 @@ import org.springframework.web.server.WebSession;
 
 import com.revature.beans.Notification;
 import com.revature.beans.Product;
+import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
-import com.revature.dto.UserDTO;
 import com.revature.services.NotificationService;
 import com.revature.services.UserService;
 
@@ -32,7 +30,6 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/users")
 public class UserController {
 
-	private static final Logger log = LogManager.getLogger(UserController.class);
 
 	@Autowired
 	private UserService userService;
@@ -104,6 +101,17 @@ public class UserController {
 		return userService.selectProduct(user, UUID.fromString(productId)).map(prod -> {
 			session.getAttributes().put("selectedProduct", prod);
 			return ResponseEntity.ok(prod);
+		}).switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
+	}
+	
+	// As a user, I can select a scrum board
+	@PostMapping("/scrumboards/{scrumId}")
+	public Mono<ResponseEntity<ScrumBoard>> selectScrumBoard(@PathVariable String scrumId, WebSession session) {
+		User user = session.getAttribute("loggedUser");
+		Product product = session.getAttribute("selectedProduct");
+		return userService.selectScrumBoard(user, product, UUID.fromString(scrumId)).map(scrum -> {
+			session.getAttributes().put("selectedScrumBoard", scrum);
+			return ResponseEntity.ok(scrum);
 		}).switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
 	
