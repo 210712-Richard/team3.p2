@@ -34,10 +34,7 @@ public class ProductDTO {
 	private UUID masterBoardID;
 	
 	public ProductDTO() {
-		this.scrumMasterBoardMap = new HashMap<UUID, String>();
-		this.boardIdNameMap = new HashMap<UUID, String>();
-		this.boardIds = new ArrayList<UUID>();
-		this.usernames = new ArrayList<String>();
+		
 	}
 	
 	public ProductDTO(UUID id, String productOwner, Map<UUID, String> scrumMasterBoardMap, List<UUID> boardIds,
@@ -85,25 +82,41 @@ public class ProductDTO {
 		this.productOwner = productOwner;
 	}
 	public Map<UUID, String> getScrumMasterBoardMap() {
-		return scrumMasterBoardMap;
+		if (scrumMasterBoardMap == null) {
+			return new HashMap<>();
+		} else {
+			return scrumMasterBoardMap;
+		}
 	}
 	public void setScrumMasterBoardMap(Map<UUID, String> scrumMasterBoardMap) {
 		this.scrumMasterBoardMap = scrumMasterBoardMap;
 	}
 	public List<UUID> getBoardIds() {
-		return boardIds;
+		if (boardIds == null) {
+			return new ArrayList<>();
+		} else {
+			return boardIds;
+		}
 	}
 	public void setBoardIds(List<UUID> boardIds) {
 		this.boardIds = boardIds;
 	}
 	public List<String> getUsernames() {
-		return usernames;
+		if (usernames == null) {
+			return new ArrayList<>();
+		} else {
+			return usernames;
+		}
 	}
 	public void setUsernames(List<String> usernames) {
 		this.usernames = usernames;
 	}
 	public Map<UUID, String> getBoardIdNameMap() {
-		return boardIdNameMap;
+		if (boardIdNameMap == null) {
+			return new HashMap<>();
+		} else {
+			return boardIdNameMap;
+		}
 	}
 	public void setBoardIdNameMap(Map<UUID, String> boardIdNameMap) {
 		this.boardIdNameMap = boardIdNameMap;

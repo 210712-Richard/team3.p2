@@ -1,5 +1,6 @@
 package com.revature.services;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,8 +98,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Flux<Product> viewProducts(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		return Flux
+				.fromStream(user.getProductIds().stream())
+				.flatMap(id -> productDao.findById(id))
+				.map(dto -> dto.getProduct());
 	}
 
 	@Override
