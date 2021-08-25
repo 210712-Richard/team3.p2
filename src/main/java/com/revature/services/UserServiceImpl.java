@@ -54,17 +54,25 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User roleChange(User user, User employee, String type) {
+	public Mono<User> roleChange(User user, Mono<User> employee, String type) {
 
-		if (user.getType().equals(UserType.valueOf("Admin"))) {
+			String username = employee.map(dto -> dto.getUsername()).toString();
+			
+			System.out.println("Username: "+ username);
+			
+			Mono<UserDTO> empDto = userDao.findById(username);
+			
+			
+			Mono<User> empUser =  empDto.map(dto -> {
+				User u = dto.getUser();
+				u.setType(UserType.valueOf(type));
 
-			employee.setType(UserType.valueOf(type));
-
-			return employee;
-		} else {
-			return null;
-		}
-
+				System.out.println("User after being changed: "+u);
+				return u;
+			});
+			
+			return empUser;
+			
 	}
 
 	@Override
@@ -82,7 +90,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void changeUserCredentials(User user, UserDTO employee, String password, String email, String type) {
 
-		if (user.getType().equals(UserType.valueOf("Admin"))) {
+		if (user.getType().equals(UserType.ADMIN)) {
 
 			employee.setType(UserType.valueOf(type));
 			employee.setPassword(password);

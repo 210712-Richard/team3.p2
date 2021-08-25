@@ -11,4 +11,11 @@ Feature: As an Admin, I can view a users credentials
 		Then status 200
 		And match response contains {username: "test_username"}
 		
-	
+#	Scenario: A user tries to view credentials and is denied
+#		* def signin = call read('Login.feature')
+#		
+#		Given url loginUrl + "/test_username"
+#		And cookie SESSION = signin.sessionCookie
+#		When method get
+#		Then status 403
+#		

@@ -123,16 +123,23 @@ public class UserController {
 
 	// As an Admin I can change user roles
 	@PostMapping ("{employee}/newRole/{role}")
-	public ResponseEntity<User> changeUserRole(@PathVariable("employee")String employee, @PathVariable("role") String role, WebSession session){
+	public ResponseEntity<Mono<User>> changeUserRole(@PathVariable("employee")String employee, @PathVariable("role") String role, WebSession session){
 		
 		User loggedUser = (User) session.getAttribute("loggedUser");
 		
-		User employeeData = userService.viewUser(loggedUser, employee).block();
+		if (!loggedUser.getType().equals(UserType.ADMIN)) {
+			return ResponseEntity.status(403).build();
 		
-		User changedEmp = userService.roleChange(loggedUser, employeeData, role);
+		} else {
+		Mono<User> employeeData = userService.viewUser(loggedUser, employee);
+		log.trace("employeeData: "+ employeeData);
+		
+		
+		Mono<User> changedEmp = userService.roleChange(loggedUser, employeeData, role);
 	
+		log.trace("Changed Employee: "  + changedEmp);
 		return ResponseEntity.ok(changedEmp);
-		
+		}
 		
 	}
 

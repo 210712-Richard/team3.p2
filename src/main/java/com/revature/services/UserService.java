@@ -64,11 +64,11 @@ public interface UserService {
 	 * Allows an admin user to change the UserType of a user
 	 * 
 	 * @param user
-	 * @param employee
+	 * @param employeeData
 	 * @String type
 	 */
 
-	User roleChange(User user, User employee, String type);
+	Mono<User> roleChange(User user, Mono<User> employeeData, String type);
 	
 
 	
