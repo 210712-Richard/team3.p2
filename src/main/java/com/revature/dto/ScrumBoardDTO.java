@@ -19,7 +19,13 @@ public class ScrumBoardDTO {
 	private String name;
 	@Column("scrummaster")
 	private String scrumMaster;
+	@Column("productid")
+	private UUID productId;
 
+	public ScrumBoardDTO() {
+		super();
+	}
+	
 	public ScrumBoardDTO(ScrumBoard board) {
 		super();
 		this.boardId = board.getId();
@@ -59,9 +65,17 @@ public class ScrumBoardDTO {
 		this.scrumMaster = scrumMaster;
 	}
 
+	public UUID getProductId() {
+		return productId;
+	}
+
+	public void setProductId(UUID productId) {
+		this.productId = productId;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(boardId, name, scrumMaster);
+		return Objects.hash(boardId, name, productId, scrumMaster);
 	}
 
 	@Override
@@ -74,12 +88,13 @@ public class ScrumBoardDTO {
 			return false;
 		ScrumBoardDTO other = (ScrumBoardDTO) obj;
 		return Objects.equals(boardId, other.boardId) && Objects.equals(name, other.name)
-				&& Objects.equals(scrumMaster, other.scrumMaster);
+				&& Objects.equals(productId, other.productId) && Objects.equals(scrumMaster, other.scrumMaster);
 	}
 
 	@Override
 	public String toString() {
-		return "ScrumBoardDTO [boardId=" + boardId + ", name=" + name + ", scrumMaster=" + scrumMaster + "]";
+		return "ScrumBoardDTO [boardId=" + boardId + ", name=" + name + ", scrumMaster=" + scrumMaster + ", productId="
+				+ productId + "]";
 	}
 
 }

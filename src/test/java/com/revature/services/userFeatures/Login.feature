@@ -15,3 +15,12 @@ Feature: Login a User
     When method post
     Then status 401
   
+  
+  Scenario: Send a request and successfully login as an ADMIN
+       Given url loginUrl + '/login'
+    And request {username : 'admin', password : 'admin'}
+    When method post
+    Then status 200
+    And match response contains {username: 'admin'}
+    And match responseCookies contains {SESSION: '#notnull'}
+    And def adminSessionCookie = responseCookies.SESSION
