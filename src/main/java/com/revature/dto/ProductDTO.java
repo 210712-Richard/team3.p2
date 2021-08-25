@@ -34,10 +34,10 @@ public class ProductDTO {
 	private UUID masterBoardID;
 	
 	public ProductDTO() {
-		this.scrumMasterBoardMap = new HashMap<UUID, String>();
-		this.boardIdNameMap = new HashMap<UUID, String>();
-		this.boardIds = new ArrayList<UUID>();
-		this.usernames = new ArrayList<String>();
+		this.scrumMasterBoardMap = new HashMap<>();
+		this.boardIdNameMap = new HashMap<>();
+		this.boardIds = new ArrayList<>();
+		this.usernames = new ArrayList<>();
 	}
 	
 	public ProductDTO(UUID id, String productOwner, Map<UUID, String> scrumMasterBoardMap, List<UUID> boardIds,

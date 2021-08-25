@@ -1,9 +1,12 @@
 package com.revature.aspects;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.WebSession;
@@ -11,25 +14,36 @@ import org.springframework.web.server.WebSession;
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
+import com.revature.data.AdminDAO;
+
+import reactor.core.publisher.Mono;
 
 /**
  * 
  * @author MuckJosh
- *	Used for authenticating user and 
+ *	Used for authenticating user, and checks for developer,scrum master, product owner, and admin.
+ *	
  */
 @Aspect
 @Component
 public class Authentication {
+	
+	private static final Logger log = LogManager.getLogger(Authentication.class);
+	private User loggedUser;
+	private WebSession session;
+	private AdminDAO adminDAO;
+	
+	@Autowired
+	public Authentication(AdminDAO adminDAO) {
+		this.adminDAO = adminDAO;
+	}
 
 	// Handler methods are void
 	@Around("loggedInHook()")
 	public ResponseEntity<Object> checkLoggedIn(ProceedingJoinPoint pjp) throws Throwable {
-		WebSession session = null;
-		// We know this method should only be applied to Handler methods,
-		// so there should be a websession.
 		session = (WebSession) pjp.getTarget();
 		
-		User loggedUser = session.getAttribute("loggedUser");
+		loggedUser = session.getAttribute("loggedUser");
 		// Checking if logged in
 		if (loggedUser != null) {
 			pjp.proceed(); 
@@ -39,15 +53,13 @@ public class Authentication {
 	}
 	@Around("developerHook()")
 	public ResponseEntity<Object> checkDeveloper(ProceedingJoinPoint pjp) throws Throwable{
-		WebSession session = null;
-		// We know this method should only be applied to Handler methods,
-		// so there should be a websession.
 		session = (WebSession) pjp.getTarget();
-		User loggedUser = session.getAttribute("loggedUser");
+		loggedUser = session.getAttribute("loggedUser");
 		ScrumBoard board = session.getAttribute("selectedBoard");
-		if(board.getUsers().stream()
-				.filter(user -> user.equals(loggedUser.getUsername()))
-				.findFirst().isPresent()) {
+		if(loggedUser == null || board == null) {
+			return ResponseEntity.status(401).build();
+		}
+		if(board.getUsers().stream().anyMatch(user -> user.equals(loggedUser.getUsername()))) {
 			pjp.proceed();
 			return null;
 		}
@@ -57,13 +69,13 @@ public class Authentication {
 	@Around("scrumMasterHook()")
 	public ResponseEntity<Object> checkscrumMaster(ProceedingJoinPoint pjp) throws Throwable{
 		
-		WebSession session = null;
-		// We know this method should only be applied to Handler methods,
-		// so there should be a websession.
 		session = (WebSession) pjp.getTarget();
 		
-		User loggedUser = session.getAttribute("loggedUser");
+		loggedUser = session.getAttribute("loggedUser");
 		ScrumBoard board = session.getAttribute("selectedBoard");
+		if(loggedUser == null || board == null) {
+			return ResponseEntity.status(401).build();
+		}
 		if(board.getScrumMasterUsername().equals(loggedUser.getUsername())) {
 			pjp.proceed();
 			return null;
@@ -74,18 +86,35 @@ public class Authentication {
 	@Around("productMasterHook()")
 	public ResponseEntity<Object> checkproductMaster(ProceedingJoinPoint pjp) throws Throwable{
 		
-		WebSession session = null;
-		// We know this method should only be applied to Handler methods,
-		// so there should be a websession.
 		session = (WebSession) pjp.getTarget();
 		
-		User loggedUser = session.getAttribute("loggedUser");
+		loggedUser = session.getAttribute("loggedUser");
 		Product product = session.getAttribute("selectedProduct");
+		if(loggedUser == null || product == null) {
+			return ResponseEntity.status(401).build();
+		}
 		if(product.getProductOwner().equals(loggedUser.getUsername())) {
 			pjp.proceed();
 			return null;
 		}
 		return ResponseEntity.status(401).build();	
+	}
+	
+	@Around("adminCheckHook()")
+	public Mono<ResponseEntity<Object>> adminCheck(ProceedingJoinPoint pjp) throws Throwable{
+		WebSession session = (WebSession) pjp.getTarget();
+		User loggedUser = session.getAttribute("loggedUser");
+		if(loggedUser == null) {
+			return Mono.just(ResponseEntity.status(401).build());
+		}
+		return adminDAO.findById(loggedUser.getUsername()).map(dto ->{
+			try {
+				pjp.proceed();
+			} catch (Throwable e) {
+				log.atError().log(e);
+			}
+			return ResponseEntity.status(401).build();
+		});
 	}
 	
 	@Pointcut("@annotation(com.revature.aspects.LoggedIn)")
@@ -99,4 +128,7 @@ public class Authentication {
 	
 	@Pointcut("@annotation(com.revature.aspects.IsProductMaster)")
 	public void productMasterHook() {/* Hook for IsProductMaster */}
+	
+	@Pointcut("@annotation(com.revature.aspects.IsAdmin)")
+	public void adminCheckHook() {/* Hook for IsAdmin*/}
 }

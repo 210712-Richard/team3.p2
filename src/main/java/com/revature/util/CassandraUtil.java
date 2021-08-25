@@ -10,10 +10,12 @@ import org.springframework.data.cassandra.core.CassandraOperations;
 import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.data.cassandra.core.convert.CassandraConverter;
 import org.springframework.data.cassandra.core.convert.MappingCassandraConverter;
+import org.springframework.data.cassandra.core.cql.QueryOptions;
 import org.springframework.data.cassandra.core.mapping.CassandraMappingContext;
 import org.springframework.data.cassandra.core.mapping.SimpleUserTypeResolver;
 import org.springframework.data.cassandra.repository.config.EnableReactiveCassandraRepositories;
 
+import com.datastax.oss.driver.api.core.ConsistencyLevel;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.config.DriverConfigLoader;
 
@@ -59,4 +61,7 @@ public class CassandraUtil {
 	public CassandraOperations cassandraTemplate(SessionFactory sessionFactory, CassandraConverter converter) {
 		return new CassandraTemplate(sessionFactory, converter);
 	}
+	protected QueryOptions queryOptions() {
+		 return QueryOptions.builder().consistencyLevel(ConsistencyLevel.LOCAL_QUORUM).build();
+		}
 }

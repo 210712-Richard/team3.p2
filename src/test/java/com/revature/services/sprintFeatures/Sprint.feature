@@ -4,14 +4,14 @@
 #Background: taskUuid to create uuid for a task.
 
 @tag
-Feature: Sprints
+Feature: CRUD a Sprint
 Background:
 			* def taskUuid = function(){ return java.util.UUID.fromString('99001ef7-db95-4efe-acd4-740f06c754d7')}
 
-  @tag3
-  Scenario: As a Scrum Master send a patch request to users and receive the user with task
+  @tag1
+  Scenario: As a Scrum Master I can create a sprint
 		
-		Given url 'http://localhost:8080/scrums/assign/'
+		Given url 'http://localhost:8080/sprints/assign/'
 		And path taskUuid()
 		And path 'users', 'test_username'
 		When method patch

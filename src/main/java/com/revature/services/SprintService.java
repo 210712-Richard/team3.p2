@@ -1,6 +1,5 @@
 package com.revature.services;
 
+public interface SprintService {
 
-public interface ScrumService {
-	
 }
