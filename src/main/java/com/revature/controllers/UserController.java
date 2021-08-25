@@ -115,6 +115,13 @@ public class UserController {
 		}).switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
 	
+	// As a user, I can view all the products I am involved with
+	@GetMapping("/products")
+	public ResponseEntity<Flux<Product>> viewProducts(WebSession session) {
+		User user = session.getAttribute("loggedUser");
+		return ResponseEntity.ok(userService.viewProducts(user));
+	}
+	
 	// As an Admin I can view a user
 	@GetMapping("{employee}")
 	public ResponseEntity<Mono<User>> getCurrentUsers(@PathVariable("employee") String employee,
