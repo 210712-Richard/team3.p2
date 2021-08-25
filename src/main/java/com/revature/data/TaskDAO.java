@@ -6,7 +6,6 @@ import org.springframework.data.cassandra.repository.Query;
 import org.springframework.data.cassandra.repository.ReactiveCassandraRepository;
 
 import com.revature.dto.TaskDTO;
-import com.revature.beans.TaskCompletionStatus;
 
 import reactor.core.publisher.Mono;
 

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.WebSession;
 
-import com.revature.beans.Product;
 import com.revature.beans.Sprint;
 import com.revature.beans.Task;
 import com.revature.beans.TaskCompletionStatus;
