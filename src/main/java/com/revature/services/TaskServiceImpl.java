@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +21,6 @@ import reactor.core.publisher.Mono;
 @Service
 public class TaskServiceImpl implements TaskService {
 
-	private static Logger log = LogManager.getLogger(TaskServiceImpl.class);
 
 	private TaskDAO taskDAO;
 	private SprintDAO sprintDAO;
