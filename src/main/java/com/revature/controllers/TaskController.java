@@ -23,6 +23,7 @@ import com.revature.beans.User;
 import com.revature.beans.UserType;
 import com.revature.dto.TaskDTO;
 import com.revature.services.TaskService;
+import com.revature.util.WebSessionAttributes;
 
 import reactor.core.publisher.Mono;
 
@@ -37,13 +38,6 @@ public class TaskController {
 	//As a developer, I can move my task on the scrumboard
 	@PatchMapping(value = "/status/{boardId}/{taskId}/{status}", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("taskId") String taskId, @PathVariable("boardId") String boardId, @PathVariable("status") TaskCompletionStatus status, @RequestBody Task task, WebSession session){
-		/*
-		 * Authentication if not using aspect
-		User loggedUser = (User) session.getAttribute("loggedUser");
-		if(loggedUser == null || !UserType.DEVELOPER.equals(loggedUser.getType())) {
-			return Mono.just(ResponseEntity.status(403).build());
-		}
-		*/
 		return taskService.moveTask(UUID.fromString(boardId), UUID.fromString(taskId), status, task.getStatus()).map((s) -> {
 			if(s == null) {
 				return ResponseEntity.status(409).build();
@@ -69,12 +63,6 @@ public class TaskController {
 	//As a Product Owner, I can add a priority to an existing Product backlog task
 	@PatchMapping(value = "/priority/{masterBoardId}/{taskId}/{priority}", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Mono<ResponseEntity<Task>> makePriority(@PathVariable ("masterBoardId") String masterBoardId, @PathVariable ("taskId") String taskId, @PathVariable ("priority") TaskPriority priority, WebSession session){
-		/*
-		User loggedUser = (User) session.getAttribute("loggedUser");
-		if(loggedUser == null || !UserType.PRODUCT_OWNER.equals(loggedUser.getType())) {
-			return Mono.just(ResponseEntity.status(403).build());
-		}
-		*/
 		return taskService.makePriority(UUID.fromString(masterBoardId), UUID.fromString(taskId), priority).map((s) ->  {
 			if(s == null) {
 				return ResponseEntity.status(409).build();
@@ -88,7 +76,7 @@ public class TaskController {
 	//As a Scrum Master, I can add to the Sprint backLog from the Product Backlog
 	@PutMapping("/{sprintId}/{taskId}")
 	public Mono<ResponseEntity<Sprint>> addToSprintBackLog(@PathVariable ("sprintId") UUID sprintId, @PathVariable ("taskId") UUID taskId, WebSession session){
-		User loggedUser = (User) session.getAttribute("loggedUser");
+		User loggedUser = (User) session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if(loggedUser == null || !UserType.SCRUM_MASTER.equals(loggedUser.getType())) {
 			return Mono.just(ResponseEntity.status(403).build());
 		}

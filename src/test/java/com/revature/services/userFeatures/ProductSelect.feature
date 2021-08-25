@@ -2,10 +2,11 @@ Feature: A Product can be selected after login, from which a user can continue p
 
 	Scenario: A user logs in and selects a product
 		
-	Background:
-		* def signin = call read('Login.feature')	
+	#Background:
+		#* def signin = call read('Login.feature')	
 		
 		Given url 'http://localhost:8080/users/products/b7b49fc0-02ca-11ec-a3ea-0800200c9a66'
+		And def signin = call read('Login.feature')
 		And cookie SESSION = signin.sessionCookie
 		When method post 
 		Then status 200
