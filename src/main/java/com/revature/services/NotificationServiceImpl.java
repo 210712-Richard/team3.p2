@@ -21,7 +21,6 @@ import reactor.core.publisher.Mono;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-
 	private NotificationDAO nd;
 
 	public NotificationServiceImpl(NotificationDAO nd) {
