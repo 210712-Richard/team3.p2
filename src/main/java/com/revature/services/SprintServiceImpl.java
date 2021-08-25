@@ -32,7 +32,7 @@ public class SprintServiceImpl implements SprintService {
 	}
 
 	@Override
-	public Mono<Sprint> retireCurrentSprint(UUID boardId) {
+	public Mono<Sprint> retireCurrentSprint(UUID scrumboardID) {
 		
 		return null;//sprintDao.findByBoardIdAndStatus(boardId, SprintStatus.CURRENT);
 	}

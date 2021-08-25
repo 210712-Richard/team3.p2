@@ -2,8 +2,6 @@ package com.revature.services;
 
 import java.util.UUID;
 
-import org.springframework.http.ResponseEntity;
-
 import com.revature.beans.Sprint;
 
 import reactor.core.publisher.Mono;
@@ -28,6 +26,6 @@ public interface SprintService {
 	 * @param sprintId  id of the sprint to be modified
 	 * @return returns the sprint to be closed
 	 */
-	Mono<Sprint> retireCurrentSprint(UUID boardId);
+	Mono<Sprint> retireCurrentSprint(UUID scrumboardID);
 
 }

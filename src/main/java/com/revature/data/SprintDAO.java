@@ -10,5 +10,5 @@ import com.revature.dto.SprintDTO;
 import reactor.core.publisher.Mono;
 
 public interface SprintDAO extends ReactiveCassandraRepository<SprintDTO, String>{
-	Mono<SprintDTO> findByBoardIdAndStatus(UUID boardId, SprintStatus status);
+	Mono<SprintDTO> findByScrumboardIDAndStatus(UUID scrumboardID, SprintStatus status);
 }
