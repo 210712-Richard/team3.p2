@@ -5,7 +5,7 @@ import com.intuit.karate.junit5.Karate;
 public class ScrumBoardSelectRunner {
 	
 	@Karate.Test
-	Karate testProductSelect() {
+	Karate testScrumBoardSelect() {
 		return Karate.run("ScrumBoardSelect").relativeTo(getClass());
 	}
 }
