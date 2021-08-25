@@ -20,6 +20,10 @@ public class ScrumBoardDTO {
 	@Column("scrummaster")
 	private String scrumMaster;
 
+	public ScrumBoardDTO() {
+		super();
+	}
+	
 	public ScrumBoardDTO(ScrumBoard board) {
 		super();
 		this.boardId = board.getId();
