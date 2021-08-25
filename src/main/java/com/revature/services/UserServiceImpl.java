@@ -14,6 +14,7 @@ import com.revature.data.ScrumBoardDAO;
 import com.revature.data.TaskDAO;
 import com.revature.data.UserDAO;
 import com.revature.dto.ProductDTO;
+import com.revature.dto.ScrumBoardDTO;
 import com.revature.dto.UserDTO;
 
 import reactor.core.publisher.Flux;
@@ -120,9 +121,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Mono<ScrumBoard> selectScrumBoard(User user, UUID boardId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Mono<ScrumBoard> selectScrumBoard(User user, Product product, UUID boardId) {
+		Mono<ScrumBoardDTO> scrumData = scrumDao.findByBoardId(boardId);
+		return scrumData
+				.flatMap(dto -> {
+					if (user.getBoardIds().contains(boardId) && product.getBoardIds().contains(boardId)) {
+						return Mono.just(dto.getScrumBoard());
+					} else {
+						return Mono.empty();
+					}
+				});
 	}
 
 
