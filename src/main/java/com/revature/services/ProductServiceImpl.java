@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Mono<User> addProductById(String username, UUID productId) {
 		return userDAO.findById(username).flatMap(dto -> {
-			List<UUID> list = dto.getProductIds();// .stream().collect(Collectors.toList());
+			List<UUID> list = dto.getProductIds();
 			if (!list.contains(productId)) {
 				list.add(productId);
 				dto.setProductIds(list);
