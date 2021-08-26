@@ -29,9 +29,9 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public void notify(User user, String message) {
+	public void notify(String username, String message) {
 		Notification note = new Notification();
-		note.setUsername(user.getUsername());
+		note.setUsername(username);
 		note.setMessage(message);
 		note.setId(UUID.randomUUID());
 		nd.save(new NotificationDTO(note));

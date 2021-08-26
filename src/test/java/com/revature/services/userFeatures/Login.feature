@@ -8,3 +8,4 @@ Feature: Login a User
     And match response contains {username: 'test_username'}
     And match responseCookies contains {SESSION: '#notnull'}
     And def sessionCookie = responseCookies.SESSION
+

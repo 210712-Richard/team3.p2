@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.WebSession;
 
+import com.revature.beans.ScrumBoard;
 import com.revature.beans.Sprint;
 import com.revature.beans.Task;
 import com.revature.beans.TaskCompletionStatus;
@@ -21,6 +22,7 @@ import com.revature.beans.TaskPriority;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
 import com.revature.dto.TaskDTO;
+import com.revature.services.NotificationService;
 import com.revature.services.TaskService;
 import com.revature.util.WebSessionAttributes;
 
@@ -32,6 +34,9 @@ public class TaskController {
 	
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	private NotificationService notificationService;
 	
 	
 	//As a developer, I can move my task on the scrumboard
@@ -95,6 +100,15 @@ public class TaskController {
 		return taskService.assignTasks(id, username)
 				.map( user -> ResponseEntity.ok(user))
 				.defaultIfEmpty(ResponseEntity.status(404).build());
+	}
+	
+	@PostMapping("/apply/{id}")
+	public Mono<ResponseEntity<String>> applyTask(@PathVariable("id") UUID id, WebSession session){
+		ScrumBoard board = session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD);
+		User loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
+		String message = loggedUser.getUsername() + " wants to apply for the task " + id;
+		notificationService.notify(board.getScrumMasterUsername(), message);
+		return Mono.just(ResponseEntity.ok("You have successfully applied for this task!"));
 	}
 	
 	@PatchMapping(value = "/remove/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)

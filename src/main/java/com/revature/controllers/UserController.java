@@ -78,7 +78,7 @@ public class UserController {
 	}
 
 	// As a User I can logout
-	@DeleteMapping
+	@DeleteMapping("/logout")
 	public ResponseEntity<Void> logout(WebSession session) {
 		session.invalidate();
 		return ResponseEntity.noContent().build();
