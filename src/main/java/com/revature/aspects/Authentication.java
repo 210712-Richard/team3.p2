@@ -42,7 +42,7 @@ public class Authentication {
 	public Object checkLoggedIn(ProceedingJoinPoint pjp) throws Throwable {
 		setSession(pjp);
 		if (session == null) {
-			return ResponseEntity.status(401).build();
+			return Mono.just(ResponseEntity.status(405).build());
 		}
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 
@@ -50,7 +50,7 @@ public class Authentication {
 		if (loggedUser != null) {
 			return pjp.proceed();
 		}
-		return ResponseEntity.status(401).build();
+		return Mono.just(ResponseEntity.status(405).build());
 	}
 
 	@Around("developerHook()")
@@ -154,10 +154,10 @@ public class Authentication {
 	public void adminCheckHook() {
 		/* Hook for IsAdmin */}
 	private void setSession(ProceedingJoinPoint pjp) {
-		session = null;
 		for (Object o : pjp.getArgs()) {
 			if (o instanceof WebSession) {
 				session = (WebSession) o;
+				log.debug(session);
 			}
 		}
 	}
