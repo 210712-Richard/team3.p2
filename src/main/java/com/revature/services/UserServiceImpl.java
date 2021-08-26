@@ -1,12 +1,10 @@
 package com.revature.services;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.revature.aspects.LoggedIn;
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;

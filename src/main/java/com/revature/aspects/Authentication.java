@@ -40,14 +40,8 @@ public class Authentication {
 	// Handler methods are void
 	@Around("loggedInHook()")
 	public Object checkLoggedIn(ProceedingJoinPoint pjp) throws Throwable {
-		session = null;
-		for (Object o : pjp.getArgs()) {
-			if (o instanceof WebSession) {
-				session = (WebSession) o;
-			}
-		}
+		setSession(pjp);
 		if (session == null) {
-			System.out.println(session + " session is null");
 			return ResponseEntity.status(401).build();
 		}
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
@@ -61,12 +55,7 @@ public class Authentication {
 
 	@Around("developerHook()")
 	public Object checkDeveloper(ProceedingJoinPoint pjp) throws Throwable {
-		session = null;
-		for (Object o : pjp.getArgs()) {
-			if (o instanceof WebSession) {
-				session = (WebSession) o;
-			}
-		}
+		setSession(pjp);
 		if (session == null)
 			return ResponseEntity.status(401).build();
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
@@ -85,12 +74,7 @@ public class Authentication {
 
 	@Around("scrumMasterHook()")
 	public Object checkscrumMaster(ProceedingJoinPoint pjp) throws Throwable {
-		session = null;
-		for (Object o : pjp.getArgs()) {
-			if (o instanceof WebSession) {
-				session = (WebSession) o;
-			}
-		}
+		setSession(pjp);
 		if (session == null)
 			return ResponseEntity.status(401).build();
 
@@ -111,12 +95,7 @@ public class Authentication {
 
 	@Around("productMasterHook()")
 	public Object checkproductMaster(ProceedingJoinPoint pjp) throws Throwable {
-		session = null;
-		for (Object o : pjp.getArgs()) {
-			if (o instanceof WebSession) {
-				session = (WebSession) o;
-			}
-		}
+		setSession(pjp);
 		if (session == null) {
 			return ResponseEntity.status(401).build();
 		}
@@ -136,10 +115,10 @@ public class Authentication {
 
 	@Around("adminCheckHook()")
 	public Object adminCheck(ProceedingJoinPoint pjp) throws Throwable {
-		for (Object o : pjp.getArgs()) {
-			if (o instanceof WebSession) {
-				session = (WebSession) o;
-			}
+		
+		setSession(pjp);
+		if (session == null) {
+			return ResponseEntity.status(401).build();
 		}
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if (loggedUser == null) {
@@ -174,4 +153,12 @@ public class Authentication {
 	@Pointcut("@annotation(com.revature.aspects.IsAdmin)")
 	public void adminCheckHook() {
 		/* Hook for IsAdmin */}
+	private void setSession(ProceedingJoinPoint pjp) {
+		session = null;
+		for (Object o : pjp.getArgs()) {
+			if (o instanceof WebSession) {
+				session = (WebSession) o;
+			}
+		}
+	}
 }
