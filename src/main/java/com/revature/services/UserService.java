@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
-import com.revature.dto.UserDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
