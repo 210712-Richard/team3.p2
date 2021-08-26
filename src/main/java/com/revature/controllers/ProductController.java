@@ -1,5 +1,6 @@
 package com.revature.controllers;
 
+
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.WebSession;
-
 import com.revature.beans.Product;
 import com.revature.beans.User;
-import com.revature.beans.UserType;
-import com.revature.services.ProductService;
-import com.revature.util.WebSessionAttributes;
 
+import com.revature.services.ProductService;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -29,26 +27,22 @@ public class ProductController {
 	private ProductService productService;
 	
 	@PostMapping
-	public ResponseEntity<Object> createNewProduct(@RequestBody Product product, WebSession session) {
-		User loggedUser = (User) session.getAttribute(WebSessionAttributes.LOGGED_USER);
-		if (loggedUser == null || !UserType.PRODUCT_OWNER.equals(loggedUser.getType())) {
-			return ResponseEntity.status(403).build();
-		}
+	public ResponseEntity<Product> createNewProduct(@RequestBody Product product, WebSession session) {
+
 		Product newProduct = productService.createNewProduct(product.getId(), product.getProductOwner(), product.getScrumMasterBoardMap(), product.getBoardIds(), product.getUsernames(), product.getBoardIdNameMap(), product.getProductName(), product.getMasterBoardId());  
 				return ResponseEntity.ok(newProduct);
 
 	}
 
-	@PutMapping(value = "/add/{username}/users/{id}/", produces = MediaType.APPLICATION_JSON_VALUE )
-	public Mono<ResponseEntity<Product>>addById(@RequestBody Product product,
-			@PathVariable("username")String username, @PathVariable("id") UUID id, WebSession session) {
-		User loggedUser = (User) session.getAttribute(WebSessionAttributes.LOGGED_USER);
-		if (loggedUser == null || !UserType.PRODUCT_OWNER.equals(loggedUser.getType())) {
-			return Mono.just(ResponseEntity.status(403).build());
-		}
-		productService.addProductById(username, id);
-		return Mono.just(ResponseEntity.ok(product));
+	@PutMapping(value = "/add/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE )
+	public Mono<ResponseEntity<User>>addById( @PathVariable("id") UUID id,
+			@PathVariable("username")String username) {
+
+		return productService.addProductById(username, id)
+				.map( user -> ResponseEntity.ok(user))
+				.defaultIfEmpty(ResponseEntity.status(404).build());
 	}
+	
 	
 	@PutMapping(value = "/remove/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Mono<ResponseEntity<User>> removeById( @PathVariable("id") UUID id, @PathVariable("username") String username) {
@@ -58,6 +52,4 @@ public class ProductController {
 				.map( user -> ResponseEntity.ok(user))
 				.defaultIfEmpty(ResponseEntity.status(404).build());
 	}
-	
-
 }

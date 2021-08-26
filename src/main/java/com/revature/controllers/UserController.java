@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.WebSession;
 
+import com.revature.aspects.LoggedIn;
 import com.revature.beans.Notification;
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
@@ -77,7 +78,7 @@ public class UserController {
 	}
 
 	// As a User I can logout
-	@DeleteMapping
+	@DeleteMapping("/logout")
 	public ResponseEntity<Void> logout(WebSession session) {
 		session.invalidate();
 		return ResponseEntity.noContent().build();
@@ -94,6 +95,7 @@ public class UserController {
 	}
 
 	// As a user, I can select a product
+	@LoggedIn
 	@PostMapping("/products/{productId}")
 	public Mono<ResponseEntity<Product>> selectProduct(@PathVariable String productId, WebSession session) {
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);

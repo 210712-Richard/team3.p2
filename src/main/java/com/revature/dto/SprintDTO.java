@@ -23,14 +23,16 @@ public class SprintDTO {
 	@Column("sprintid") 
 	private UUID id;
 	@Column("startdate") 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate startDate;
 	@Column("enddate") 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate endDate;
 	@Column("starttime") 
-	@JsonFormat(pattern = "KK:mm a")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "KK:mm a")
 	private LocalTime startTime;
 	@Column("endtime") 
-	@JsonFormat(pattern = "KK:mm a")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "KK:mm a")
 	private LocalTime endTime;
 	@Column("taskids")
 	private List<UUID> taskIds;
@@ -58,7 +60,6 @@ public class SprintDTO {
 		sprint.setEndDate(this.endDate);
 		sprint.setStartTime(this.startTime);
 		sprint.setEndTime(this.endTime);
-		
 		return sprint;
 	}
 	

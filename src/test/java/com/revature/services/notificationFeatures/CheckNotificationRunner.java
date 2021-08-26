@@ -1,4 +1,4 @@
-package com.revature.services.test;
+package com.revature.services.notificationFeatures;
 
 import com.intuit.karate.junit5.Karate;
 
