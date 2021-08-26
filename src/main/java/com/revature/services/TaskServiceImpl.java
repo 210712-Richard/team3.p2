@@ -89,7 +89,7 @@ public class TaskServiceImpl implements TaskService{
 			t.setBoardId(s.getId());
 			t.setStatus(TaskCompletionStatus.BACKLOG);
 			taskDAO.save(new TaskDTO(t)).subscribe();
-			List<UUID> nList = new ArrayList<UUID>();
+			List<UUID> nList = new ArrayList<>();
 			if(s.getTaskIds() != null) {
 				Collections.copy(nList, s.getTaskIds());
 			}

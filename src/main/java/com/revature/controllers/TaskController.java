@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,12 +15,10 @@ import org.springframework.web.server.WebSession;
 
 import com.revature.beans.ScrumBoard;
 import com.revature.beans.Sprint;
-import com.revature.beans.SprintStatus;
 import com.revature.beans.Task;
 import com.revature.beans.TaskCompletionStatus;
 import com.revature.beans.TaskPriority;
 import com.revature.beans.User;
-import com.revature.beans.UserType;
 import com.revature.dto.TaskDTO;
 import com.revature.services.NotificationService;
 import com.revature.services.TaskService;
@@ -81,7 +78,7 @@ public class TaskController {
 	//As a Scrum Master, I can add to the Sprint backLog from the Product Backlog
 	@PatchMapping(value = "/{taskBoardId}/{taskStatus}/{taskId}", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Mono<ResponseEntity<Sprint>> addToSprintBackLog(@PathVariable ("taskBoardId") UUID taskBoardId, @PathVariable ("taskStatus") TaskCompletionStatus taskStatus, @PathVariable ("taskId") UUID taskId, @RequestBody Sprint sprint, WebSession session){
-		return taskService.addToSprintBackLog(sprint.getScrumboardID(), sprint.getStatus(), taskBoardId, taskStatus, taskId).map((s) -> {
+		return taskService.addToSprintBackLog(sprint.getScrumboardID(), sprint.getStatus(), taskBoardId, taskStatus, taskId).map(s -> {
 			if(s == null) {
 				return ResponseEntity.status(409).build();
 			} else {

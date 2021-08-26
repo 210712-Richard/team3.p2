@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
-import com.revature.dto.UserDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -55,8 +54,8 @@ public interface UserService {
 	 * @return User the updated user of the employee
 	 */
 	
-	void changeUserCredentials(User user, UserDTO employee,
-			String password, String email, String type);
+	Mono<User> changeUserCredentials(User employee,
+			String password, String email);
 	
 
 	
