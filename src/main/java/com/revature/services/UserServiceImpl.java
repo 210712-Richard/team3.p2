@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.aspects.LoggedIn;
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
@@ -100,13 +101,13 @@ public class UserServiceImpl implements UserService {
 	public Flux<Product> viewProducts(User user) {
 		return Flux
 				.fromStream(user.getProductIds().stream())
-				.flatMap(id -> productDao.findById(id))
+				.flatMap(id -> productDao.findByProductid(id))
 				.map(dto -> dto.getProduct());
 	}
 
 	@Override
 	public Mono<Product> selectProduct(User user, UUID productId) {
-		Mono<ProductDTO> productData = productDao.findById(productId);
+		Mono<ProductDTO> productData = productDao.findByProductid(productId);
 		return productData
 				.flatMap(dto -> {
 					if (dto.getUsernames().contains(user.getUsername())) {

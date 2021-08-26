@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.revature.beans.Sprint;
+import com.revature.beans.SprintStatus;
 import com.revature.data.SprintDAO;
 import com.revature.dto.SprintDTO;
 
@@ -17,12 +18,13 @@ import reactor.core.publisher.Mono;
  */
 @Service
 public class SprintServiceImpl implements SprintService {
-
+	private S3Service s3;
 	private SprintDAO sprintDao;
 	
 	@Autowired
-	public SprintServiceImpl(SprintDAO sprintDao) {
+	public SprintServiceImpl(SprintDAO sprintDao, S3Service s3) {
 		this.sprintDao = sprintDao;
+		this.s3 = s3;
 	}
 	
 	@Override
@@ -34,7 +36,13 @@ public class SprintServiceImpl implements SprintService {
 	@Override
 	public Mono<Sprint> retireCurrentSprint(UUID scrumboardID) {
 		
-		return null;//sprintDao.findByBoardIdAndStatus(boardId, SprintStatus.CURRENT);
+		return sprintDao.findByScrumboardIDAndStatus(scrumboardID, SprintStatus.CURRENT)
+				.flatMap(dto ->{
+			dto.setStatus(SprintStatus.PAST);
+			s3.uploadToBucket(dto.getId().toString(), dto);
+			return sprintDao.save(dto);
+		}).map(saved -> saved.getSprint());
 	}
+	
 
 }
