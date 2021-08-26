@@ -163,20 +163,19 @@ public class UserController {
 
 	// As an Admin I can change user credentials
 	
-	@IsAdmin
+//	@IsAdmin
 	@PutMapping("/newCreds/")
 	public ResponseEntity<Mono<User>> changeCredentials( 
 			@RequestBody User employee, WebSession session){
 		
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		
-		String employeeName = employee.getUsername();
 		
 		String employeePass = employee.getPassword();
 		
 		String employeeEmail = employee.getEmail();
 		
-		Mono<User> empUser = userService.changeUserCredentials(employeeName, employeePass, employeeEmail );
+		Mono<User> empUser = userService.changeUserCredentials(employee, employeeEmail, employeePass );
 
 		return ResponseEntity.ok(empUser);
 		

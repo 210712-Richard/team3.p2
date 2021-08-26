@@ -55,7 +55,7 @@ public interface UserService {
 	 * @return User the updated user of the employee
 	 */
 	
-	Mono<User> changeUserCredentials(String employeeName,
+	Mono<User> changeUserCredentials(User employee,
 			String password, String email);
 	
 

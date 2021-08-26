@@ -10,6 +10,6 @@ Feature: As an Admin, I can CHANGE a users credentials
 		And cookie SESSION = signin.adminSessionCookie
 		When method put
 		Then status 200
-		And match response contains {username: "Ellis"}
+		And match response contains {username: "Ellis", password: "newPass"}
 		
 	
