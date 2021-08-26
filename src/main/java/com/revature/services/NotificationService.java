@@ -14,11 +14,12 @@ public interface NotificationService {
 	 * Creates a notification and sends it to a specific user. A random UUID is
 	 * generated for the notification.
 	 * 
-	 * @param user    The user to whom the notification is being sent
-	 * @param message The message contained within the notification
+	 * @param username The username of the user to whom the notification is being
+	 *                 sent
+	 * @param message  The message contained within the notification
 	 */
 
-	void notify(User user, String message);
+	void notify(String username, String message);
 
 	/**
 	 * Allows a user to check their notifications.

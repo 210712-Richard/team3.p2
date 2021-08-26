@@ -53,7 +53,7 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Mono<Task> addToProductBackLog(UUID product, TaskDTO task) {
 		//New task added to product backlog
-		return productDAO.findById(product).flatMap(dto -> {
+		return productDAO.findByProductid(product).flatMap(dto -> {
 			task.setBoardid(dto.getMasterBoardID());
 			task.setStatus(TaskCompletionStatus.BACKLOG);
 			task.setId(UUID.randomUUID());

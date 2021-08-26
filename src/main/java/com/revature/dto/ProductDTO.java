@@ -17,7 +17,7 @@ import com.revature.beans.Product;
 @Table("products")
 public class ProductDTO {
 	@PrimaryKeyColumn(name = "productid", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-	private UUID id;
+	private UUID productid;
 	@Column("productowner")
 	private String productOwner;
 	@Column("boardidtoscrumusername")
@@ -40,7 +40,7 @@ public class ProductDTO {
 	public ProductDTO(UUID id, String productOwner, Map<UUID, String> scrumMasterBoardMap, List<UUID> boardIds,
 			List<String> usernames, Map<UUID, String> boardIdNameMap, String productName, UUID masterBoardID) {
 		super();
-		this.id = id;
+		this.productid = id;
 		this.productOwner = productOwner;
 		this.scrumMasterBoardMap = scrumMasterBoardMap;
 		this.boardIds = boardIds;
@@ -52,7 +52,7 @@ public class ProductDTO {
 
 	public ProductDTO(Product product) {
 		super();
-		this.id = product.getId();
+		this.productid = product.getId();
 		this.productOwner = product.getProductOwner();
 		this.scrumMasterBoardMap = product.getScrumMasterBoardMap();
 		this.boardIds = product.getBoardIds();
@@ -64,7 +64,7 @@ public class ProductDTO {
 	
 	public Product getProduct() {
 		Product product = new Product();
-		product.setId(id);
+		product.setId(productid);
 		product.setProductOwner(productOwner);
 		product.setScrumMasterBoardMap(scrumMasterBoardMap);
 		product.setBoardIds(boardIds);
@@ -128,10 +128,10 @@ public class ProductDTO {
 		this.productName = productName;
 	}
 	public UUID getId() {
-		return id;
+		return productid;
 	}
 	public void setId(UUID id) {
-		this.id = id;
+		this.productid = id;
 	}
 
 	public UUID getMasterBoardID() {
@@ -144,7 +144,7 @@ public class ProductDTO {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(boardIdNameMap, boardIds, id, masterBoardID, productName, productOwner, scrumMasterBoardMap,
+		return Objects.hash(boardIdNameMap, boardIds, productid, masterBoardID, productName, productOwner, scrumMasterBoardMap,
 				usernames);
 	}
 	@Override
@@ -157,14 +157,14 @@ public class ProductDTO {
 			return false;
 		ProductDTO other = (ProductDTO) obj;
 		return Objects.equals(boardIdNameMap, other.boardIdNameMap) && Objects.equals(boardIds, other.boardIds)
-				&& Objects.equals(id, other.id) && Objects.equals(masterBoardID, other.masterBoardID)
+				&& Objects.equals(productid, other.productid) && Objects.equals(masterBoardID, other.masterBoardID)
 				&& Objects.equals(productName, other.productName) && Objects.equals(productOwner, other.productOwner)
 				&& Objects.equals(scrumMasterBoardMap, other.scrumMasterBoardMap)
 				&& Objects.equals(usernames, other.usernames);
 	}
 	@Override
 	public String toString() {
-		return "ProductDTO [id=" + id + ", productOwner=" + productOwner + ", scrumMasterBoardMap="
+		return "ProductDTO [id=" + productid + ", productOwner=" + productOwner + ", scrumMasterBoardMap="
 				+ scrumMasterBoardMap + ", boardIds=" + boardIds + ", usernames=" + usernames + ", boardIdNameMap="
 				+ boardIdNameMap + ", productName=" + productName + ", masterBoardID=" + masterBoardID + "]";
 	}
