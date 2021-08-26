@@ -5,7 +5,7 @@ Feature: As an Admin, I can view a users credentials
 	Background:
 		* def signin = call read('Login.feature')
 		
-		Given url loginUrl + "/test_username"
+		Given url baseUrl + "/users/test_username"
 		And cookie SESSION = signin.adminSessionCookie
 		When method get
 		Then status 200
