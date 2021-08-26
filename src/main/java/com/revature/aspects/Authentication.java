@@ -15,116 +15,150 @@ import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
 import com.revature.data.AdminDAO;
+import com.revature.util.WebSessionAttributes;
 
 import reactor.core.publisher.Mono;
 
 /**
  * 
- * @author MuckJosh
- *	Used for authenticating user and 
+ * @author MuckJosh Used for authenticating user and
  */
 @Aspect
 @Component
 public class Authentication {
 
-	
 	private static final Logger log = LogManager.getLogger(Authentication.class);
 	private User loggedUser;
-	private String loginUserField = "loggedUser";
 	private WebSession session;
 	private AdminDAO adminDAO;
-	
+
 	@Autowired
 	public Authentication(AdminDAO adminDAO) {
 		this.adminDAO = adminDAO;
 	}
 
-
 	// Handler methods are void
 	@Around("loggedInHook()")
-	public ResponseEntity<Object> checkLoggedIn(ProceedingJoinPoint pjp) throws Throwable {
-
-		session = (WebSession) pjp.getTarget();
-		loggedUser = session.getAttribute(loginUserField);
+	public Object checkLoggedIn(ProceedingJoinPoint pjp) throws Throwable {
+		setSession(pjp);
+		if (session == null) {
+			return ResponseEntity.status(401).build();
+		}
+		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 
 		// Checking if logged in
 		if (loggedUser != null) {
-			pjp.proceed(); 
-			return null;
+			return pjp.proceed();
 		}
 		return ResponseEntity.status(401).build();
 	}
+
 	@Around("developerHook()")
-	public ResponseEntity<Object> checkDeveloper(ProceedingJoinPoint pjp) throws Throwable{
-
-		session = (WebSession) pjp.getTarget();
-		loggedUser = session.getAttribute(loginUserField);
+	public Object checkDeveloper(ProceedingJoinPoint pjp) throws Throwable {
+		setSession(pjp);
+		if (session == null)
+			return ResponseEntity.status(401).build();
+		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
+		if (loggedUser == null)
+			return ResponseEntity.status(401).build();
 		ScrumBoard board = session.getAttribute("selectedBoard");
-		if(board.getUsers().stream().anyMatch(user -> user.equals(loggedUser.getUsername()))) {
-			pjp.proceed();
-			return null;
+		if (board == null)
+			return ResponseEntity.status(401).build();
+		if (board.getUsers().stream().anyMatch(user -> user.equals(loggedUser.getUsername()))) {
+			return pjp.proceed();
+
+		} else {
+			return ResponseEntity.status(401).build();
 		}
-		return ResponseEntity.status(401).build();
 	}
-	
+
 	@Around("scrumMasterHook()")
-	public ResponseEntity<Object> checkscrumMaster(ProceedingJoinPoint pjp) throws Throwable{
-		
-		session = (WebSession) pjp.getTarget();
-		loggedUser = session.getAttribute(loginUserField);
+	public Object checkscrumMaster(ProceedingJoinPoint pjp) throws Throwable {
+		setSession(pjp);
+		if (session == null)
+			return ResponseEntity.status(401).build();
 
+		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
+		if (loggedUser == null)
+			return ResponseEntity.status(401).build();
 		ScrumBoard board = session.getAttribute("selectedBoard");
-		if(board.getScrumMasterUsername().equals(loggedUser.getUsername())) {
-			pjp.proceed();
-			return null;
+		if (board == null)
+			return ResponseEntity.status(401).build();
+		if (board.getScrumMasterUsername().equals(loggedUser.getUsername())) {
+			return pjp.proceed();
+			
+		}else {
+		return ResponseEntity.status(401).build();
+		}
+
+	}
+
+	@Around("productMasterHook()")
+	public Object checkproductMaster(ProceedingJoinPoint pjp) throws Throwable {
+		setSession(pjp);
+		if (session == null) {
+			return ResponseEntity.status(401).build();
+		}
+		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
+		if (loggedUser == null) {
+			return ResponseEntity.status(401).build();
+		}
+		Product product = session.getAttribute("selectedProduct");
+		if (product == null)
+			return ResponseEntity.status(401).build();
+		if (product.getProductOwner().equals(loggedUser.getUsername())) {
+			return pjp.proceed();
+
 		}
 		return ResponseEntity.status(401).build();
-		
 	}
-	@Around("productMasterHook()")
-	public ResponseEntity<Object> checkproductMaster(ProceedingJoinPoint pjp) throws Throwable{
-	
-		session = (WebSession) pjp.getTarget();
-		loggedUser = session.getAttribute(loginUserField);
-
-		Product product = session.getAttribute("selectedProduct");
-		if(product.getProductOwner().equals(loggedUser.getUsername())) {
-			pjp.proceed();
-			return null;
-		}
-		return ResponseEntity.status(401).build();	
-	}
-	
 
 	@Around("adminCheckHook()")
-	public Mono<ResponseEntity<Object>> adminCheck(ProceedingJoinPoint pjp) throws Throwable{
-		session = (WebSession) pjp.getTarget();
-		loggedUser = session.getAttribute(loginUserField);
-		if(loggedUser == null) {
+	public Object adminCheck(ProceedingJoinPoint pjp) throws Throwable {
+		
+		setSession(pjp);
+		if (session == null) {
+			return ResponseEntity.status(401).build();
+		}
+		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
+		if (loggedUser == null) {
 			return Mono.just(ResponseEntity.status(401).build());
 		}
-		return adminDAO.findById(loggedUser.getUsername()).map(dto ->{
+		return adminDAO.findById(loggedUser.getUsername()).map(dto -> {
 			try {
-				pjp.proceed();
+				return pjp.proceed();
 			} catch (Throwable e) {
 				log.atError().log(e);
 			}
 			return ResponseEntity.status(401).build();
 		});
 	}
-	
+
 	@Pointcut("@annotation(com.revature.aspects.LoggedIn)")
-	public void loggedInHook() {/* Hook for loggedIn*/}
-	
+	public void loggedInHook() {
+		/* Hook for loggedIn */}
+
 	@Pointcut("@annotation(com.revature.aspects.IsDeveloper)")
-	public void developerHook() {/* Hook for IsDeveloper*/}
-	
+	public void developerHook() {
+		/* Hook for IsDeveloper */}
+
 	@Pointcut("@annotation(com.revature.aspects.IsScrumMaster)")
-	public void scrumMasterHook() {/* Hook for IsScrumMaster */}
-	
+	public void scrumMasterHook() {
+		/* Hook for IsScrumMaster */}
+
 	@Pointcut("@annotation(com.revature.aspects.IsProductMaster)")
-	public void productMasterHook() {/* Hook for IsProductMaster */}
-	
+	public void productMasterHook() {
+		/* Hook for IsProductMaster */}
+
 	@Pointcut("@annotation(com.revature.aspects.IsAdmin)")
-	public void adminCheckHook() {/* Hook for IsAdmin */}
+	public void adminCheckHook() {
+		/* Hook for IsAdmin */}
+	private void setSession(ProceedingJoinPoint pjp) {
+		session = null;
+		for (Object o : pjp.getArgs()) {
+			if (o instanceof WebSession) {
+				session = (WebSession) o;
+			}
+		}
+	}
 }
