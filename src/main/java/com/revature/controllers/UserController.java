@@ -122,7 +122,7 @@ public class UserController {
 	@GetMapping("/products")
 	public ResponseEntity<Flux<Product>> viewProducts(WebSession session) {
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
-		return ResponseEntity.ok(userService.viewProducts(loggedUser));
+		return ResponseEntity.ok(userService.viewProducts(loggedUser).log());
 	}
 
 	// As a user, I can view all the scrum boards I am involved with
