@@ -42,7 +42,7 @@ public class Authentication {
 	public Object checkLoggedIn(ProceedingJoinPoint pjp) throws Throwable {
 		setSession(pjp);
 		if (session == null) {
-			return ResponseEntity.status(401).build();
+			return Mono.just(ResponseEntity.status(404).build());
 		}
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 
@@ -50,25 +50,25 @@ public class Authentication {
 		if (loggedUser != null) {
 			return pjp.proceed();
 		}
-		return ResponseEntity.status(401).build();
+		return Mono.just(ResponseEntity.status(401).build());
 	}
 
 	@Around("developerHook()")
 	public Object checkDeveloper(ProceedingJoinPoint pjp) throws Throwable {
 		setSession(pjp);
 		if (session == null)
-			return ResponseEntity.status(401).build();
+			return ResponseEntity.status(404).build();
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if (loggedUser == null)
 			return ResponseEntity.status(401).build();
 		ScrumBoard board = session.getAttribute("selectedBoard");
 		if (board == null)
-			return ResponseEntity.status(401).build();
+			return ResponseEntity.status(404).build();
 		if (board.getUsers().stream().anyMatch(user -> user.equals(loggedUser.getUsername()))) {
 			return pjp.proceed();
 
 		} else {
-			return ResponseEntity.status(401).build();
+			return ResponseEntity.status(403).build();
 		}
 	}
 
@@ -76,19 +76,19 @@ public class Authentication {
 	public Object checkscrumMaster(ProceedingJoinPoint pjp) throws Throwable {
 		setSession(pjp);
 		if (session == null)
-			return ResponseEntity.status(401).build();
+			return ResponseEntity.status(404).build();
 
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if (loggedUser == null)
 			return ResponseEntity.status(401).build();
 		ScrumBoard board = session.getAttribute("selectedBoard");
 		if (board == null)
-			return ResponseEntity.status(401).build();
+			return ResponseEntity.status(404).build();
 		if (board.getScrumMasterUsername().equals(loggedUser.getUsername())) {
 			return pjp.proceed();
 			
 		}else {
-		return ResponseEntity.status(401).build();
+		return ResponseEntity.status(403).build();
 		}
 
 	}
@@ -97,7 +97,7 @@ public class Authentication {
 	public Object checkproductMaster(ProceedingJoinPoint pjp) throws Throwable {
 		setSession(pjp);
 		if (session == null) {
-			return ResponseEntity.status(401).build();
+			return ResponseEntity.status(404).build();
 		}
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if (loggedUser == null) {
@@ -105,12 +105,12 @@ public class Authentication {
 		}
 		Product product = session.getAttribute("selectedProduct");
 		if (product == null)
-			return ResponseEntity.status(401).build();
+			return ResponseEntity.status(404).build();
 		if (product.getProductOwner().equals(loggedUser.getUsername())) {
 			return pjp.proceed();
 
 		}
-		return ResponseEntity.status(401).build();
+		return ResponseEntity.status(403).build();
 	}
 
 	@Around("adminCheckHook()")
@@ -118,7 +118,7 @@ public class Authentication {
 		
 		setSession(pjp);
 		if (session == null) {
-			return ResponseEntity.status(401).build();
+			return ResponseEntity.status(404).build();
 		}
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if (loggedUser == null) {
@@ -130,7 +130,7 @@ public class Authentication {
 			} catch (Throwable e) {
 				log.atError().log(e);
 			}
-			return ResponseEntity.status(401).build();
+			return ResponseEntity.status(403).build();
 		});
 	}
 
@@ -154,10 +154,10 @@ public class Authentication {
 	public void adminCheckHook() {
 		/* Hook for IsAdmin */}
 	private void setSession(ProceedingJoinPoint pjp) {
-		session = null;
 		for (Object o : pjp.getArgs()) {
 			if (o instanceof WebSession) {
 				session = (WebSession) o;
+				log.debug(session);
 			}
 		}
 	}
