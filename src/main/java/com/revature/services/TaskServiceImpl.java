@@ -44,7 +44,6 @@ public class TaskServiceImpl implements TaskService{
 		return taskDAO.findByBoardidAndStatusAndId(boardid, status.toString(), taskId).flatMap(dto -> {
 			taskDAO.delete(dto).subscribe();
 			dto.setStatus(newStatus);
-			System.out.println(dto);
 			return taskDAO.save(dto);
 		}).map(t -> t.getTask());
 			
@@ -77,6 +76,9 @@ public class TaskServiceImpl implements TaskService{
 		//Find Task set status to backlog
 		taskDAO.findById(taskId.toString()).flatMap(dto -> {
 			dto.setStatus(TaskCompletionStatus.BACKLOG);
+			sprintDAO.findById(sprintId).map(t -> {
+				dto.setBoardid(t.getScrumbaordID());
+			});
 			return taskDAO.save(dto);
 		}).map(t -> t.getTask());
 		

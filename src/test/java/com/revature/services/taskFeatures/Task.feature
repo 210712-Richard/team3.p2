@@ -77,12 +77,12 @@ Background:
 		And match response contains { priorityStatus: 'LOW'}
 	
 	@Tag5
-	Scenario: As a Produdct Owner I can set priorities to existing backlog tasks
+	Scenario: As a Produdct Owner I can add to the product backlog
 	
-		Given url 'http://localhost:8080/tasks/priority/b7b49fc0-02ca-11ec-a3ea-0800200c9a66'
-		And request { name: 'testTask', description: 'testing add to Product Backlog', priorityStatus: 'HIGH', startDate: '2021-08-24', endDate: '2021-12-24', startTime: '12:00:00', endTime: '12:00:00' }
-		When method patch
+		Given url 'http://localhost:8080/tasks/b7b49fc0-02ca-11ec-a3ea-0800200c9a66'
+		And request { name: 'karateTest', description: 'add task from karate test', priorityStatus: 'LOW', startDate: '2021-08-26', endDate: '2021-12-26', startTime: '12:00:00', endTime: '12:00:00' }
+		When method post
 		Then status 200
-		And match response contains { priorityStatus: 'HIGH' }
+		And match response contains { name: 'karateTest', description: 'add task from karate test', priorityStatus: 'LOW', startDate: '2021-08-26', endDate: '2021-12-26', startTime: '12:00:00', endTime: '12:00:00' }
 		
 	
