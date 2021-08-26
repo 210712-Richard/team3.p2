@@ -16,6 +16,7 @@ import org.springframework.web.server.WebSession;
 
 import com.revature.beans.ScrumBoard;
 import com.revature.beans.Sprint;
+import com.revature.beans.SprintStatus;
 import com.revature.beans.Task;
 import com.revature.beans.TaskCompletionStatus;
 import com.revature.beans.TaskPriority;
@@ -78,13 +79,9 @@ public class TaskController {
 	}
 	
 	//As a Scrum Master, I can add to the Sprint backLog from the Product Backlog
-	@PatchMapping(value = "/{sprintId}/{taskId}", produces = MediaType.APPLICATION_NDJSON_VALUE)
-	public Mono<ResponseEntity<Sprint>> addToSprintBackLog(@PathVariable ("sprintId") UUID sprintId, @PathVariable ("taskId") UUID taskId, WebSession session){
-		User loggedUser = (User) session.getAttribute(WebSessionAttributes.LOGGED_USER);
-		if(loggedUser == null || !UserType.SCRUM_MASTER.equals(loggedUser.getType())) {
-			return Mono.just(ResponseEntity.status(403).build());
-		}
-		return taskService.addToSprintBackLog(sprintId, taskId).map((s) -> {
+	@PatchMapping(value = "/{taskBoardId}/{taskStatus}/{taskId}", produces = MediaType.APPLICATION_NDJSON_VALUE)
+	public Mono<ResponseEntity<Sprint>> addToSprintBackLog(@PathVariable ("taskBoardId") UUID taskBoardId, @PathVariable ("taskStatus") TaskCompletionStatus taskStatus, @PathVariable ("taskId") UUID taskId, @RequestBody Sprint sprint, WebSession session){
+		return taskService.addToSprintBackLog(sprint.getScrumboardID(), sprint.getStatus(), taskBoardId, taskStatus, taskId).map((s) -> {
 			if(s == null) {
 				return ResponseEntity.status(409).build();
 			} else {
