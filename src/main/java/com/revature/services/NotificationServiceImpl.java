@@ -34,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
 		note.setUsername(username);
 		note.setMessage(message);
 		note.setId(UUID.randomUUID());
-		nd.save(new NotificationDTO(note));
+		nd.save(new NotificationDTO(note)).subscribe();
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class NotificationServiceImpl implements NotificationService {
 		// function. Then, we filter the flux down into only notifications where
 		// the username matches the one for the user that is supplied.
 		
-		return nd.findByUsername(user.getUsername()).map(dto -> dto.getNotification()).flux();
+		return nd.findByUsername(user.getUsername()).map(dto -> dto.getNotification());
 		
 //		return nd.findAll()
 //				.map(dto -> dto.getNotification())
@@ -62,5 +62,7 @@ public class NotificationServiceImpl implements NotificationService {
 		
 		return nd.findByUsernameAndId(user.getUsername(), id).map(dto -> dto.getNotification());
 	}
+	
+	
 
 }
