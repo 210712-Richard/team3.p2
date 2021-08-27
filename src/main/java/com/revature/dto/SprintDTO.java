@@ -51,6 +51,7 @@ public class SprintDTO {
 		this.startTime = sprint.getStartTime();
 		this.endTime = sprint.getEndTime();
 		this.status = sprint.getStatus();
+		this.taskIds = sprint.getTaskIds();
 	}
 	
 	public Sprint getSprint() {
@@ -62,6 +63,7 @@ public class SprintDTO {
 		sprint.setStartTime(this.startTime);
 		sprint.setEndTime(this.endTime);
 		sprint.setStatus(this.status);
+		sprint.setTaskIds(this.taskIds);
 		return sprint;
 	}
 	

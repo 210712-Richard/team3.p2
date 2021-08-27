@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,52 +41,48 @@ public class TaskController {
 	//As a developer, I can move my task on the scrumboard
 	@PatchMapping(value = "/status/{boardId}/{taskId}/{status}", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("taskId") String taskId, @PathVariable("boardId") String boardId, @PathVariable("status") TaskCompletionStatus status, @RequestBody Task task, WebSession session){
-		return taskService.moveTask(UUID.fromString(boardId), UUID.fromString(taskId), status, task.getStatus()).map(s -> {
-			if(s == null) {
-				return ResponseEntity.status(409).build();
-			} else {
-				return ResponseEntity.ok(s);
-			}
-		});
+		return taskService.moveTask(UUID.fromString(boardId), UUID.fromString(taskId), status, task.getStatus())
+			.map(s -> ResponseEntity.ok(s))
+			.defaultIfEmpty(ResponseEntity.status(409).build()); 
 	}
 	
 	//As a Product Owner, I can add to the Product Backlog
 	@PostMapping("/{productId}")
-	public Mono<ResponseEntity<Object>> addToProductBackLog(@PathVariable("productId") UUID productId, @RequestBody TaskDTO task){
-		return taskService.addToProductBackLog(productId, task).map(s -> {
-			if(s == null) {
-				return ResponseEntity.status(409).build();	
-			} else {
-				return ResponseEntity.ok(s);
-			}
-		});
+	public Mono<ResponseEntity<Task>> addToProductBackLog(@PathVariable("productId") UUID productId, @RequestBody TaskDTO task){
+		return taskService.addToProductBackLog(productId, task)
+			.map(s -> ResponseEntity.ok(s))
+			.defaultIfEmpty(ResponseEntity.status(409).build()); 
 	}
 	
 	
 	//As a Product Owner, I can add a priority to an existing Product backlog task
 	@PatchMapping(value = "/priority/{masterBoardId}/{taskId}/{priority}", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Mono<ResponseEntity<Task>> makePriority(@PathVariable ("masterBoardId") String masterBoardId, @PathVariable ("taskId") String taskId, @PathVariable ("priority") TaskPriority priority, WebSession session){
-		return taskService.makePriority(UUID.fromString(masterBoardId), UUID.fromString(taskId), priority).map(s ->  {
-			if(s == null) {
-				return ResponseEntity.status(409).build();
-			} else {
-				return ResponseEntity.ok(s);
-			}
-		});
-	
+		return taskService.makePriority(UUID.fromString(masterBoardId), UUID.fromString(taskId), priority)
+				.map(s -> ResponseEntity.ok(s))
+				.defaultIfEmpty(ResponseEntity.status(409).build()); 
+	}
+	//Undo Add test
+	@DeleteMapping(value = "/{boardid}/{status}/{taskid}", produces = MediaType.APPLICATION_NDJSON_VALUE)
+	public Mono<ResponseEntity<Object>> undoAdd(@PathVariable ("boardid") UUID boardid, @PathVariable ("status") TaskCompletionStatus status, @PathVariable ("taskid") UUID taskid){
+		return taskService.undoAdd(boardid, status, taskid)
+				.map(s -> ResponseEntity.ok(s))
+				.defaultIfEmpty(ResponseEntity.status(409).build());
 	}
 	
-	//As a Scrum Master, I can add to the Sprint backLog from the Product Backlog
+	//As a Scrum Master, I can add to the Sprint backLog from the Product Backlog or from a finished sprint
 	@PatchMapping(value = "/{taskBoardId}/{taskStatus}/{taskId}", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Mono<ResponseEntity<Sprint>> addToSprintBackLog(@PathVariable ("taskBoardId") UUID taskBoardId, @PathVariable ("taskStatus") TaskCompletionStatus taskStatus, @PathVariable ("taskId") UUID taskId, @RequestBody Sprint sprint, WebSession session){
-		return taskService.addToSprintBackLog(sprint.getScrumboardID(), sprint.getStatus(), taskBoardId, taskStatus, taskId).map(s -> {
-			if(s == null) {
-				return ResponseEntity.status(409).build();
-			} else {
-				return ResponseEntity.ok(s);
-			}
-		});
-
+		return taskService.addToSprintBackLog(sprint.getScrumboardID(), sprint.getStatus(), taskBoardId, taskStatus, taskId)
+				.map(s -> ResponseEntity.ok(s))
+				.defaultIfEmpty(ResponseEntity.status(409).build()); 
+	}
+	
+	@PatchMapping(value = "/{taskBoardId}/{taskStatus}/{taskId}/{masterBoardId}", produces = MediaType.APPLICATION_NDJSON_VALUE)
+	public Mono<ResponseEntity<Sprint>> undoProductBacklog(@PathVariable ("taskBoardId") UUID taskBoardId, @PathVariable ("taskStatus") TaskCompletionStatus taskStatus, @PathVariable ("taskId") UUID taskId, @PathVariable ("masterBoardId") UUID masterBoardId, @RequestBody Sprint sprint, WebSession session){
+		return taskService.undoProductBacklog(masterBoardId, sprint.getScrumboardID(), sprint.getStatus(), taskBoardId, taskStatus, taskId)
+				.map(s -> ResponseEntity.ok(s))
+				.defaultIfEmpty(ResponseEntity.status(409).build()); 
 	}
 	
 	@PatchMapping(value = "/assign/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
