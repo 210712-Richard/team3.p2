@@ -31,6 +31,7 @@ public class ScrumBoardDTO {
 		this.boardid = board.getId();
 		this.name = board.getName();
 		this.scrumMaster = board.getScrumMasterUsername();
+		this.productId = board.getProductId();
 	}
 
 	public ScrumBoard getScrumBoard() {
@@ -38,6 +39,7 @@ public class ScrumBoardDTO {
 		board.setId(boardid);
 		board.setName(name);
 		board.setScrumMasterUsername(scrumMaster);
+		board.setProductId(productId);
 		return board;
 	}
 

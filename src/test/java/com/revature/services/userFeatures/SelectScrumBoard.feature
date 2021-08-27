@@ -10,3 +10,4 @@ Feature: A Scrum board can be selected after product selection, from which
 		Then status 200
 		And match response contains {id : 'd7167cb6-bb25-496e-b83a-b7222c9aca4a'}
 		And def scrumboardid = response.id
+		# And def scrumSessionCookie = responseCookies.SESSION
