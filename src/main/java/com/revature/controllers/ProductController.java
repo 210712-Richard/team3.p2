@@ -27,10 +27,12 @@ public class ProductController {
 	private ProductService productService;
 	
 	@PostMapping
-	public ResponseEntity<Product> createNewProduct(@RequestBody Product product, WebSession session) {
+	public Mono<ResponseEntity<Product>>createNewProduct(@RequestBody Product product, WebSession session) {
 
-		Product newProduct = productService.createNewProduct(product.getId(), product.getProductOwner(), product.getScrumMasterBoardMap(), product.getBoardIds(), product.getUsernames(), product.getBoardIdNameMap(), product.getProductName(), product.getMasterBoardId());  
-				return ResponseEntity.ok(newProduct);
+		return productService.createNewProduct(product.getId(), product.getProductOwner(), product.getScrumMasterBoardMap(), product.getBoardIds(), product.getUsernames(), product.getBoardIdNameMap(), product.getProductName(), product.getMasterBoardId()) 
+		.map( user -> ResponseEntity.ok(product))
+		.defaultIfEmpty(ResponseEntity.status(404).build());
+				 
 
 	}
 

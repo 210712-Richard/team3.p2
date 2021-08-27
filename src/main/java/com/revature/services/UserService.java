@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
+import com.revature.beans.Task;
 import com.revature.beans.User;
 
 import reactor.core.publisher.Flux;
@@ -112,5 +113,7 @@ public interface UserService {
 	 */
 
 	Mono<ScrumBoard> selectScrumBoard(User user, Product product, UUID boardId);
+
+	Flux<Task> viewTasks(User user);
 
 }
