@@ -17,6 +17,7 @@ import org.springframework.web.server.WebSession;
 
 import com.revature.aspects.IsAdmin;
 import com.revature.aspects.IsProductMaster;
+import com.revature.aspects.IsScrumMaster;
 import com.revature.aspects.LoggedIn;
 import com.revature.beans.Notification;
 import com.revature.beans.Product;
@@ -153,9 +154,18 @@ public class UserController {
 		if (selectedProduct == null) {
 			return ResponseEntity.status(404).build();
 		}
-		selectedProduct.getUsernames().stream().forEach(username -> notificationService.notify(username, note.getMessage()));
+		notificationService.notifyAllInProduct(selectedProduct, note.getMessage());
 		return ResponseEntity.ok(Mono
 				.just("All the users associated with this product have been notified about your presentation request"));
+	}
+	
+	// As a scrum master, I can schedule sprint reviews
+	@IsScrumMaster
+	@PostMapping("/schedulereview")
+	public Mono<ResponseEntity<String>> scheduleReview(@RequestBody Notification note, WebSession session) {
+		selectedScrumBoard = session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD);
+		notificationService.notifyAllInScrumBoard(selectedScrumBoard, note.getMessage());
+		return Mono.just(ResponseEntity.ok("All the users associated with this sprint have been notified about your review request"));
 	}
 
 	// As an Admin I can view a user

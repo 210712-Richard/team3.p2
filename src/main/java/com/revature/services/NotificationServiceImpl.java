@@ -2,12 +2,18 @@ package com.revature.services;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.revature.beans.Notification;
+import com.revature.beans.Product;
+import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
 import com.revature.data.NotificationDAO;
+import com.revature.data.ProductDAO;
+import com.revature.data.UserDAO;
 import com.revature.dto.NotificationDTO;
+import com.revature.dto.UserDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,10 +28,15 @@ import reactor.core.publisher.Mono;
 public class NotificationServiceImpl implements NotificationService {
 
 	private NotificationDAO nd;
+	private UserDAO ud;
+	private ProductDAO pd;
 
-	public NotificationServiceImpl(NotificationDAO nd) {
+	@Autowired
+	public NotificationServiceImpl(NotificationDAO nd, UserDAO ud, ProductDAO pd) {
 		super();
 		this.nd = nd;
+		this.ud = ud;
+		this.pd = pd;
 	}
 
 	@Override
@@ -44,9 +55,9 @@ public class NotificationServiceImpl implements NotificationService {
 		// element of that flux to a Notification using the .getNotification()
 		// function. Then, we filter the flux down into only notifications where
 		// the username matches the one for the user that is supplied.
-		
+
 		return nd.findByUsername(user.getUsername()).map(dto -> dto.getNotification());
-		
+
 //		return nd.findAll()
 //				.map(dto -> dto.getNotification())
 //				.filter(note -> note.getUsername().equals(user.getUsername()));
@@ -55,14 +66,77 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public Mono<Notification> checkNotificationByID(User user, UUID id) {
-		
+
 		// Here, I am using a method I created in NotificationDAO to get a Mono
-		// of NotificationDTO. I am then mapping that DTO to a regular 
+		// of NotificationDTO. I am then mapping that DTO to a regular
 		// Notification and returning that as a Mono.
-		
+
 		return nd.findByUsernameAndId(user.getUsername(), id).map(dto -> dto.getNotification());
 	}
-	
-	
 
+	@Override
+	public void notifyAll(String message) {
+		Notification note = new Notification();
+		ud.findAll().map(dto -> {
+			note.setUsername(dto.getUsername());
+			note.setMessage(message);
+			note.setId(UUID.randomUUID());
+			nd.save(new NotificationDTO(note)).subscribe();
+			return dto;
+		}).subscribe();
+	}
+
+	@Override
+	public void notifyAllInProduct(Product product, String message) {
+		Notification note = new Notification();
+		ud.findAll().filter(dto -> product.getUsernames().contains(dto.getUsername())).map(dto -> {
+			note.setUsername(dto.getUsername());
+			note.setMessage(message);
+			note.setId(UUID.randomUUID());
+			nd.save(new NotificationDTO(note)).subscribe();
+			return dto;
+		}).subscribe();
+	}
+
+	@Override
+	public void notifyAllInScrumBoard(ScrumBoard board, String message) {
+		Notification note = new Notification();
+		System.out.println("board: " + board + "message: " + message);
+		Flux.from(pd.findByProductid(board.getProductId()))
+			.flatMap(dto -> Flux.fromStream(dto.getUsernames().stream()))		
+			.flatMap(username -> ud.findByUsername(username))
+			.filter(data -> data.getUser().getBoardIds().contains(board.getId()))
+			.map(d -> {
+				System.out.println(d);
+				note.setUsername(d.getUsername());
+				note.setMessage(message);
+				note.setId(UUID.randomUUID());
+				return nd.save(new NotificationDTO(note)).subscribe();
+			}).subscribe();
+//		
+//		pd.findByProductid(board.getProductId()).flatMapIterable(dto -> dto.getUsernames()).shareNext().map(username -> {
+//			return ud.findByUsername(username)
+//					.filter(data -> data.getUser().getBoardIds().contains(board.getId()))
+//					.map(d -> {
+//						note.setUsername(d.getUsername());
+//						note.setMessage(message);
+//						note.setId(UUID.randomUUID());
+//						nd.save(new NotificationDTO(note)).subscribe();
+//						return d;
+//					});
+//			return username;
+//			}).subscribe();
+		
+//		pd.findByProductid(board.getProductId()).flatMapIterable(p -> p.getUsernames()).shareNext().subscribe(c -> {
+//			ud.findById(c).filter(data -> data.getUser().getBoardIds().contains(board.getId())).and(d -> {
+//				Notification note = new Notification();
+//				note.setMessage("hey");
+//				note.setUsername(((UserDTO) d).getUsername());
+//				note.setId(UUID.randomUUID());
+//				System.out.println(note);
+//				nd.save(new NotificationDTO(note)).subscribe();
+//			});
+//		});
+
+	}
 }
