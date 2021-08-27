@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 public interface ProductService {
 	
 
-Product createNewProduct(UUID id, String productOwner, Map<UUID, String> scrumMasterBoardMap,
+Mono<Product> createNewProduct(UUID id, String productOwner, Map<UUID, String> scrumMasterBoardMap,
 			List<UUID> boardIds, List<String> usernames, Map<UUID, String> boardIdNameMap, String productName,
 			UUID masterBoardID);
 
