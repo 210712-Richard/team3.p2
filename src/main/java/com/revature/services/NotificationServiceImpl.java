@@ -13,7 +13,6 @@ import com.revature.data.NotificationDAO;
 import com.revature.data.ProductDAO;
 import com.revature.data.UserDAO;
 import com.revature.dto.NotificationDTO;
-import com.revature.dto.UserDTO;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -101,42 +100,15 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public void notifyAllInScrumBoard(ScrumBoard board, String message) {
 		Notification note = new Notification();
-		System.out.println("board: " + board + "message: " + message);
 		Flux.from(pd.findByProductid(board.getProductId()))
 			.flatMap(dto -> Flux.fromStream(dto.getUsernames().stream()))		
 			.flatMap(username -> ud.findByUsername(username))
 			.filter(data -> data.getUser().getBoardIds().contains(board.getId()))
 			.map(d -> {
-				System.out.println(d);
 				note.setUsername(d.getUsername());
 				note.setMessage(message);
 				note.setId(UUID.randomUUID());
 				return nd.save(new NotificationDTO(note)).subscribe();
 			}).subscribe();
-//		
-//		pd.findByProductid(board.getProductId()).flatMapIterable(dto -> dto.getUsernames()).shareNext().map(username -> {
-//			return ud.findByUsername(username)
-//					.filter(data -> data.getUser().getBoardIds().contains(board.getId()))
-//					.map(d -> {
-//						note.setUsername(d.getUsername());
-//						note.setMessage(message);
-//						note.setId(UUID.randomUUID());
-//						nd.save(new NotificationDTO(note)).subscribe();
-//						return d;
-//					});
-//			return username;
-//			}).subscribe();
-		
-//		pd.findByProductid(board.getProductId()).flatMapIterable(p -> p.getUsernames()).shareNext().subscribe(c -> {
-//			ud.findById(c).filter(data -> data.getUser().getBoardIds().contains(board.getId())).and(d -> {
-//				Notification note = new Notification();
-//				note.setMessage("hey");
-//				note.setUsername(((UserDTO) d).getUsername());
-//				note.setId(UUID.randomUUID());
-//				System.out.println(note);
-//				nd.save(new NotificationDTO(note)).subscribe();
-//			});
-//		});
-
 	}
 }
