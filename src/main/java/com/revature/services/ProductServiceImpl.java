@@ -8,9 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.revature.beans.Notification;
 import com.revature.beans.Product;
-import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
 import com.revature.data.ProductDAO;
 import com.revature.data.UserDAO;
