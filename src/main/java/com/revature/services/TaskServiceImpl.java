@@ -1,7 +1,6 @@
 package com.revature.services;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -67,9 +66,9 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Override
 	public Mono<Object> undoAdd(UUID boardid, TaskCompletionStatus status, UUID taskid){
-		return taskDAO.findByBoardidAndStatusAndId(boardid, status.toString(), taskid).map(dto -> {
-			return taskDAO.delete(dto);
-		});
+		return taskDAO.findByBoardidAndStatusAndId(boardid, status.toString(), taskid).map(dto -> 
+			 taskDAO.delete(dto)
+		);
 	}
 
 	@Override
@@ -100,18 +99,14 @@ public class TaskServiceImpl implements TaskService{
 				t.setStatus(TaskCompletionStatus.BACKLOG);
 				taskDAO.save(new TaskDTO(t)).subscribe();
 			}
-			List<UUID> nList = new ArrayList<UUID>();
+			List<UUID> nList = new ArrayList<>();
 			if(s.getTaskIds() != null) {
-				//Collections.copy(nList, s.getTaskIds());
 				nList.addAll(s.getTaskIds());
 			}
 			if(!nList.contains(t.getId())) {
 				nList.add(t.getId());
 			}
-			System.out.println(nList.toString());
 			s.setTaskIds(nList);
-			System.out.println(s.getTaskIds());
-			System.out.println(new SprintDTO(s));
 			return sprintDAO.save(new SprintDTO(s));
 		}).map(s -> s.getSprint());
 	}
@@ -133,7 +128,7 @@ public class TaskServiceImpl implements TaskService{
 			t.setBoardId(masterBoardId);
 			t.setStatus(TaskCompletionStatus.PRODUCT_BACKLOG);
 			taskDAO.save(new TaskDTO(t)).subscribe();
-			List<UUID> nList = new ArrayList<UUID>();
+			List<UUID> nList = new ArrayList<>();
 			if(s.getTaskIds() != null) {
 				//Collections.copy(nList, s.getTaskIds());
 				nList.addAll(s.getTaskIds());
@@ -141,10 +136,7 @@ public class TaskServiceImpl implements TaskService{
 			if(nList.contains(t.getId())) {
 				nList.remove(t.getId());
 			}
-			System.out.println(nList.toString());
 			s.setTaskIds(nList);
-			System.out.println(s.getTaskIds());
-			System.out.println(new SprintDTO(s));
 			return sprintDAO.save(new SprintDTO(s));
 		}).map(s -> s.getSprint());
 	}
