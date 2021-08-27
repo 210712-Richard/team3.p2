@@ -81,16 +81,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void changeUserCredentials(User user, UserDTO employee, String password, String email, String type) {
+	public Mono<User> changeUserCredentials(User employee, String email, String password) {
 
-		if (user.getType().equals(UserType.valueOf("Admin"))) {
-
-			employee.setType(UserType.valueOf(type));
-			employee.setPassword(password);
-			employee.setEmail(email);
-
-		} 
-
+		return userDao.findById(employee.getUsername()).flatMap(dto -> {
+			dto.setEmail(email);
+			dto.setPassword(password);
+			
+		return userDao.save(dto);
+		}).map(dto -> dto.getUser());
+					
 		
 	}
 

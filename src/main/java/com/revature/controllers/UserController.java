@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.WebSession;
 
+
+import com.revature.aspects.IsAdmin;
 import com.revature.aspects.LoggedIn;
 import com.revature.beans.Notification;
 import com.revature.beans.Product;
@@ -120,7 +122,7 @@ public class UserController {
 	@GetMapping("/products")
 	public ResponseEntity<Flux<Product>> viewProducts(WebSession session) {
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
-		return ResponseEntity.ok(userService.viewProducts(loggedUser));
+		return ResponseEntity.ok(userService.viewProducts(loggedUser).log());
 	}
 
 	// As a user, I can view all the scrum boards I am involved with
@@ -131,7 +133,7 @@ public class UserController {
 	}
 
 	// As an Admin I can view a user
-	@GetMapping("{employee}")
+	@GetMapping("/{employee}")
 	public ResponseEntity<Mono<User>> getCurrentUsers(@PathVariable("employee") String employee, WebSession session) {
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		// checking if logged user is an admin
@@ -144,7 +146,8 @@ public class UserController {
 	}
 
 	// As an Admin I can change user roles
-	@PostMapping("{employee}/newRole/{role}")
+	@IsAdmin
+	@PostMapping("/{employee}/newRole/{role}")
 	public ResponseEntity<User> changeUserRole(@PathVariable("employee") String employee,
 			@PathVariable("role") String role, WebSession session) {
 
@@ -159,5 +162,23 @@ public class UserController {
 	}
 
 	// As an Admin I can change user credentials
+	
+//	@IsAdmin
+	@PutMapping("/newCreds/")
+	public ResponseEntity<Mono<User>> changeCredentials( 
+			@RequestBody User employee, WebSession session){
+		
+		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
+		
+		
+		String employeePass = employee.getPassword();
+		
+		String employeeEmail = employee.getEmail();
+		
+		Mono<User> empUser = userService.changeUserCredentials(employee, employeeEmail, employeePass );
+
+		return ResponseEntity.ok(empUser);
+		
+	}
 
 }
