@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 	 * 
 	 */
 	@Override
-	public Product createNewProduct(UUID id, String productOwner, Map<UUID, String> scrumMasterBoardMap,
+	public Mono<Product> createNewProduct(UUID id, String productOwner, Map<UUID, String> scrumMasterBoardMap,
 			List<UUID> boardIds, List<String> usernames, Map<UUID, String> boardIdNameMap, String productName,
 			UUID masterBoardID) {
 		Product product = new Product();
@@ -53,8 +53,7 @@ public class ProductServiceImpl implements ProductService {
 		product.setBoardIdNameMap(boardIdNameMap);
 		product.setProductName(productName);
 		product.setMasterBoardId(masterBoardID);
-		productDao.save(new ProductDTO(product)).map(p -> p.getProduct());
-		return product;
+		return productDao.save(new ProductDTO(product)).map(p -> p.getProduct());
 
 	}
 

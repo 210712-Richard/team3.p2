@@ -7,4 +7,6 @@ Feature: User can view their tasks
 	  And cookie SESSION = signin.sessionCookie
 	  When method GET
 	  Then status 200
+	  
+
 
