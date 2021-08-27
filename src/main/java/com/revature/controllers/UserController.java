@@ -35,18 +35,20 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/users")
 public class UserController {
 
-	@Autowired
-	private UserService userService;
-	@Autowired
 	private User loggedUser;
-	@Autowired
 	private Product selectedProduct;
-	@Autowired
 	private ScrumBoard selectedScrumBoard;
-
-	@Autowired
+	
+	private UserService userService;
 	private NotificationService notificationService;
 
+	@Autowired
+	public UserController(UserService userService, NotificationService notificationService) {
+		this.notificationService = notificationService;
+		this.userService = userService;
+	}
+	
+	
 	// As a user, I can read and access notifications
 
 	@GetMapping("/notifications")
