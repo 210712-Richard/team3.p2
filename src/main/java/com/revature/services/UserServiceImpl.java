@@ -72,9 +72,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Mono<User> viewUser(User user, String employee) {
 
-		return userDao.findById(employee).map(dto -> {
-			return dto.getUser();
-		});
+		return userDao.findById(employee).map(dto -> dto.getUser()
+		);
 
 	}
 
