@@ -18,7 +18,7 @@ public interface SprintService {
 	 * @param sprint sprint to be created 
 	 * @return returns the sprint inserted into database
 	 */
-	Mono<Sprint> createSpring(Sprint sprint);
+	Mono<Sprint> createSprint(Sprint sprint);
 
 	/**
 	 * 

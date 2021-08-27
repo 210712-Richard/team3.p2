@@ -66,6 +66,8 @@ public class ScrumServiceImpl implements ScrumService {
 
 	@Override
 	public Mono<ScrumBoard> createScrumBoard(User user, ScrumBoard scrumBoard, Product product) {
+		scrumBoard.setProductId(product.getId());
+	
 		productDAO.findByProductid(product.getId()).map(dto ->{
 			List<UUID> boards = dto.getBoardIds().stream().collect(Collectors.toList());
 			boards.add(scrumBoard.getId());

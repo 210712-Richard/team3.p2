@@ -32,22 +32,22 @@ public class SprintController {
 	@IsScrumMaster
 	public Mono<ResponseEntity<Sprint>> createSprint(@RequestBody Sprint sprint, WebSession session){
 		sprint.setScrumboardID(((ScrumBoard)session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD)).getId());
-		return sprintService.createSpring(sprint)
+		return sprintService.createSprint(sprint)
 			.map( s -> ResponseEntity.ok(s))
-			.switchIfEmpty(Mono.just(ResponseEntity.status(401).build()));
+			.switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
 	@PatchMapping("/endCurrentSprint")
 	@IsScrumMaster
 	public Mono<ResponseEntity<Sprint>> retireCurrentSprint(WebSession session){
 		return sprintService.retireCurrentSprint(((ScrumBoard)session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD)).getId())
 				.map(s -> ResponseEntity.ok(s))
-				.switchIfEmpty(Mono.just(ResponseEntity.status(401).build()));
+				.switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
 	@PatchMapping()
 	@IsScrumMaster
 	public Mono<ResponseEntity<Sprint>> changeEndSprint(@RequestBody Sprint sprint, WebSession session){
 		return sprintService.changeEndSprint(sprint, ((ScrumBoard)session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD)).getId())
 				.map(s -> ResponseEntity.ok(s))
-				.switchIfEmpty(Mono.just(ResponseEntity.status(401).build()));
+				.switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
 }
