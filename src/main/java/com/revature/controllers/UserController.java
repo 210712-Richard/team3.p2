@@ -36,8 +36,11 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
 	private User loggedUser;
+	@Autowired
 	private Product selectedProduct;
+	@Autowired
 	private ScrumBoard selectedScrumBoard;
 
 	@Autowired
@@ -139,6 +142,9 @@ public class UserController {
 	@PostMapping("/buildpresentation")
 	public ResponseEntity<Mono<String>> schedulePresentation(@RequestBody Notification note, WebSession session) {
 		selectedProduct = session.getAttribute(WebSessionAttributes.SELECTED_PRODUCT);
+		if (selectedProduct == null) {
+			return ResponseEntity.status(404).build();
+		}
 		selectedProduct.getUsernames().stream().forEach(username -> notificationService.notify(username, note.getMessage()));
 		return ResponseEntity.ok(Mono
 				.just("All the users associated with this product have been notified about your presentation request"));
