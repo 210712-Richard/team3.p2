@@ -1,10 +1,11 @@
 package com.revature.services;
 
-import java.util.List;
-
 import com.revature.beans.Sprint;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 public interface S3Service {
-	void uploadToBucket(String key, Object o);
-	List<Sprint> getSprints(String... key);
+	Mono<Void> uploadToBucket(String key, Object o);
+	Flux<Sprint> getSprints(String... key);
 }

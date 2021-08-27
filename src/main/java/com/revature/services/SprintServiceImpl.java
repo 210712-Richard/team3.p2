@@ -1,6 +1,7 @@
 package com.revature.services;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,11 +30,9 @@ public class SprintServiceImpl implements SprintService {
 	
 	@Override
 	public Mono<Sprint> createSprint(Sprint sprint) {
-	//check if there is a future/current for which status you are inserting.
-		//date overlaps?
-		return sprintDao.insert(new SprintDTO(sprint)).map(s -> s.getSprint());
-	}
-
+	
+		return sprintDao.insert(new SprintDTO(sprint)).log().map(dto -> dto.getSprint());
+}
 	@Override
 	public Mono<Sprint> retireCurrentSprint(UUID scrumboardID) {
 		
@@ -41,7 +40,7 @@ public class SprintServiceImpl implements SprintService {
 				.flatMap(dto ->{
 				sprintDao.delete(dto).subscribe();
 			dto.setStatus(SprintStatus.PAST);
-			s3.uploadToBucket(dto.getId().toString(), dto);
+			s3.uploadToBucket(dto.getId().toString(), dto).subscribe();
 			return sprintDao.save(dto);
 		}).map(saved -> saved.getSprint());
 	}

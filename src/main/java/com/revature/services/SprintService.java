@@ -16,6 +16,7 @@ public interface SprintService {
 	/**
 	 * 
 	 * @param sprint sprint to be created 
+	 * @param scrumboardId id of the scrumboard
 	 * @return returns the sprint inserted into database
 	 */
 	Mono<Sprint> createSprint(Sprint sprint);

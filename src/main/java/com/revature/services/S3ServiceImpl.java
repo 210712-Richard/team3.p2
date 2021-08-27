@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import com.revature.beans.Sprint;
 import com.revature.util.S3Util;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -34,7 +36,7 @@ public class S3ServiceImpl implements S3Service {
 	}
 
 	@Override
-	public void uploadToBucket(String key, Object o) {
+	public Mono<Void> uploadToBucket(String key, Object o) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try(ObjectOutputStream oos= new ObjectOutputStream(bos)){
 			oos.writeObject(o);
@@ -45,10 +47,11 @@ public class S3ServiceImpl implements S3Service {
 		} catch (IOException e) {
 			log.error(e);
 		}
+		return Mono.empty();
 	}
 
 	@Override
-	public List<Sprint> getSprints(String... keys) {
+	public Flux<Sprint> getSprints(String... keys) {
 		List<Sprint> sprints = new ArrayList<>();
 		for(String key : keys) {
 			try {
@@ -59,7 +62,7 @@ public class S3ServiceImpl implements S3Service {
 					log.error(e);
 				}
 		}
-		return sprints;
+		return Flux.fromStream(sprints.stream());
 	}
 
 }
