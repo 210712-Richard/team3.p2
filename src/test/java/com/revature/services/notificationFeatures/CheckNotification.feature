@@ -37,7 +37,12 @@ Scenario: Check notifications
 	And match response contains { username : 'test_username', message : 'this is a test notification', id : '#ignore' }
 
 Scenario: Check a particular notification
-	Given url baseUrl + '/users/notifications/'
+	Given url baseUrl + '/users/notifications/cb8632cd-bbe9-4908-a5ba-6510f6b82644'
+	And def signin = call read('classpath:com/revature/services/userFeatures/Login.feature')
+	And cookie SESSION = signin.sessionCookie
+	When method GET
+	Then status 200
+	And match response contains { username : 'test_username', message : 'this is a test notification', id : 'cb8632cd-bbe9-4908-a5ba-6510f6b82644' }
 	
 	
 	
