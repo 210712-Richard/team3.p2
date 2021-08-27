@@ -3,6 +3,8 @@ package com.revature.services;
 import java.util.UUID;
 
 import com.revature.beans.Notification;
+import com.revature.beans.Product;
+import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
 
 import reactor.core.publisher.Flux;
@@ -40,5 +42,33 @@ public interface NotificationService {
 	 */
 
 	Mono<Notification> checkNotificationByID(User user, UUID id);
+
+	/**
+	 * Notifies all users in the system
+	 * 
+	 * @param message The notification message
+	 */
+
+	void notifyAll(String message);
+
+	/**
+	 * Notifies all users affiliated with a product
+	 * 
+	 * @param product The product that the users are affiliated with
+	 * @param message The notification message
+	 */
+
+	void notifyAllInProduct(Product product, String message);
+
+	/**
+	 * Notifies all users affiliated with a scrum board
+	 * 
+	 * @param product The product that the users are in
+	 * @param board   The scrum board that the users are affiliated with
+	 * @param message The notification message
+	 */
+
+	void notifyAllInScrumBoard(ScrumBoard board, String message);
+
 
 }
