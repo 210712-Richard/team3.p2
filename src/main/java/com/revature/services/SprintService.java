@@ -27,5 +27,14 @@ public interface SprintService {
 	 * @return returns the sprint to be closed
 	 */
 	Mono<Sprint> retireCurrentSprint(UUID scrumboardID);
+	
+	/**
+	 * 
+	 * @param sprint
+	 * @param scrumboardID
+	 * @return
+	 */
+	
+	Mono<Sprint> changeEndSprint(Sprint sprint, UUID scrumboardID);
 
 }

@@ -43,6 +43,12 @@ public class SprintServiceImpl implements SprintService {
 			return sprintDao.save(dto);
 		}).map(saved -> saved.getSprint());
 	}
+
+	@Override
+	public Mono<Sprint> changeEndSprint(Sprint sprint, UUID scrumboardID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

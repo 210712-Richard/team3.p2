@@ -14,10 +14,18 @@ Feature: sprints
 		Then status 200
 		And match response contains { status : 'current'}
 		
-	@Tag3
-	Scenario: As a Scrum Master send 
+	@Tag2
+	Scenario: As a Scrum Master send a patch request to end a sprint
 		
-		Given url 'http://localhost:8080/sprints'
+		Given url 'http://localhost:8080/sprints/endCurrentSprint'
 		When method patch
 		Then status 200
 		And match response contains { status : 'PAST' }
+
+	#@Tag2
+#	Scenario: As a Scrum Master send a patch request to end a sprint
+		
+	#	Given url 'http://localhost:8080/sprints/d0230d19-96bf-4a9d-bcd8-ae8e107be26b'
+	#	When method patch
+	#	Then status 200
+	#	And match response contains { status : 'PAST' }	

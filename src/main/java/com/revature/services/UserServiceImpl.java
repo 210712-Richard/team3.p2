@@ -119,13 +119,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Flux<ScrumBoard> viewScrumBoards(User user) {
 		return Flux.fromStream(user.getBoardIds().stream())
-				.flatMap(id -> scrumDao.findByBoardId(id))
+				.flatMap(id -> scrumDao.findByBoardid(id))
 				.map(dto -> dto.getScrumBoard());
 	}
 
 	@Override
 	public Mono<ScrumBoard> selectScrumBoard(User user, Product product, UUID boardId) {
-		Mono<ScrumBoardDTO> scrumData = scrumDao.findByBoardId(boardId);
+		Mono<ScrumBoardDTO> scrumData = scrumDao.findByBoardid(boardId);
 		return scrumData
 				.flatMap(dto -> {
 					if (user.getBoardIds().contains(boardId) && product.getBoardIds().contains(boardId)) {
