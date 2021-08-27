@@ -83,6 +83,11 @@ public class Authentication {
 			log.debug("no user");
 			return Mono.just(ResponseEntity.status(401).build());
 		}
+		Product product = session.getAttribute(WebSessionAttributes.SELECTED_PRODUCT);
+		if(product == null) {
+			log.debug("no product");
+			return Mono.just(ResponseEntity.status(404).build());
+		}
 		ScrumBoard board = session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD);
 		if (board == null) {
 			log.debug("no board");

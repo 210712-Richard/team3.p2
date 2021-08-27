@@ -29,7 +29,8 @@ public class SprintServiceImpl implements SprintService {
 	
 	@Override
 	public Mono<Sprint> createSprint(Sprint sprint) {
-	
+	//check if there is a future/current for which status you are inserting.
+		//date overlaps?
 		return sprintDao.insert(new SprintDTO(sprint)).map(s -> s.getSprint());
 	}
 
