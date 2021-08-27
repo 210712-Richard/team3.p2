@@ -14,7 +14,7 @@ import com.revature.beans.ScrumBoard;
 public class ScrumBoardDTO {
 
 	@PrimaryKeyColumn(name = "boardid", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
-	private UUID boardId;
+	private UUID boardid;
 	@Column("name")
 	private String name;
 	@Column("scrummaster")
@@ -28,25 +28,25 @@ public class ScrumBoardDTO {
 	
 	public ScrumBoardDTO(ScrumBoard board) {
 		super();
-		this.boardId = board.getId();
+		this.boardid = board.getId();
 		this.name = board.getName();
 		this.scrumMaster = board.getScrumMasterUsername();
 	}
 
 	public ScrumBoard getScrumBoard() {
 		ScrumBoard board = new ScrumBoard();
-		board.setId(boardId);
+		board.setId(boardid);
 		board.setName(name);
 		board.setScrumMasterUsername(scrumMaster);
 		return board;
 	}
 
 	public UUID getBoardId() {
-		return boardId;
+		return boardid;
 	}
 
 	public void setBoardId(UUID boardId) {
-		this.boardId = boardId;
+		this.boardid = boardId;
 	}
 
 	public String getName() {
@@ -75,7 +75,7 @@ public class ScrumBoardDTO {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(boardId, name, productId, scrumMaster);
+		return Objects.hash(boardid, name, productId, scrumMaster);
 	}
 
 	@Override
@@ -87,13 +87,13 @@ public class ScrumBoardDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		ScrumBoardDTO other = (ScrumBoardDTO) obj;
-		return Objects.equals(boardId, other.boardId) && Objects.equals(name, other.name)
+		return Objects.equals(boardid, other.boardid) && Objects.equals(name, other.name)
 				&& Objects.equals(productId, other.productId) && Objects.equals(scrumMaster, other.scrumMaster);
 	}
 
 	@Override
 	public String toString() {
-		return "ScrumBoardDTO [boardId=" + boardId + ", name=" + name + ", scrumMaster=" + scrumMaster + ", productId="
+		return "ScrumBoardDTO [boardId=" + boardid + ", name=" + name + ", scrumMaster=" + scrumMaster + ", productId="
 				+ productId + "]";
 	}
 

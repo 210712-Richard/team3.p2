@@ -28,7 +28,7 @@ public class SprintServiceImpl implements SprintService {
 	}
 	
 	@Override
-	public Mono<Sprint> createSpring(Sprint sprint) {
+	public Mono<Sprint> createSprint(Sprint sprint) {
 	
 		return sprintDao.insert(new SprintDTO(sprint)).map(s -> s.getSprint());
 	}
@@ -38,10 +38,17 @@ public class SprintServiceImpl implements SprintService {
 		
 		return sprintDao.findByScrumboardIDAndStatus(scrumboardID, SprintStatus.CURRENT)
 				.flatMap(dto ->{
+				sprintDao.delete(dto).subscribe();
 			dto.setStatus(SprintStatus.PAST);
 			s3.uploadToBucket(dto.getId().toString(), dto);
 			return sprintDao.save(dto);
 		}).map(saved -> saved.getSprint());
+	}
+
+	@Override
+	public Mono<Sprint> changeEndSprint(Sprint sprint, UUID scrumboardID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

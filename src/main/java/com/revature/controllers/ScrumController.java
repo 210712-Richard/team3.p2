@@ -1,17 +1,19 @@
-package com.revature.controllers;
-
-import java.util.UUID;
+	package com.revature.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.WebSession;
 
+import com.revature.aspects.IsProductMaster;
+import com.revature.beans.Product;
+import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
 import com.revature.services.ScrumService;
+import com.revature.util.WebSessionAttributes;
 
 import reactor.core.publisher.Mono;
 
@@ -25,19 +27,11 @@ public class ScrumController {
 	ScrumController(ScrumService scrumService){
 		this.scrumService = scrumService;
 	}
-	@PatchMapping(value = "/assign/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Mono<ResponseEntity<User>> assignTask(@PathVariable("id") UUID id, @PathVariable("username") String username){
-
-		return scrumService.assignTasks(id, username)
-				.map( user -> ResponseEntity.ok(user))
-				.defaultIfEmpty(ResponseEntity.status(404).build());
-	}
-	
-	@PatchMapping(value = "/remove/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public Mono<ResponseEntity<User>> removeTask(@PathVariable("id") UUID id, @PathVariable("username") String username){
-
-		return scrumService.removeTasks(id, username)
-				.map( user -> ResponseEntity.ok(user))
+	@PostMapping()
+	@IsProductMaster
+	public Mono<ResponseEntity<ScrumBoard>> createScrumBoard(@RequestBody ScrumBoard scrumBoard, WebSession session){
+		return scrumService.createScrumBoard((User)session.getAttribute(WebSessionAttributes.LOGGED_USER) , scrumBoard, (Product)session.getAttribute(WebSessionAttributes.SELECTED_PRODUCT))
+				.map(board -> ResponseEntity.ok(board))
 				.defaultIfEmpty(ResponseEntity.status(404).build());
 	}
 }

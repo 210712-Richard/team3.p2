@@ -12,6 +12,8 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.revature.beans.MyLocalTimeSerializer;
 import com.revature.beans.Sprint;
 import com.revature.beans.SprintStatus;
 
@@ -29,10 +31,10 @@ public class SprintDTO {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate endDate;
 	@Column("starttime") 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "KK:mm a")
+	@JsonSerialize(using = MyLocalTimeSerializer.class)
 	private LocalTime startTime;
 	@Column("endtime") 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "KK:mm a")
+	@JsonSerialize(using = MyLocalTimeSerializer.class)
 	private LocalTime endTime;
 	@Column("taskids")
 	private List<UUID> taskIds;

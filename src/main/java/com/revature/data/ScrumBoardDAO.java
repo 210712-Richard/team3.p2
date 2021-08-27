@@ -9,5 +9,5 @@ import com.revature.dto.ScrumBoardDTO;
 import reactor.core.publisher.Mono;
 
 public interface ScrumBoardDAO extends ReactiveCassandraRepository<ScrumBoardDTO, String> {
-	Mono<ScrumBoardDTO> findByBoardId(UUID id);
+	Mono<ScrumBoardDTO> findByBoardid(UUID id);
 }

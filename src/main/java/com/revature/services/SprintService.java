@@ -18,7 +18,7 @@ public interface SprintService {
 	 * @param sprint sprint to be created 
 	 * @return returns the sprint inserted into database
 	 */
-	Mono<Sprint> createSpring(Sprint sprint);
+	Mono<Sprint> createSprint(Sprint sprint);
 
 	/**
 	 * 
@@ -27,5 +27,14 @@ public interface SprintService {
 	 * @return returns the sprint to be closed
 	 */
 	Mono<Sprint> retireCurrentSprint(UUID scrumboardID);
+	
+	/**
+	 * 
+	 * @param sprint
+	 * @param scrumboardID
+	 * @return
+	 */
+	
+	Mono<Sprint> changeEndSprint(Sprint sprint, UUID scrumboardID);
 
 }
