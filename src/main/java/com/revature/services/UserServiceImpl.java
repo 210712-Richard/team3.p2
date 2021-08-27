@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
+import com.revature.beans.Task;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
 import com.revature.data.ProductDAO;
@@ -124,5 +125,20 @@ public class UserServiceImpl implements UserService {
 			}
 		});
 	}
+ 
+
+
+	@Override
+	public Flux<Task> viewTasks(User user) {
+		return Flux.fromStream(user.getTaskIds().stream())
+				.flatMap(id ->taskDao.findById(id))
+				.map(dto -> dto.getTask());
+	
+		
+}
 
 }
+
+		
+
+

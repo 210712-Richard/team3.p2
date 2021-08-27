@@ -21,6 +21,7 @@ import com.revature.aspects.LoggedIn;
 import com.revature.beans.Notification;
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
+import com.revature.beans.Task;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
 import com.revature.services.NotificationService;
@@ -135,6 +136,11 @@ public class UserController {
 	public ResponseEntity<Flux<ScrumBoard>> viewScrumBoards(WebSession session) {
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		return ResponseEntity.ok(userService.viewScrumBoards(loggedUser));
+	}
+	@GetMapping("/tasks")
+	public ResponseEntity<Flux<Task>> viewTasks(WebSession session) {
+		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
+		return ResponseEntity.ok(userService.viewTasks(loggedUser));
 	}
 
 	// As a product owner, I can schedule a presentation of the current build
