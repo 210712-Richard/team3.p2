@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.WebSession;
 
-
 import com.revature.aspects.IsAdmin;
+import com.revature.aspects.IsProductMaster;
 import com.revature.aspects.LoggedIn;
 import com.revature.beans.Notification;
 import com.revature.beans.Product;
@@ -35,13 +35,20 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/users")
 public class UserController {
 
-	@Autowired
-	private UserService userService;
 	private User loggedUser;
-
-	@Autowired
+	private Product selectedProduct;
+	private ScrumBoard selectedScrumBoard;
+	
+	private UserService userService;
 	private NotificationService notificationService;
 
+	@Autowired
+	public UserController(UserService userService, NotificationService notificationService) {
+		this.notificationService = notificationService;
+		this.userService = userService;
+	}
+	
+	
 	// As a user, I can read and access notifications
 
 	@GetMapping("/notifications")
@@ -138,6 +145,19 @@ public class UserController {
 		return ResponseEntity.ok(userService.viewTasks(loggedUser));
 	}
 
+	// As a product owner, I can schedule a presentation of the current build
+	@IsProductMaster
+	@PostMapping("/buildpresentation")
+	public ResponseEntity<Mono<String>> schedulePresentation(@RequestBody Notification note, WebSession session) {
+		selectedProduct = session.getAttribute(WebSessionAttributes.SELECTED_PRODUCT);
+		if (selectedProduct == null) {
+			return ResponseEntity.status(404).build();
+		}
+		selectedProduct.getUsernames().stream().forEach(username -> notificationService.notify(username, note.getMessage()));
+		return ResponseEntity.ok(Mono
+				.just("All the users associated with this product have been notified about your presentation request"));
+	}
+
 	// As an Admin I can view a user
 	@GetMapping("/{employee}")
 	public ResponseEntity<Mono<User>> getCurrentUsers(@PathVariable("employee") String employee, WebSession session) {
@@ -168,23 +188,21 @@ public class UserController {
 	}
 
 	// As an Admin I can change user credentials
-	
+
 //	@IsAdmin
 	@PutMapping("/newCreds/")
-	public ResponseEntity<Mono<User>> changeCredentials( 
-			@RequestBody User employee, WebSession session){
-		
+	public ResponseEntity<Mono<User>> changeCredentials(@RequestBody User employee, WebSession session) {
+
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
-		
-		
+
 		String employeePass = employee.getPassword();
-		
+
 		String employeeEmail = employee.getEmail();
-		
-		Mono<User> empUser = userService.changeUserCredentials(employee, employeeEmail, employeePass );
+
+		Mono<User> empUser = userService.changeUserCredentials(employee, employeeEmail, employeePass);
 
 		return ResponseEntity.ok(empUser);
-		
+
 	}
 
 }

@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Mono<User> register(User user) {
 
-		return userDao.save(new UserDTO(user)).map(u->u.getUser());
+		return userDao.save(new UserDTO(user)).map(u -> u.getUser());
 
 	}
 
@@ -71,14 +71,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Mono<User> viewUser(User user, String employee) {
-		
 
-			Mono<UserDTO> emp = userDao.findById(employee);
-			return emp
-					.map(dto -> {
-						return dto.getUser();
-					});
-	
+		return userDao.findById(employee).map(dto -> dto.getUser()
+		);
+
 	}
 
 	@Override
@@ -87,55 +83,51 @@ public class UserServiceImpl implements UserService {
 		return userDao.findById(employee.getUsername()).flatMap(dto -> {
 			dto.setEmail(email);
 			dto.setPassword(password);
-			
-		return userDao.save(dto);
-		}).map(dto -> dto.getUser());
-					
-		
-	}
 
+			return userDao.save(dto);
+		}).map(dto -> dto.getUser());
+
+	}
 
 	@Override
 	public Flux<Product> viewProducts(User user) {
-		return Flux
-				.fromStream(user.getProductIds().stream())
-				.flatMap(id -> productDao.findByProductid(id))
+		return Flux.fromStream(user.getProductIds().stream()).flatMap(id -> productDao.findByProductid(id))
 				.map(dto -> dto.getProduct());
 	}
 
 	@Override
 	public Mono<Product> selectProduct(User user, UUID productId) {
 		Mono<ProductDTO> productData = productDao.findByProductid(productId);
-		return productData
-				.flatMap(dto -> {
-					if (dto.getUsernames().contains(user.getUsername())) {
-						return Mono.just(dto.getProduct());
-					} else {
-						return Mono.empty();
-					}
-				});
+		return productData.flatMap(dto -> {
+			if (dto.getUsernames().contains(user.getUsername())) {
+				return Mono.just(dto.getProduct());
+			} else {
+				return Mono.empty();
+			}
+		});
 	}
 
 	@Override
 	public Flux<ScrumBoard> viewScrumBoards(User user) {
-		return Flux.fromStream(user.getBoardIds().stream())
-				.flatMap(id -> scrumDao.findByBoardid(id))
+		return Flux.fromStream(user.getBoardIds().stream()).flatMap(id -> scrumDao.findByBoardid(id))
 				.map(dto -> dto.getScrumBoard());
 	}
 
 	@Override
 	public Mono<ScrumBoard> selectScrumBoard(User user, Product product, UUID boardId) {
+
 		Mono<ScrumBoardDTO> scrumData = scrumDao.findByBoardid(boardId);
-		return scrumData
-				.flatMap(dto -> {
-					if (user.getBoardIds().contains(boardId) && product.getBoardIds().contains(boardId)) {
-						return Mono.just(dto.getScrumBoard());
-					} else {
-						return Mono.empty();
-					}
-				});
+		return scrumData.flatMap(dto -> {
+			if (user.getBoardIds().contains(boardId) && product.getBoardIds().contains(boardId)) {
+				return Mono.just(dto.getScrumBoard());
+			} else {
+				return Mono.empty();
+			}
+		});
+
 	}
  
+
 
 	@Override
 	public Flux<Task> viewTasks(User user) {
@@ -145,6 +137,7 @@ public class UserServiceImpl implements UserService {
 	
 		
 }
+
 }
 
 		
