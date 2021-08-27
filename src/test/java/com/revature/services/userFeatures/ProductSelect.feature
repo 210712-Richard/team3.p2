@@ -8,6 +8,4 @@ Feature: A Product can be selected after login, from which a user can continue p
 		When method post 
 		Then status 200
 		And match response contains {id : 'b7b49fc0-02ca-11ec-a3ea-0800200c9a66'}
-		And match responseCookies contains { SESSION: '#notnull'}
-		And def sessionCookie = responseCookies.SESSION
 		And def productid = response.id
