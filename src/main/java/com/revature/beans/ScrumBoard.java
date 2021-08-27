@@ -9,10 +9,11 @@ public class ScrumBoard {
 	private String name;
 	private UUID id;
 	private String scrumMasterUsername;
-	private List<String> users;
+	private UUID productId;
 	
 	public ScrumBoard() {
 		super();
+		id = UUID.randomUUID();
 	}
 
 	public String getName() {
@@ -38,18 +39,18 @@ public class ScrumBoard {
 	public void setScrumMasterUsername(String scrumMasterUsername) {
 		this.scrumMasterUsername = scrumMasterUsername;
 	}
-
-	public List<String> getUsers() {
-		return users;
+	
+	public UUID getProductId() {
+		return productId;
 	}
 
-	public void setUsers(List<String> users) {
-		this.users = users;
+	public void setProductId(UUID productId) {
+		this.productId = productId;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name, scrumMasterUsername, users);
+		return Objects.hash(id, name, productId, scrumMasterUsername);
 	}
 
 	@Override
@@ -62,12 +63,13 @@ public class ScrumBoard {
 			return false;
 		ScrumBoard other = (ScrumBoard) obj;
 		return Objects.equals(id, other.id) && Objects.equals(name, other.name)
-				&& Objects.equals(scrumMasterUsername, other.scrumMasterUsername) && Objects.equals(users, other.users);
+				&& Objects.equals(productId, other.productId)
+				&& Objects.equals(scrumMasterUsername, other.scrumMasterUsername);
 	}
 
 	@Override
 	public String toString() {
-		return "ScrumBoard [name=" + name + ", id=" + id + ", scrumMasterUsername=" + scrumMasterUsername + ", users="
-				+ users + "]";
+		return "ScrumBoard [name=" + name + ", id=" + id + ", scrumMasterUsername=" + scrumMasterUsername
+				+ ", productId=" + productId + "]";
 	}
 }

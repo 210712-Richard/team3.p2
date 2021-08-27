@@ -61,10 +61,10 @@ public class Authentication {
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if (loggedUser == null)
 			return ResponseEntity.status(401).build();
-		ScrumBoard board = session.getAttribute("selectedBoard");
+		ScrumBoard board = session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD);
 		if (board == null)
 			return ResponseEntity.status(404).build();
-		if (board.getUsers().stream().anyMatch(user -> user.equals(loggedUser.getUsername()))) {
+		if(loggedUser.getBoardIds().stream().anyMatch(p -> board.getId().equals(p))) {
 			return pjp.proceed();
 
 		} else {
@@ -79,16 +79,20 @@ public class Authentication {
 			return ResponseEntity.status(404).build();
 
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
-		if (loggedUser == null)
-			return ResponseEntity.status(401).build();
-		ScrumBoard board = session.getAttribute("selectedBoard");
-		if (board == null)
-			return ResponseEntity.status(404).build();
+		if (loggedUser == null) {
+			log.debug("no user");
+			return Mono.just(ResponseEntity.status(401).build());
+		}
+		ScrumBoard board = session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD);
+		if (board == null) {
+			log.debug("no board");
+			return Mono.just(ResponseEntity.status(404).build());
+		}
 		if (board.getScrumMasterUsername().equals(loggedUser.getUsername())) {
 			return pjp.proceed();
 			
 		}else {
-		return ResponseEntity.status(403).build();
+		return Mono.just(ResponseEntity.status(403).build());
 		}
 
 	}
@@ -101,11 +105,14 @@ public class Authentication {
 		}
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if (loggedUser == null) {
+			log.debug("no user");
 			return ResponseEntity.status(401).build();
 		}
-		Product product = session.getAttribute("selectedProduct");
-		if (product == null)
+		Product product = session.getAttribute(WebSessionAttributes.SELECTED_PRODUCT);
+		if (product == null) {
+			log.debug("no product");
 			return ResponseEntity.status(404).build();
+		}
 		if (product.getProductOwner().equals(loggedUser.getUsername())) {
 			return pjp.proceed();
 

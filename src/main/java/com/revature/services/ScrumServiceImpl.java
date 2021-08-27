@@ -2,15 +2,24 @@ package com.revature.services;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.beans.Product;
+import com.revature.beans.ScrumBoard;
 import com.revature.beans.SprintStatus;
 import com.revature.beans.User;
+import com.revature.data.ProductDAO;
+import com.revature.data.ScrumBoardDAO;
 import com.revature.data.SprintDAO;
 import com.revature.data.UserDAO;
+import com.revature.dto.ScrumBoardDTO;
 import com.revature.dto.SprintDTO;
 
 import reactor.core.publisher.Flux;
@@ -19,31 +28,19 @@ import reactor.core.publisher.Mono;
 @Service
 public class ScrumServiceImpl implements ScrumService {
 
-	private UserDAO userDao;
+	private ProductDAO productDAO;
 	private SprintDAO sprintDao;
+	private ScrumBoardDAO scrumDAO;
+	private UserDAO userDAO;
 
 	@Autowired
-	public ScrumServiceImpl(UserDAO userDao) {
-		this.userDao = userDao;
+	public ScrumServiceImpl(SprintDAO sprintDao, ProductDAO productDao, ScrumBoardDAO scrumDAO, UserDAO userDAO) {
+		this.sprintDao = sprintDao;
+		this.productDAO = productDao;
+		this.scrumDAO = scrumDAO;
+		this.userDAO = userDAO;
 	}
 
-	@Override
-	public Mono<User> assignTasks(UUID taskId, String username) {
-
-		return userDao.findById(username).map(dto -> {
-			dto.getTaskIds().add(taskId);
-			userDao.save(dto);
-			return dto.getUser();
-		});
-	}
-
-	@Override
-	public Mono<User> removeTasks(UUID id, String username) {
-		return userDao.findById(username).map(dto -> {
-			dto.getTaskIds().removeIf(p -> p.equals(id));
-			return dto.getUser();
-		});
-	}
 
 	@Override
 	public void autoUpdate() {
@@ -65,4 +62,31 @@ public class ScrumServiceImpl implements ScrumService {
 			}
 		});
 	}
+
+
+	@Override
+	public Mono<ScrumBoard> createScrumBoard(User user, ScrumBoard scrumBoard, Product product) {
+		scrumBoard.setProductId(product.getId());
+	
+		productDAO.findByProductid(product.getId()).map(dto ->{
+			List<UUID> boards = dto.getBoardIds().stream().collect(Collectors.toList());
+			boards.add(scrumBoard.getId());
+			dto.setBoardIds(boards);
+			dto.getBoardIdNameMap().put(scrumBoard.getId(), scrumBoard.toString());
+			Map<UUID, String> idnameMap = new HashMap<>();
+			idnameMap.putAll(dto.getBoardIdNameMap());
+			dto.setBoardIdNameMap(idnameMap);
+			return productDAO.save(dto).subscribe();
+		}).subscribe();
+		
+		userDAO.findById(user.getUsername()).map(dto -> {
+			List<UUID> boards = dto.getBoardIds().stream().collect(Collectors.toList());
+			boards.add(scrumBoard.getId());
+			dto.setBoardIds(boards);
+			return userDAO.save(dto);
+		}).subscribe();
+		
+		return scrumDAO.insert(new ScrumBoardDTO(scrumBoard)).map(dto -> dto.getScrumBoard());
+	}
+
 }

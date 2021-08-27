@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.WebSession;
 
 import com.revature.aspects.IsScrumMaster;
+import com.revature.beans.ScrumBoard;
 import com.revature.beans.Sprint;
 import com.revature.services.SprintService;
+import com.revature.util.WebSessionAttributes;
 
 import reactor.core.publisher.Mono;
 
@@ -29,16 +31,23 @@ public class SprintController {
 	@PostMapping()
 	@IsScrumMaster
 	public Mono<ResponseEntity<Sprint>> createSprint(@RequestBody Sprint sprint, WebSession session){
-		sprint.setScrumboardID(session.getAttribute("selectedScrumBoard"));
-		return sprintService.createSpring(sprint)
+		sprint.setScrumboardID(((ScrumBoard)session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD)).getId());
+		return sprintService.createSprint(sprint)
 			.map( s -> ResponseEntity.ok(s))
-			.switchIfEmpty(Mono.just(ResponseEntity.status(401).build()));
+			.switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
 	@PatchMapping("/endCurrentSprint")
 	@IsScrumMaster
 	public Mono<ResponseEntity<Sprint>> retireCurrentSprint(WebSession session){
-		return sprintService.retireCurrentSprint(session.getAttribute("selectedScrumBoard"))
+		return sprintService.retireCurrentSprint(((ScrumBoard)session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD)).getId())
 				.map(s -> ResponseEntity.ok(s))
-				.switchIfEmpty(Mono.just(ResponseEntity.status(401).build()));
+				.switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
+	}
+	@PatchMapping()
+	@IsScrumMaster
+	public Mono<ResponseEntity<Sprint>> changeEndSprint(@RequestBody Sprint sprint, WebSession session){
+		return sprintService.changeEndSprint(sprint, ((ScrumBoard)session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD)).getId())
+				.map(s -> ResponseEntity.ok(s))
+				.switchIfEmpty(Mono.just(ResponseEntity.status(404).build()));
 	}
 }
