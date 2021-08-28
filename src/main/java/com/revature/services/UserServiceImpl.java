@@ -37,13 +37,14 @@ public class UserServiceImpl implements UserService {
 		this.productDao = productDao;
 		this.scrumDao = scrumDao;
 	}
+	public UserServiceImpl() {
+		
+	}
 
 	@Override
 	public Mono<User> login(String username, String password) {
 		Mono<UserDTO> userData = userDao.findById(username);
-		System.out.println(userData);
 		return userData.filter(dto -> dto.getPassword().equals(password)).map(dto -> {
-			System.out.println(dto);
 			return dto.getUser();
 		});
 	}
@@ -136,7 +137,7 @@ public class UserServiceImpl implements UserService {
 				.map(dto -> dto.getTask());
 	
 		
-}
+	}
 
 }
 
