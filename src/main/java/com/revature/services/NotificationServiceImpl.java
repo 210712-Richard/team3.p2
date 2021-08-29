@@ -75,9 +75,9 @@ public class NotificationServiceImpl implements NotificationService {
 
 	@Override
 	public void clearNotifications(User user) {
-		nd.findByUsername(user.getUsername()).map(dto -> {
-			return nd.delete(dto).subscribe();
-		}).subscribe();
+		nd.findByUsername(user.getUsername())
+		.map(dto -> nd.delete(dto).subscribe())
+		.subscribe();
 	}
 	
 	@Override
