@@ -52,7 +52,7 @@ public class ProductServiceTest {
 	
 	
 	@BeforeEach
-	public void setupInjects() {
+	void setupInjects() {
 		MockitoAnnotations.openMocks(this);
 		u = new User();
         u.setUsername("test");
@@ -86,7 +86,7 @@ public class ProductServiceTest {
 
 }
     @Test 
-    public void testAddNewProduct() {
+    void testAddNewProduct() {
     Mockito.when(productDao.save(Mockito.any())).thenReturn(Mono.just(pDto));
     ArgumentCaptor<ProductDTO> captor = ArgumentCaptor.forClass(ProductDTO.class);
 	ps.createNewProduct(product.getId(), product.getProductOwner(), product.getScrumMasterBoardMap(),
@@ -100,7 +100,7 @@ public class ProductServiceTest {
 }
 	
 	@Test
-	public void testAddProductById() {
+	void testAddProductById() {
     Mockito.when(productDao.findByProductid(Mockito.any())).thenReturn(Mono.just(pDto));
     Mockito.when(userDao.findById(Mockito.anyString())).thenReturn(Mono.just(uDto));
     Mockito.when(ps.addProductById(Mockito.anyString(), product.getId())).thenReturn(Mono.just(u));
@@ -111,7 +111,7 @@ public class ProductServiceTest {
 	
 	
 	@Test
-	public void testRemoveProductById() {
+	void testRemoveProductById() {
 	Mockito.when(productDao.findByProductid(Mockito.any())).thenReturn(Mono.just(pDto));
 	Mockito.when(userDao.findById(Mockito.anyString())).thenReturn(Mono.just(uDto));
     Mockito.when(ps.addProductById(Mockito.anyString(), product.getId())).thenReturn(Mono.just(u));
