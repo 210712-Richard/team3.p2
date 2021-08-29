@@ -22,6 +22,7 @@ import com.revature.util.S3Util;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 /**
  * 
  * @author MuckJosh
@@ -33,27 +34,32 @@ public class SprintServiceImpl implements SprintService {
 	private SprintDAO sprintDao;
 	private TaskDAO taskDao;
 	private static final Logger log = LoggerFactory.getLogger(SprintService.class);
-	
+
 	@Autowired
 	public SprintServiceImpl(SprintDAO sprintDao, S3Service s3, TaskDAO taskDao) {
 		this.sprintDao = sprintDao;
 		this.s3 = s3;
 		this.taskDao = taskDao;
 	}
-	
+
 	@Override
 	public Mono<Sprint> createSprint(Sprint sprint) {
-	
+
 		return sprintDao.insert(new SprintDTO(sprint)).log().map(dto -> dto.getSprint());
-}
+	}
+
 	@Override
 	public Mono<Sprint> retireCurrentSprint(UUID scrumboardID) {
-		
-		return sprintDao.findByScrumboardIDAndStatus(scrumboardID, SprintStatus.CURRENT)
-				.flatMap(dto ->{
-				sprintDao.delete(dto).subscribe();
+
+		return sprintDao.findByScrumboardIDAndStatus(scrumboardID, SprintStatus.CURRENT).flatMap(dto -> {
+			sprintDao.delete(dto).subscribe();
 			dto.setStatus(SprintStatus.PAST);
-			Flux<TaskDTO> tasks = taskDao.findAll().filter(task -> dto.getTaskIds().contains(task.getId()));
+			Flux<TaskDTO> tasks = taskDao.findAll()
+					.filter(task -> dto.getTaskIds().contains(task.getId()))
+					.map(t -> {
+				taskDao.delete(t);
+				return t;
+			});
 			List<TaskDTO> taskList = new ArrayList<>();
 			tasks.subscribe(it -> new Consumer<TaskDTO>() {
 
@@ -66,16 +72,16 @@ public class SprintServiceImpl implements SprintService {
 
 				@Override
 				public void accept(TaskDTO t) {
-					if(!task.getStatus().equals(TaskCompletionStatus.COMPLETED)) {
-						task.setStatus(TaskCompletionStatus.PRODUCT_BACKLOG);
+					if (!task.getStatus().equals(TaskCompletionStatus.COMPLETED)) {
+						task.setStatus(TaskCompletionStatus.BACKLOG);
 						log.warn(task.toString());
 						taskDao.save(task).subscribe();
-					}	
+					}
 				}
 			});
 			SprintHistory hist = new SprintHistory(taskList, dto);
 			s3.uploadToBucket(dto.getId().toString(), hist, S3Util.SPRINT_BUCKET_NAME).subscribe();
-			return sprintDao.save(dto);
+			return sprintDao.insert(dto);
 		}).map(saved -> saved.getSprint());
 	}
 
@@ -84,6 +90,5 @@ public class SprintServiceImpl implements SprintService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
 
 }

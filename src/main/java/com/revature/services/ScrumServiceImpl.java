@@ -41,29 +41,6 @@ public class ScrumServiceImpl implements ScrumService {
 		this.userDAO = userDAO;
 	}
 
-
-	@Override
-	public void autoUpdate() {
-		Flux<SprintDTO> sprintData = sprintDao.findAll().filter(
-				dto -> dto.getStatus().equals(SprintStatus.CURRENT) || dto.getStatus().equals(SprintStatus.FUTURE));
-		sprintData.map(dto -> {
-			if (dto.getStatus().equals(SprintStatus.CURRENT)
-					&& (dto.getEndDate().isBefore(LocalDate.now()) || dto.getEndDate().isEqual(LocalDate.now()))
-					&& dto.getEndTime().isBefore(LocalTime.now())) {
-				dto.setStatus(SprintStatus.PAST);
-				return sprintDao.save(dto);
-			} else if (dto.getStatus().equals(SprintStatus.FUTURE)
-					&& (dto.getStartDate().isAfter(LocalDate.now()) || dto.getStartDate().isEqual(LocalDate.now()))
-					&& dto.getStartTime().isAfter(LocalTime.now())) {
-				dto.setStatus(SprintStatus.FUTURE);
-				return sprintDao.save(dto);
-			} else {
-				return dto;
-			}
-		});
-	}
-
-
 	@Override
 	public Mono<ScrumBoard> createScrumBoard(User user, ScrumBoard scrumBoard, Product product) {
 		scrumBoard.setProductId(product.getId());

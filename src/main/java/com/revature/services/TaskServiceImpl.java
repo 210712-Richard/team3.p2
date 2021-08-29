@@ -62,7 +62,7 @@ public class TaskServiceImpl implements TaskService{
 		//New task added to product backlog
 		return productDAO.findByProductid(product).flatMap(dto -> {
 			task.setBoardid(dto.getMasterBoardID());
-			task.setStatus(TaskCompletionStatus.BACKLOG);
+			task.setStatus(TaskCompletionStatus.PRODUCT_BACKLOG);
 			task.setId(UUID.randomUUID());
 			return taskDAO.save(task);
 		}).map(t -> t.getTask());
@@ -83,8 +83,11 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Mono<Sprint> addToSprintBackLog(UUID sprintBoardId, SprintStatus sprintStatus, UUID taskBoardId, TaskCompletionStatus taskStatus, UUID taskId) {
 		//Find Task set status to backlog
-		Mono<Task> task = taskDAO.findByBoardidAndStatusAndId(taskBoardId, taskStatus, taskId).map(t -> t.getTask());
-		
+		Mono<Task> task = taskDAO.findByBoardidAndStatusAndId(taskBoardId, taskStatus, taskId).map(t -> {
+			taskDAO.delete(t).subscribe();
+			return t.getTask();
+		});
+
 		//Find sprint and add this task to the sprint's list of tasks
 		Mono<Sprint> sprint = sprintDAO.findByScrumboardIDAndStatus(sprintBoardId, sprintStatus).map(t -> t.getSprint());
 		
