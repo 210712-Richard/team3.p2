@@ -34,7 +34,7 @@ import reactor.test.StepVerifier;
 public class UserServiceTest {
 	private final static Logger log = LoggerFactory.getLogger(UserServiceTest.class);
 	@InjectMocks
-	private UserServiceImpl us;
+	private UserService us = new UserServiceImpl();
 	@Mock
 	private UserDAO userDao;
 	@Mock
@@ -138,7 +138,7 @@ public class UserServiceTest {
 	}
 	@Test
 	public void viewBoards() {
-		Mockito.when(scrumDao.findByBoardid(Mockito.any())).thenReturn(Mono.just(sDto));
+		Mockito.when(scrumDao.findAll()).thenReturn(Flux.just(sDto));
 		
 		Flux<ScrumBoard> boards = us.viewScrumBoards(u);
 		
@@ -154,7 +154,7 @@ public class UserServiceTest {
 	}
 	@Test
 	public void viewTasks() {
-		Mockito.when(taskDao.findByTaskId(tDto.getId())).thenReturn(Mono.just(tDto));
+		Mockito.when(taskDao.findAll()).thenReturn(Flux.just(tDto));
 		
 		Flux<Task> tasks = us.viewTasks(u);
 		
