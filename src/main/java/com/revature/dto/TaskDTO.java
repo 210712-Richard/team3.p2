@@ -28,7 +28,7 @@ public class TaskDTO {
 	@PrimaryKeyColumn(name = "status", ordinal = 1, type = PrimaryKeyType.CLUSTERED, ordering = Ordering.ASCENDING)
 	private TaskCompletionStatus status;
 	@Column("priority")
-	private TaskPriority priorityStatus;
+	private TaskPriority priority;
 	@Column("startdate")
 	private LocalDate startDate;
 	@Column("enddate")
@@ -39,7 +39,7 @@ public class TaskDTO {
 	private LocalTime endTime;
 
 	public TaskDTO() {
-
+		super();
 	}
 
 	public TaskDTO(Task task) {
@@ -48,7 +48,7 @@ public class TaskDTO {
 		this.name = task.getName();
 		this.description = task.getDescription();
 		this.status = task.getStatus();
-		this.priorityStatus = task.getPriorityStatus();
+		this.priority = task.getPriorityStatus();
 		this.startDate = task.getStartDate();
 		this.endDate = task.getEndDate();
 		this.startTime = task.getStartTime();
@@ -62,7 +62,7 @@ public class TaskDTO {
 		task.setName(this.name);
 		task.setDescription(this.description);
 		task.setStatus(this.status);
-		task.setPriorityStatus(this.priorityStatus);
+		task.setPriorityStatus(this.priority);
 		task.setStartDate(this.startDate);
 		task.setEndDate(this.endDate);
 		task.setStartTime(this.startTime);
@@ -137,7 +137,7 @@ public class TaskDTO {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(boardid, description, endDate, endTime, id, name, priorityStatus, startDate, startTime,
+		return Objects.hash(boardid, description, endDate, endTime, id, name, priority, startDate, startTime,
 				status);
 	}
 	
@@ -150,11 +150,11 @@ public class TaskDTO {
 	}
 
 	public TaskPriority getPriorityStatus() {
-		return priorityStatus;
+		return priority;
 	}
 
 	public void setPriorityStatus(TaskPriority priorityStatus) {
-		this.priorityStatus = priorityStatus;
+		this.priority = priorityStatus;
 	}
 
 	@Override
@@ -169,14 +169,14 @@ public class TaskDTO {
 		return Objects.equals(boardid, other.boardid) && Objects.equals(description, other.description)
 				&& Objects.equals(endDate, other.endDate) && Objects.equals(endTime, other.endTime)
 				&& Objects.equals(id, other.id) && Objects.equals(name, other.name)
-				&& priorityStatus == other.priorityStatus && Objects.equals(startDate, other.startDate)
+				&& priority == other.priority && Objects.equals(startDate, other.startDate)
 				&& Objects.equals(startTime, other.startTime) && status == other.status;
 	}
 
 	@Override
 	public String toString() {
 		return "TaskDTO [boardid=" + boardid + ", id=" + id + ", name=" + name + ", description=" + description
-				+ ", status=" + status + ", priorityStatus=" + priorityStatus + ", startDate=" + startDate
+				+ ", status=" + status + ", priorityStatus=" + priority + ", startDate=" + startDate
 				+ ", endDate=" + endDate + ", startTime=" + startTime + ", endTime=" + endTime + "]";
 	}
 

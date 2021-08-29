@@ -6,13 +6,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Sprint {
 
 	private UUID scrumboardID;
 	private UUID id;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate startDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate endDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "kk:mm a")
 	private LocalTime startTime;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "kk:mm a")
 	private LocalTime endTime;
 	private List<UUID> taskIds;
 	private SprintStatus status;

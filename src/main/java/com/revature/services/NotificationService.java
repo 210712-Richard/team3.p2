@@ -44,6 +44,14 @@ public interface NotificationService {
 	Mono<Notification> checkNotificationByID(User user, UUID id);
 
 	/**
+	 * Clears all the notifications that a particular user has accumulated
+	 * 
+	 * @param user The user whose notifications are to be cleared
+	 */
+	
+	void clearNotifications(User user);
+	
+	/**
 	 * Notifies all users in the system
 	 * 
 	 * @param message The notification message
@@ -70,5 +78,5 @@ public interface NotificationService {
 
 	void notifyAllInScrumBoard(ScrumBoard board, String message);
 
-
+	
 }

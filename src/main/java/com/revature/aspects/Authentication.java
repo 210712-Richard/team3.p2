@@ -80,12 +80,17 @@ public class Authentication {
 
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if (loggedUser == null) {
-			log.debug("no user");
+			log.warn("no user");
 			return Mono.just(ResponseEntity.status(401).build());
+		}
+		Product product = session.getAttribute(WebSessionAttributes.SELECTED_PRODUCT);
+		if(product == null) {
+			log.warn("no product");
+			return Mono.just(ResponseEntity.status(404).build());
 		}
 		ScrumBoard board = session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD);
 		if (board == null) {
-			log.debug("no board");
+			log.warn("no board");
 			return Mono.just(ResponseEntity.status(404).build());
 		}
 		if (board.getScrumMasterUsername().equals(loggedUser.getUsername())) {
@@ -101,23 +106,23 @@ public class Authentication {
 	public Object checkproductMaster(ProceedingJoinPoint pjp) throws Throwable {
 		setSession(pjp);
 		if (session == null) {
-			return ResponseEntity.status(404).build();
+			return Mono.just(ResponseEntity.status(404).build());
 		}
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		if (loggedUser == null) {
 			log.debug("no user");
-			return ResponseEntity.status(401).build();
+			return Mono.just(ResponseEntity.status(401).build());
 		}
 		Product product = session.getAttribute(WebSessionAttributes.SELECTED_PRODUCT);
 		if (product == null) {
 			log.debug("no product");
-			return ResponseEntity.status(404).build();
+			return Mono.just(ResponseEntity.status(404).build());
 		}
 		if (product.getProductOwner().equals(loggedUser.getUsername())) {
 			return pjp.proceed();
 
 		}
-		return ResponseEntity.status(403).build();
+		return Mono.just(ResponseEntity.status(403).build());
 	}
 
 	@Around("adminCheckHook()")

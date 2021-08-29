@@ -2,6 +2,7 @@ package com.revature.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -48,6 +49,7 @@ public class SprintDTO {
 	public SprintDTO(Sprint sprint) {
 		this.scrumboardID = sprint.getScrumboardID();
 		this.id = sprint.getId();
+		this.taskIds = sprint.getTaskIds();
 		this.startDate = sprint.getStartDate();
 		this.endDate = sprint.getEndDate();
 		this.startTime = sprint.getStartTime();
@@ -60,6 +62,7 @@ public class SprintDTO {
 		Sprint sprint = new Sprint();
 		sprint.setScrumboardID(this.scrumboardID);
 		sprint.setId(this.getId());
+		sprint.setTaskIds(this.taskIds);
 		sprint.setStartDate(this.startDate);
 		sprint.setEndDate(this.endDate);
 		sprint.setStartTime(this.startTime);
@@ -118,6 +121,9 @@ public class SprintDTO {
 	}
 
 	public List<UUID> getTaskIds() {
+		if(taskIds == null){
+			return new ArrayList<>();
+		}
 		return taskIds;
 	}
 

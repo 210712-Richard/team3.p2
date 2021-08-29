@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.revature.beans.Product;
 import com.revature.beans.User;
 import com.revature.data.ProductDAO;
@@ -100,5 +101,6 @@ public class ProductServiceImpl implements ProductService {
 			return userDAO.save(dto);
 		}).map(p -> p.getUser());
 	}
+	
 
 }
