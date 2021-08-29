@@ -3,7 +3,6 @@ package com.revature.services;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -70,6 +69,18 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Mono<User> addProductById(String username, UUID productId) {
+		
+		productDao.findByProductid(productId).flatMap(dto -> {
+			List<String> list = dto.getUsernames();
+			if (!list.contains(username)) {
+				list.add(username);
+				dto.setUsernames(list);
+				return productDao.save(dto);
+			} else {
+				return Mono.just(dto);
+			}
+		}).subscribe();
+		
 		return userDAO.findById(username).flatMap(dto -> {
 			List<UUID> list = dto.getProductIds();
 			if (!list.contains(productId)) {
@@ -94,8 +105,16 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Mono<User> removeProductById(String username, UUID productId) {
+		
+		productDao.findByProductid(productId).flatMap(dto -> {
+			List<String> list = dto.getUsernames();
+			list.removeIf(name -> name.equals(username));
+			dto.setUsernames(list);
+			return productDao.save(dto);
+		}).subscribe();
+		
 		return userDAO.findById(username).flatMap(dto -> {
-			List<UUID> list = dto.getProductIds().stream().collect(Collectors.toList());
+			List<UUID> list = dto.getProductIds();
 			list.removeIf(p -> p.equals(productId));
 			dto.setProductIds(list);
 			return userDAO.save(dto);
