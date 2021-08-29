@@ -136,9 +136,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Flux<Task> viewTasks(User user) {
-		return Flux.fromStream(user.getTaskIds().stream())
-				.flatMap(id -> taskDao.findByTaskId(id))
-				.map(dto -> dto.getTask());		
+		
+		return taskDao.findAll().filter(p-> user.getTaskIds().contains(p.getId())).map(t->t.getTask());
+	
 	}
 	
     public Flux<Sprint> viewSprints(UUID id){
