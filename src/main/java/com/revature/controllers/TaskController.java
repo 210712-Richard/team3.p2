@@ -40,15 +40,11 @@ public class TaskController {
 	
 	
 	//As a developer, I can move my task on the scrumboard
-	@PatchMapping(value = "/status/{boardId}/{taskId}/{status}", produces = MediaType.APPLICATION_NDJSON_VALUE)
-	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("taskId") String taskId, @PathVariable("boardId") String boardId, @PathVariable("status") TaskCompletionStatus status, @RequestBody Task task, WebSession session){
-		return taskService.moveTask(UUID.fromString(boardId), UUID.fromString(taskId), status, task.getStatus()).map(s -> {
-			if(s == null) {
-				return ResponseEntity.status(409).build();
-			} else {
-				return ResponseEntity.ok(s);
-			}
-		});
+	@PatchMapping(value = "/status/{status}", produces = MediaType.APPLICATION_NDJSON_VALUE)
+	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("status") String status, @RequestBody Task task, WebSession session){
+		return taskService.moveTask(TaskCompletionStatus.valueOf(status), task)
+				.map(s -> ResponseEntity.ok(s))
+				.defaultIfEmpty(ResponseEntity.status(404).build());
 	}
 	
 	//As a Product Owner, I can add to the Product Backlog

@@ -1,7 +1,6 @@
 package com.revature.services;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,13 +45,13 @@ public class TaskServiceImpl implements TaskService{
     }
 	
 	@Override
-	public Mono<Task> moveTask(UUID boardid, UUID taskId, TaskCompletionStatus status, TaskCompletionStatus newStatus) {
+	public Mono<Task> moveTask(TaskCompletionStatus status, Task task) {
 		//Move task within scrumboard by changing the status
-		return taskDAO.findByBoardidAndStatusAndId(boardid, status, taskId).flatMap(dto -> {
+		return taskDAO.findByBoardidAndStatusAndId(task.getBoardId(), task.getStatus().name(), task.getId()).flatMap(dto -> {
 			taskDAO.delete(dto).subscribe();
-			dto.setStatus(TaskCompletionStatus.valueOf(newStatus.toString()));
+			dto.setStatus(TaskCompletionStatus.valueOf(status.toString()));
 			log.warn(dto.toString());
-			return taskDAO.save(dto);
+			return taskDAO.insert(dto);
 		}).map(t -> t.getTask());
 			
 	}
@@ -72,7 +71,7 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Mono<Task> makePriority(UUID masterBoardId, UUID taskId, TaskPriority priority) {
 		//Change priority status of an existing Product Backlog task
-		return taskDAO.findByBoardidAndStatusAndId(masterBoardId,TaskCompletionStatus.BACKLOG, taskId).flatMap(dto -> {
+		return taskDAO.findByBoardidAndStatusAndId(masterBoardId,TaskCompletionStatus.BACKLOG.name(), taskId).flatMap(dto -> {
 			dto.setPriorityStatus(TaskPriority.valueOf(priority.toString()));
 			log.warn(dto.toString());
 			return taskDAO.save(dto);
@@ -83,7 +82,7 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Mono<Sprint> addToSprintBackLog(UUID sprintBoardId, SprintStatus sprintStatus, UUID taskBoardId, TaskCompletionStatus taskStatus, UUID taskId) {
 		//Find Task set status to backlog
-		Mono<Task> task = taskDAO.findByBoardidAndStatusAndId(taskBoardId, taskStatus, taskId).map(t -> {
+		Mono<Task> task = taskDAO.findByBoardidAndStatusAndId(taskBoardId, taskStatus.name(), taskId).map(t -> {
 			taskDAO.delete(t).subscribe();
 			return t.getTask();
 		});
@@ -94,7 +93,7 @@ public class TaskServiceImpl implements TaskService{
 		return Mono.zip(task, sprint).flatMap(z -> {
 			Task t = z.getT1();
 			Sprint s = z.getT2();
-			t.setBoardId(s.getId());
+			t.setBoardId(s.getScrumboardID());
 			t.setStatus(TaskCompletionStatus.BACKLOG);
 			taskDAO.save(new TaskDTO(t)).subscribe();
 			List<UUID> nList = new ArrayList<>();
@@ -127,4 +126,9 @@ public class TaskServiceImpl implements TaskService{
 			return userDAO.save(dto);
 		}).map(u -> u.getUser());
 	}
+	private void deleteTask(TaskDTO t) {
+		taskDAO.delete(t).subscribe();
+	}
 }
+
+
