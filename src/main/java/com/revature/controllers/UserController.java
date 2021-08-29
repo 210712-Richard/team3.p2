@@ -22,6 +22,7 @@ import com.revature.aspects.LoggedIn;
 import com.revature.beans.Notification;
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
+import com.revature.beans.Sprint;
 import com.revature.beans.Task;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
@@ -230,5 +231,12 @@ public class UserController {
 		return ResponseEntity.ok(empUser);
 
 	}
+	
+	@GetMapping("/sprints")
+    public ResponseEntity<Flux<Sprint>> viewSprints(WebSession session){
+        selectedScrumBoard = session.getAttribute(WebSessionAttributes.SELECTED_SCRUM_BOARD);
+
+        return ResponseEntity.ok(userService.viewSprints(selectedScrumBoard.getId()));
+    }
 
 }

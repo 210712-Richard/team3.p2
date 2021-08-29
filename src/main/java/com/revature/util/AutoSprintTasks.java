@@ -73,7 +73,7 @@ public class AutoSprintTasks {
 	
 	private void taskStatusChecker(TaskDTO task) {
 		if(!task.getStatus().equals(TaskCompletionStatus.COMPLETED)) {
-			task.setStatus(TaskCompletionStatus.PRODUCT_BACKLOG);
+			task.setStatus(TaskCompletionStatus.BACKLOG);
 			log.warn(task.toString());
 			taskDao.save(task).subscribe();
 		}

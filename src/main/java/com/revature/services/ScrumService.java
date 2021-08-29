@@ -17,7 +17,7 @@ public interface ScrumService {
 	 * beginning, its status is changed from FUTURE to CURRENT. 
 	 */
 
-	void autoUpdate();
+//	void autoUpdate();
 
 	/**
 	 * 
