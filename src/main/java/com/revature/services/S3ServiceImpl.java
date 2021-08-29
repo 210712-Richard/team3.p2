@@ -36,13 +36,14 @@ public class S3ServiceImpl implements S3Service {
 	}
 
 	@Override
-	public Mono<Void> uploadToBucket(String key, Object o) {
+	public Mono<Void> uploadToBucket(String key, Object o, String bucket) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try(ObjectOutputStream oos= new ObjectOutputStream(bos)){
 			oos.writeObject(o);
 			oos.flush();
 			byte[] data = bos.toByteArray();
-			s3.putObject(PutObjectRequest.builder().bucket(S3Util.BUCKET_NAME).key(key).build(),
+			log.warn("uploading data");
+			s3.putObject(PutObjectRequest.builder().bucket(bucket).key(key).build(),
 					RequestBody.fromBytes(data));
 		} catch (IOException e) {
 			log.error(e);
@@ -55,7 +56,7 @@ public class S3ServiceImpl implements S3Service {
 		List<Sprint> sprints = new ArrayList<>();
 		for(String key : keys) {
 			try {
-				InputStream object = s3.getObject(GetObjectRequest.builder().bucket(S3Util.BUCKET_NAME).key(key).build());
+				InputStream object = s3.getObject(GetObjectRequest.builder().bucket(S3Util.SPRINT_BUCKET_NAME).key(key).build());
 				Sprint sprint = (Sprint)new ObjectInputStream(object).readObject();
 				sprints.add(sprint);
 				} catch (ClassNotFoundException | IOException e) {

@@ -1,31 +1,50 @@
 package com.revature.beans;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class SprintHistory {
+import com.revature.dto.SprintDTO;
+import com.revature.dto.TaskDTO;
 
+public class SprintHistory implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6672932901510155434L;
 	private UUID scrumboardID;
 	private UUID id;
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private LocalTime startTime;
 	private LocalTime endTime;
-	private List<Task> tasks;
+	private List<TaskDTO> tasks;
 	private SprintStatus status;
 
 	public SprintHistory() {
 		super();
 	}
+	public SprintHistory(List<TaskDTO> taskList, SprintDTO dto) {
+		this.scrumboardID = dto.getScrumboardID();
+		this.id = dto.getId();
+		this.startDate = dto.getStartDate();
+		this.endDate = dto.getEndDate();
+		this.startTime = dto.getStartTime();
+		this.endTime = dto.getEndTime();
+		this.status = dto.getStatus();
+		this.tasks = taskList;
+	}
 
-	public List<Task> getTasks() {
+	
+	public List<TaskDTO> getTasks() {
 		return tasks;
 	}
 
-	public void setTasks(List<Task> tasks) {
+	public void setTasks(List<TaskDTO> tasks) {
 		this.tasks = tasks;
 	}
 
@@ -75,14 +94,6 @@ public class SprintHistory {
 
 	public void setEndTime(LocalTime endTime) {
 		this.endTime = endTime;
-	}
-
-	public List<Task> getTaskIds() {
-		return tasks;
-	}
-
-	public void setTaskIds(List<Task> tasks) {
-		this.tasks = tasks;
 	}
 
 	public SprintStatus getStatus() {

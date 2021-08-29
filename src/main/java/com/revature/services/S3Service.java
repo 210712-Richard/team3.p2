@@ -6,6 +6,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface S3Service {
-	Mono<Void> uploadToBucket(String key, Object o);
+	Mono<Void> uploadToBucket(String key, Object o, String bucket);
 	Flux<Sprint> getSprints(String... key);
 }

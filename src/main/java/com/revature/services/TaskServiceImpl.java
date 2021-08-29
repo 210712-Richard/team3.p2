@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class TaskServiceImpl implements TaskService{
 
+	private static final Logger log = LoggerFactory.getLogger(TaskServiceImpl.class);
 	private TaskDAO taskDAO;
 	private SprintDAO sprintDAO;
 	private UserDAO userDAO;
@@ -45,9 +48,10 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Mono<Task> moveTask(UUID boardid, UUID taskId, TaskCompletionStatus status, TaskCompletionStatus newStatus) {
 		//Move task within scrumboard by changing the status
-		return taskDAO.findByBoardidAndStatusAndId(boardid, status.toString(), taskId).flatMap(dto -> {
+		return taskDAO.findByBoardidAndStatusAndId(boardid, status, taskId).flatMap(dto -> {
 			taskDAO.delete(dto).subscribe();
-			dto.setStatus(newStatus);
+			dto.setStatus(TaskCompletionStatus.valueOf(newStatus.toString()));
+			log.warn(dto.toString());
 			return taskDAO.save(dto);
 		}).map(t -> t.getTask());
 			
@@ -68,8 +72,9 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Mono<Task> makePriority(UUID masterBoardId, UUID taskId, TaskPriority priority) {
 		//Change priority status of an existing Product Backlog task
-		return taskDAO.findByBoardidAndStatusAndId(masterBoardId, "BACKLOG", taskId).flatMap(dto -> {
-			dto.setPriorityStatus(priority);
+		return taskDAO.findByBoardidAndStatusAndId(masterBoardId,TaskCompletionStatus.BACKLOG, taskId).flatMap(dto -> {
+			dto.setPriorityStatus(TaskPriority.valueOf(priority.toString()));
+			log.warn(dto.toString());
 			return taskDAO.save(dto);
 		}).map(t -> t.getTask());
 		
@@ -78,7 +83,7 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Mono<Sprint> addToSprintBackLog(UUID sprintBoardId, SprintStatus sprintStatus, UUID taskBoardId, TaskCompletionStatus taskStatus, UUID taskId) {
 		//Find Task set status to backlog
-		Mono<Task> task = taskDAO.findByBoardidAndStatusAndId(taskBoardId, taskStatus.toString(), taskId).map(t -> t.getTask());
+		Mono<Task> task = taskDAO.findByBoardidAndStatusAndId(taskBoardId, taskStatus, taskId).map(t -> t.getTask());
 		
 		//Find sprint and add this task to the sprint's list of tasks
 		Mono<Sprint> sprint = sprintDAO.findByScrumboardIDAndStatus(sprintBoardId, sprintStatus).map(t -> t.getSprint());

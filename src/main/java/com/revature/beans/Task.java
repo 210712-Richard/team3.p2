@@ -12,7 +12,7 @@ public class Task {
 	private String description;
 	private UUID id;
 	private TaskCompletionStatus status;
-	private TaskPriority priorityStatus;
+	private TaskPriority priority;
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private LocalTime startTime;
@@ -63,11 +63,11 @@ public class Task {
 	}
 
 	public TaskPriority getPriorityStatus() {
-		return priorityStatus;
+		return priority;
 	}
 
 	public void setPriorityStatus(TaskPriority priorityStatus) {
-		this.priorityStatus = priorityStatus;
+		this.priority = priorityStatus;
 	}
 
 	public LocalDate getStartDate() {
@@ -104,7 +104,7 @@ public class Task {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(boardId, description, endDate, endTime, id, name, priorityStatus, startDate, startTime,
+		return Objects.hash(boardId, description, endDate, endTime, id, name, priority, startDate, startTime,
 				status);
 	}
 
@@ -120,14 +120,14 @@ public class Task {
 		return Objects.equals(boardId, other.boardId) && Objects.equals(description, other.description)
 				&& Objects.equals(endDate, other.endDate) && Objects.equals(endTime, other.endTime)
 				&& Objects.equals(id, other.id) && Objects.equals(name, other.name)
-				&& priorityStatus == other.priorityStatus && Objects.equals(startDate, other.startDate)
+				&& priority == other.priority && Objects.equals(startDate, other.startDate)
 				&& Objects.equals(startTime, other.startTime) && status == other.status;
 	}
 
 	@Override
 	public String toString() {
 		return "Task [boardId=" + boardId + ", name=" + name + ", description=" + description + ", id=" + id
-				+ ", status=" + status + ", priorityStatus=" + priorityStatus + ", startDate=" + startDate
+				+ ", status=" + status + ", priorityStatus=" + priority + ", startDate=" + startDate
 				+ ", endDate=" + endDate + ", startTime=" + startTime + ", endTime=" + endTime + "]";
 	}
 
