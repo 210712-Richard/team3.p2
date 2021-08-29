@@ -64,6 +64,9 @@ public class User {
 	}
 
 	public List<UUID> getTaskIds() {
+		if (taskIds == null) {
+			return new ArrayList<>();
+		}
 		return taskIds;
 	}
 

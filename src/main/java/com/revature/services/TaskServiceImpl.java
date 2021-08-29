@@ -98,9 +98,10 @@ public class TaskServiceImpl implements TaskService{
 			t.setStatus(TaskCompletionStatus.BACKLOG);
 			taskDAO.save(new TaskDTO(t)).subscribe();
 			List<UUID> nList = new ArrayList<>();
-			if(s.getTaskIds() != null) {
-				Collections.copy(nList, s.getTaskIds());
-			}
+//			if(s.getTaskIds() != null) {
+//				Collections.copy(nList, s.getTaskIds());
+//			}
+			nList.addAll(s.getTaskIds());
 			nList.add(t.getId());
 			s.setTaskIds(nList);
 			return sprintDAO.save(new SprintDTO(s));
