@@ -2,6 +2,7 @@ package com.revature.beans;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -77,6 +78,9 @@ public class Sprint {
 	}
 
 	public List<UUID> getTaskIds() {
+		if (taskIds == null) {
+			return new ArrayList<>();		
+		}
 		return taskIds;
 	}
 
