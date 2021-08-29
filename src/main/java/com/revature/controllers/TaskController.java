@@ -41,11 +41,11 @@ public class TaskController {
 	
 	
 	//As a developer, I can move my task on the scrumboard
-	@PatchMapping(value = "/status/{boardId}/{taskId}/{status}", produces = MediaType.APPLICATION_NDJSON_VALUE)
-	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("taskId") String taskId, @PathVariable("boardId") String boardId, @PathVariable("status") TaskCompletionStatus status, @RequestBody Task task, WebSession session){
-		return taskService.moveTask(UUID.fromString(boardId), UUID.fromString(taskId), status, task.getStatus())
-			.map(s -> ResponseEntity.ok(s))
-			.defaultIfEmpty(ResponseEntity.status(409).build()); 
+	@PatchMapping(value = "/status/{status}", produces = MediaType.APPLICATION_NDJSON_VALUE)
+	public Mono<ResponseEntity<Task>> moveTask(@PathVariable("status") String status, @RequestBody Task task, WebSession session){
+		return taskService.moveTask(TaskCompletionStatus.valueOf(status), task)
+				.map(s -> ResponseEntity.ok(s))
+				.defaultIfEmpty(ResponseEntity.status(404).build());
 	}
 	
 	//As a Product Owner, I can add to the Product Backlog
@@ -65,13 +65,6 @@ public class TaskController {
 				.map(s -> ResponseEntity.ok(s))
 				.defaultIfEmpty(ResponseEntity.status(409).build()); 
 	}
-	//Undo Add test
-	@DeleteMapping(value = "/{boardid}/{status}/{taskid}", produces = MediaType.APPLICATION_NDJSON_VALUE)
-	public Mono<ResponseEntity<Object>> undoAdd(@PathVariable ("boardid") UUID boardid, @PathVariable ("status") TaskCompletionStatus status, @PathVariable ("taskid") UUID taskid){
-		return taskService.undoAdd(boardid, status, taskid)
-			.flatMap(s -> Mono.just(ResponseEntity.ok(s))
-			.defaultIfEmpty(ResponseEntity.status(409).build()));
-		}
 	
 	//As a Scrum Master, I can add to the Sprint backLog from the Product Backlog or from a finished sprint
 	@PatchMapping(value = "/{taskBoardId}/{taskStatus}/{taskId}", produces = MediaType.APPLICATION_NDJSON_VALUE)
@@ -79,12 +72,6 @@ public class TaskController {
 		return taskService.addToSprintBackLog(sprint.getScrumboardID(), sprint.getStatus(), taskBoardId, taskStatus, taskId)
 				.map(s -> ResponseEntity.ok(s))
 				.defaultIfEmpty(ResponseEntity.status(409).build()); 
-	}
-	
-	@PatchMapping(value = "/{taskBoardId}/{taskStatus}/{taskId}/{masterBoardId}", produces = MediaType.APPLICATION_NDJSON_VALUE)
-	public Mono<ResponseEntity<Sprint>> undoProductBacklog(@PathVariable ("taskBoardId") UUID taskBoardId, @PathVariable ("taskStatus") TaskCompletionStatus taskStatus, @PathVariable ("taskId") UUID taskId, @PathVariable ("masterBoardId") UUID masterBoardId, @RequestBody Sprint sprint, WebSession session){
-		return taskService.addToSprintBackLog(sprint.getScrumboardID(), sprint.getStatus(), taskBoardId, taskStatus, taskId).flatMap(s -> Mono.just(ResponseEntity.ok(s))
-				.defaultIfEmpty(ResponseEntity.status(409).build()));
 	}
 	
 	@PatchMapping(value = "/assign/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -56,6 +56,9 @@ public class User {
 	}
 
 	public List<UUID> getBoardIds() {
+		if(boardIds == null) {
+			return new ArrayList<>();
+		}
 		return boardIds;
 	}
 
@@ -75,6 +78,9 @@ public class User {
 	}
 
 	public List<UUID> getProductIds() {
+		if(productIds == null) {
+			return new ArrayList<>();
+		}
 		return productIds;
 	}
 

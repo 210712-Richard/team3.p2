@@ -20,21 +20,19 @@ public interface TaskService {
 	 * @param status
 	 * @return
 	 */
-	Mono<Task> moveTask(UUID boardId, UUID taskId, TaskCompletionStatus status, TaskCompletionStatus newStatus);
+	Mono<Task> moveTask(TaskCompletionStatus status, Task task);
 	
 	Mono<Task> addToProductBackLog(UUID product, TaskDTO task);
-	
-	Mono<Object> undoAdd(UUID boardid, TaskCompletionStatus status, UUID taskid);
-	
+		
 	Mono<Task> makePriority(UUID masterBoardId, UUID taskId, TaskPriority priority);
 	
 	Mono<Sprint> addToSprintBackLog(UUID sprintBoardId, SprintStatus sprintStatus, UUID taskBoardId, TaskCompletionStatus taskStatus, UUID taskId);	
-	
-	Mono<Sprint> undoProductBacklog(UUID masterBoardId, UUID sprintBoardId, SprintStatus sprintStatus, UUID taskBoardId, TaskCompletionStatus taskStatus, UUID taskId);	
-		
+			
 	Mono<User> assignTasks(UUID taskId, String username);
 	
 	Mono<User> removeTasks(UUID id, String username);
+	
+	
 	
 	
 }
