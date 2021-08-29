@@ -81,6 +81,7 @@ public class TaskServiceTest {
 		tDto = new TaskDTO();
 		tDto.setBoardid(sDto.getBoardId());
 		tDto.setId(UUID.randomUUID());
+		tDto.setStatus(TaskCompletionStatus.IN_PROGRESS);
 		u.getTaskIds().add(tDto.getId());
 		
 		Sprint sprint = new Sprint();
@@ -92,18 +93,20 @@ public class TaskServiceTest {
 	
 	@Test
 	public void testMoveTask() {
-		Mockito.when(taskDao.findByBoardidAndStatusAndId(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Mono.just(tDto));
+		Mockito.when(taskDao.findByBoardidAndStatusAndId(tDto.getBoardid(), tDto.getStatus().name(), tDto.getId())).thenReturn(Mono.just(tDto));
 		
 		TaskCompletionStatus newStatus = TaskCompletionStatus.COMPLETED;
-		Mono<Task> task = ts.moveTask(sDto.getBoardId(), tDto.getId(), tDto.getStatus(), newStatus);
+		Mono<Task> task = ts.moveTask(newStatus, tDto.getTask());
 		
 		StepVerifier.create(task).expectNextMatches(p -> p.equals(tDto.getTask()));
 	}
 	
 	@Test
-	public void testAddToProductBackLog() {
-		Mockito.when(productDao.findByProductid(Mockito.any()).thenReturn(Mono.just(pDto)));
-	
+	public void testAddToProductBackLog() {				
+		Mockito.when(ts.addToProductBackLog(pDto.getId(), tDto)).thenReturn(Mono.just(tDto.getTask()));
+
+		Mockito.when(productDao.findByProductid(pDto.getId()).thenReturn(Mono.just(pDto)));
+		
 		Mono<Task> task = ts.addToProductBackLog(pDto.getId(), tDto);
 		
 		StepVerifier.create(task).expectNextMatches(t -> t.equals(tDto.getTask()));
