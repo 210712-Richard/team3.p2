@@ -89,4 +89,19 @@ public class ScrumServiceImpl implements ScrumService {
 		return scrumDAO.insert(new ScrumBoardDTO(scrumBoard)).map(dto -> dto.getScrumBoard());
 	}
 
+
+	@Override
+	public Mono<User> addUserToBoard(String username, UUID boardId) {
+		return userDAO.findById(username).flatMap(dto -> {
+			List<UUID> list = dto.getBoardIds();
+			if (!list.contains(boardId)) {
+				list.add(boardId);
+				dto.setBoardIds(list);
+				return userDAO.save(dto);
+			} else {
+				return Mono.just(dto);
+			}
+		}).map(d -> d.getUser());
+	}
+
 }

@@ -1,5 +1,7 @@
 package com.revature.services;
 
+import java.util.UUID;
+
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
@@ -26,4 +28,14 @@ public interface ScrumService {
 	 */
 	Mono<ScrumBoard> createScrumBoard(User user, ScrumBoard scrumBoard, Product product);
 
+	/**
+	 * Adds a user to a board
+	 * 
+	 * @param username The username that is being added
+	 * @param boardId The id of the board that the user is being added to
+	 * @return A mono of the user that was added
+	 */
+	
+	Mono<User> addUserToBoard(String username, UUID boardId);
+	
 }
