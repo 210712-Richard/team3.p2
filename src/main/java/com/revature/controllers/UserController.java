@@ -49,6 +49,14 @@ public class UserController {
 		this.userService = userService;
 	}
 	
+	// As a user, I can send a notification to another user
+	
+	@LoggedIn
+	@PostMapping("/notify")
+	public Mono<ResponseEntity<String>> notify(@RequestBody Notification note, WebSession session){
+		notificationService.notify(note.getUsername(), note.getMessage());
+		return Mono.just(ResponseEntity.ok("Your notification was sent to " + note.getUsername()));
+	}
 	
 	// As a user, I can read and access notifications
 
@@ -79,6 +87,14 @@ public class UserController {
 				});
 	}
 
+	// As a user, I can clear all of my notifications
+	@LoggedIn
+	@DeleteMapping("/notifications/clear")
+	public Mono<ResponseEntity<String>> clearNotifications(WebSession session){
+		notificationService.clearNotifications(session.getAttribute(WebSessionAttributes.LOGGED_USER));
+		return Mono.just(ResponseEntity.ok("Your notifications were cleared"));
+	}
+	
 	// As a user I can login
 	@PostMapping("/login")
 	public Mono<ResponseEntity<User>> login(@RequestBody User user, WebSession session) {
