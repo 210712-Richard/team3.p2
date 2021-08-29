@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
+import com.revature.beans.Sprint;
 import com.revature.beans.Task;
 import com.revature.beans.User;
 
@@ -116,4 +117,5 @@ public interface UserService {
 
 	Flux<Task> viewTasks(User user);
 
+	Flux<Sprint> viewSprints(UUID id);
 }

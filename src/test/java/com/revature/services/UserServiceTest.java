@@ -154,7 +154,7 @@ public class UserServiceTest {
 	}
 	@Test
 	public void viewTasks() {
-		Mockito.when(taskDao.findById(tDto.getId())).thenReturn(Mono.just(tDto));
+		Mockito.when(taskDao.findByTaskId(tDto.getId())).thenReturn(Mono.just(tDto));
 		
 		Flux<Task> tasks = us.viewTasks(u);
 		

@@ -44,6 +44,9 @@ public class TaskServiceImpl implements TaskService{
         this.productDAO = productDAO;
     }
 	
+	public TaskServiceImpl() {
+	}
+
 	@Override
 	public Mono<Task> moveTask(UUID boardid, UUID taskId, TaskCompletionStatus status, TaskCompletionStatus newStatus) {
 		//Move task within scrumboard by changing the status
@@ -88,8 +91,11 @@ public class TaskServiceImpl implements TaskService{
 	@Override
 	public Mono<Sprint> addToSprintBackLog(UUID sprintBoardId, SprintStatus sprintStatus, UUID taskBoardId, TaskCompletionStatus taskStatus, UUID taskId) {
 		//Find Task set status to backlog
-		Mono<Task> task = taskDAO.findByBoardidAndStatusAndId(taskBoardId, taskStatus, taskId).map(t -> t.getTask());
-		
+		Mono<Task> task = taskDAO.findByBoardidAndStatusAndId(taskBoardId, taskStatus, taskId).map(t -> {
+			taskDAO.delete(t).subscribe();
+			return t.getTask();
+		});
+
 		//Find sprint and add this task to the sprint's list of tasks
 		Mono<Sprint> sprint = sprintDAO.findByScrumboardIDAndStatus(sprintBoardId, sprintStatus).map(t -> t.getSprint());
 		
@@ -140,6 +146,11 @@ public class TaskServiceImpl implements TaskService{
 			if(nList.contains(t.getId())) {
 				nList.remove(t.getId());
 			}
+//			if(s.getTaskIds() != null) {
+//				Collections.copy(nList, s.getTaskIds());
+//			}
+			nList.addAll(s.getTaskIds());
+			nList.add(t.getId());
 			s.setTaskIds(nList);
 			return sprintDAO.save(new SprintDTO(s));
 		}).map(s -> s.getSprint());

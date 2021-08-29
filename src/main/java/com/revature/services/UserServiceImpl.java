@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.revature.beans.Product;
 import com.revature.beans.ScrumBoard;
+import com.revature.beans.Sprint;
 import com.revature.beans.Task;
 import com.revature.beans.User;
 import com.revature.beans.UserType;
 import com.revature.data.ProductDAO;
 import com.revature.data.ScrumBoardDAO;
+import com.revature.data.SprintDAO;
 import com.revature.data.TaskDAO;
 import com.revature.data.UserDAO;
 import com.revature.dto.ProductDTO;
@@ -28,15 +30,17 @@ public class UserServiceImpl implements UserService {
 	private TaskDAO taskDao;
 	private ProductDAO productDao;
 	private ScrumBoardDAO scrumDao;
+	private SprintDAO sprintDao;
 
-	@Autowired
-	public UserServiceImpl(UserDAO userDao, TaskDAO taskDao, ProductDAO productDao, ScrumBoardDAO scrumDao) {
-		super();
-		this.userDao = userDao;
-		this.taskDao = taskDao;
-		this.productDao = productDao;
-		this.scrumDao = scrumDao;
-	}
+    @Autowired
+    public UserServiceImpl(UserDAO userDao, TaskDAO taskDao, ProductDAO productDao, ScrumBoardDAO scrumDao, SprintDAO sprintDao) {
+        super();
+        this.userDao = userDao;
+        this.taskDao = taskDao;
+        this.productDao = productDao;
+        this.scrumDao = scrumDao;
+        this.sprintDao = sprintDao;
+    }
 	public UserServiceImpl() {
 		
 	}
@@ -133,11 +137,13 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Flux<Task> viewTasks(User user) {
 		return Flux.fromStream(user.getTaskIds().stream())
-				.flatMap(id ->taskDao.findById(id))
-				.map(dto -> dto.getTask());
-	
-		
+				.flatMap(id -> taskDao.findByTaskId(id))
+				.map(dto -> dto.getTask());		
 	}
+	
+    public Flux<Sprint> viewSprints(UUID id){
+        return sprintDao.findAllById(id).map(sprint -> sprint.getSprint()).switchIfEmpty(Mono.empty());
+    }
 
 }
 
