@@ -20,7 +20,7 @@ public interface TaskService {
 	 * @param status
 	 * @return
 	 */
-	Mono<Task> moveTask(UUID boardId, UUID taskId, TaskCompletionStatus status, TaskCompletionStatus newStatus);
+	Mono<Task> moveTask(TaskCompletionStatus status, Task task);
 	
 	Mono<Task> addToProductBackLog(UUID product, TaskDTO task);
 	

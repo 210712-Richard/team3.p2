@@ -114,8 +114,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Flux<ScrumBoard> viewScrumBoards(User user) {
-		return Flux.fromStream(user.getBoardIds().stream()).flatMap(id -> scrumDao.findByBoardid(id))
-				.map(dto -> dto.getScrumBoard());
+		
+		return scrumDao.findAll()
+				.filter(p -> user.getBoardIds().contains(p.getBoardId()) || p.getScrumMaster().equals(user.getUsername()))
+				.map(dto ->{ 
+					if(!user.getBoardIds().contains(dto.getBoardId())) {
+						user.getBoardIds().add(dto.getBoardId());
+						userDao.save(new UserDTO(user)).subscribe();
+					}
+					return dto.getScrumBoard();
+		});
+//		return Flux.fromStream(user.getBoardIds().stream()).flatMap(id -> scrumDao.findByBoardid(id))
+//				.map(dto -> dto.getScrumBoard());
 	}
 
 	@Override
@@ -123,7 +133,7 @@ public class UserServiceImpl implements UserService {
 
 		Mono<ScrumBoardDTO> scrumData = scrumDao.findByBoardid(boardId);
 		return scrumData.flatMap(dto -> {
-			if (user.getBoardIds().contains(boardId) && product.getBoardIds().contains(boardId)) {
+			if ((user.getBoardIds().contains(boardId) && product.getBoardIds().contains(boardId)) || dto.getScrumMaster().equals(user.getUsername())) {
 				return Mono.just(dto.getScrumBoard());
 			} else {
 				return Mono.empty();

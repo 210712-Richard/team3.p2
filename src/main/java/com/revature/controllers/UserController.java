@@ -186,7 +186,7 @@ public class UserController {
 	}
 
 	// As an Admin I can view a user
-	@GetMapping("/{employee}")
+	@GetMapping("/admin/{employee}")
 	public ResponseEntity<Mono<User>> getCurrentUsers(@PathVariable("employee") String employee, WebSession session) {
 		loggedUser = session.getAttribute(WebSessionAttributes.LOGGED_USER);
 		// checking if logged user is an admin
@@ -200,7 +200,7 @@ public class UserController {
 
 	// As an Admin I can change user roles
 	@IsAdmin
-	@PostMapping("/{employee}/newRole/{role}")
+	@PostMapping("/admin/{employee}/newRole/{role}")
 	public ResponseEntity<User> changeUserRole(@PathVariable("employee") String employee,
 			@PathVariable("role") String role, WebSession session) {
 
