@@ -31,3 +31,10 @@ An interactive system that is capable of preforming a variety of scrum operation
 * Users can apply for tasks in order to get priority when those tasks are assigned
 * Users can change the status of a task that they have been assigned from BACKLOG to TODO, IN_PROGRESS, TESTING and COMPLETED, simulating the developmental progress of that user story.
 * Full AOP integration used for user authentication that works with our dynamic user typing; a user who is not registered in the system as a product owner cannot perform product level actions such as creating scrum boards, or creating entirely new user stories.
+
+# Goals for Future Iterations
+
+*
+*
+*
+*
