@@ -1,6 +1,7 @@
 package com.revature.beans;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,6 +22,7 @@ public class Product {
 	
 	public Product() {
 		super();
+		id = UUID.randomUUID();
 	}
 	
 	
@@ -59,6 +61,9 @@ public class Product {
 	}
 
 	public List<UUID> getBoardIds() {
+		if(boardIds == null) {
+			return new ArrayList<>();
+		}
 		return boardIds;
 	}
 

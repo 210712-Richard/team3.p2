@@ -1,12 +1,9 @@
 package com.revature.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -14,8 +11,6 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.revature.beans.Product;
-import com.revature.beans.ScrumBoard;
 import com.revature.beans.Sprint;
 import com.revature.beans.Task;
 import com.revature.beans.TaskCompletionStatus;
@@ -32,7 +27,6 @@ import com.revature.dto.SprintDTO;
 import com.revature.dto.TaskDTO;
 import com.revature.dto.UserDTO;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -68,7 +62,7 @@ public class TaskServiceTest {
 		uDto = new UserDTO(u);
 		pDto = new ProductDTO();
 		pDto.setId(UUID.randomUUID());
-		pDto.setMasterBoardID(UUID.randomUUID());
+		pDto.setMasterBoardId(UUID.randomUUID());
 		pDto.setProductName(u.getUsername());
 		pDto.setProductOwner(u.getUsername());
 		u.getProductIds().add(pDto.getId());

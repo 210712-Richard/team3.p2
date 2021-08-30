@@ -43,7 +43,7 @@ public class ScrumServiceImpl implements ScrumService {
 		productDAO.findByProductid(product.getId()).map(dto ->{
 			List<UUID> boards = dto.getBoardIds().stream().collect(Collectors.toList());
 			if (boards.isEmpty()) {
-				dto.setMasterBoardID(scrumBoard.getId());
+				dto.setMasterBoardId(scrumBoard.getId());
 			}
 			boards.add(scrumBoard.getId());
 			dto.setBoardIds(boards);

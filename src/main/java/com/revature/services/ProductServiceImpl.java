@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.revature.beans.Product;
+import com.revature.beans.ScrumBoard;
 import com.revature.beans.User;
 import com.revature.data.ProductDAO;
+import com.revature.data.ScrumBoardDAO;
 import com.revature.data.UserDAO;
 import com.revature.dto.ProductDTO;
+import com.revature.dto.ScrumBoardDTO;
 
 import reactor.core.publisher.Mono;
 
@@ -24,13 +27,15 @@ import reactor.core.publisher.Mono;
 @Service
 public class ProductServiceImpl implements ProductService {
 	private ProductDAO productDao;
+	private ScrumBoardDAO scrumDao;
 	private UserDAO userDAO;
 
 	@Autowired
-	public ProductServiceImpl(ProductDAO productDao, UserDAO userDAO) {
+	public ProductServiceImpl(ProductDAO productDao, UserDAO userDAO, ScrumBoardDAO scrumDao) {
 		super();
 		this.productDao = productDao;
 		this.userDAO = userDAO;
+		this.scrumDao = scrumDao;
 	}
 
 	/**
@@ -45,14 +50,18 @@ public class ProductServiceImpl implements ProductService {
 			List<UUID> boardIds, List<String> usernames, Map<UUID, String> boardIdNameMap, String productName,
 			UUID masterBoardID) {
 		Product product = new Product();
-		product.setId(id);
 		product.setProductOwner(productOwner);
 		product.setScrumMasterBoardMap(scrumMasterBoardMap);
-		product.setBoardIds(boardIds);
 		product.setUsernames(usernames);
 		product.setBoardIdNameMap(boardIdNameMap);
 		product.setProductName(productName);
-		product.setMasterBoardId(masterBoardID);
+		ScrumBoard board = new ScrumBoard();
+		product.getBoardIds().add(board.getId());
+		board.setName("Master Board");
+		board.setId(UUID.randomUUID());
+		product.setMasterBoardId(board.getId());
+		board.setProductId(product.getId());
+		scrumDao.save(new ScrumBoardDTO(board)).subscribe();
 		return productDao.save(new ProductDTO(product)).map(p -> p.getProduct());
 
 	}

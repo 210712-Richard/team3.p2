@@ -31,23 +31,10 @@ public class ProductDTO {
 	@Column("productname")
 	private String productName;
 	@Column("masterboardid")
-	private UUID masterBoardID;
+	private UUID masterBoardId;
 	
 	public ProductDTO() {
 		
-	}
-	
-	public ProductDTO(UUID id, String productOwner, Map<UUID, String> scrumMasterBoardMap, List<UUID> boardIds,
-			List<String> usernames, Map<UUID, String> boardIdNameMap, String productName, UUID masterBoardID) {
-		super();
-		this.productid = id;
-		this.productOwner = productOwner;
-		this.scrumMasterBoardMap = scrumMasterBoardMap;
-		this.boardIds = boardIds;
-		this.usernames = usernames;
-		this.boardIdNameMap = boardIdNameMap;
-		this.productName = productName;
-		this.masterBoardID = masterBoardID;
 	}
 
 	public ProductDTO(Product product) {
@@ -59,7 +46,7 @@ public class ProductDTO {
 		this.usernames = product.getUsernames();
 		this.boardIdNameMap = product.getBoardIdNameMap();
 		this.productName = product.getProductName();
-		this.masterBoardID = product.getMasterBoardId();
+		this.masterBoardId = product.getMasterBoardId();
 	}
 	
 	public Product getProduct() {
@@ -71,7 +58,7 @@ public class ProductDTO {
 		product.setUsernames(usernames);
 		product.setBoardIdNameMap(boardIdNameMap);
 		product.setProductName(productName);
-		product.setMasterBoardId(masterBoardID);
+		product.setMasterBoardId(masterBoardId);
 		return product;
 	}
 	
@@ -134,17 +121,17 @@ public class ProductDTO {
 		this.productid = id;
 	}
 
-	public UUID getMasterBoardID() {
-		return masterBoardID;
+	public UUID getMasterBoardId() {
+		return masterBoardId;
 	}
 
-	public void setMasterBoardID(UUID masterBoardID) {
-		this.masterBoardID = masterBoardID;
+	public void setMasterBoardId(UUID masterBoardId) {
+		this.masterBoardId = masterBoardId;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(boardIdNameMap, boardIds, productid, masterBoardID, productName, productOwner, scrumMasterBoardMap,
+		return Objects.hash(boardIdNameMap, boardIds, productid, masterBoardId, productName, productOwner, scrumMasterBoardMap,
 				usernames);
 	}
 	@Override
@@ -157,7 +144,7 @@ public class ProductDTO {
 			return false;
 		ProductDTO other = (ProductDTO) obj;
 		return Objects.equals(boardIdNameMap, other.boardIdNameMap) && Objects.equals(boardIds, other.boardIds)
-				&& Objects.equals(productid, other.productid) && Objects.equals(masterBoardID, other.masterBoardID)
+				&& Objects.equals(productid, other.productid) && Objects.equals(masterBoardId, other.masterBoardId)
 				&& Objects.equals(productName, other.productName) && Objects.equals(productOwner, other.productOwner)
 				&& Objects.equals(scrumMasterBoardMap, other.scrumMasterBoardMap)
 				&& Objects.equals(usernames, other.usernames);
@@ -166,7 +153,7 @@ public class ProductDTO {
 	public String toString() {
 		return "ProductDTO [id=" + productid + ", productOwner=" + productOwner + ", scrumMasterBoardMap="
 				+ scrumMasterBoardMap + ", boardIds=" + boardIds + ", usernames=" + usernames + ", boardIdNameMap="
-				+ boardIdNameMap + ", productName=" + productName + ", masterBoardID=" + masterBoardID + "]";
+				+ boardIdNameMap + ", productName=" + productName + ", masterBoardID=" + masterBoardId + "]";
 	}
 
 	
