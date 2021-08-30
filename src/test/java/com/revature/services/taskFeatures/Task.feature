@@ -96,5 +96,30 @@ Background:
 		When method post
 		Then status 200
 		And match response contains { name: 'karateTest', description: 'add task from karate test', priorityStatus: 'LOW', startDate: '2021-08-26', endDate: '2021-12-26', startTime: '12:00:00', endTime: '12:00:00' }
+		And def newTask = response
+		And def newTaskUrl = 'http://localhost:8080/tasks/' + newTask.boardid + '/' + newTask.status + '/' + newTask.id
 		
+	#@Tag5
+	#Scenario: Undo As a Produdct Owner I can add to the product backlog
+	
+		#Given url newTaskUrl
+		#When method delete
+		#Then status 200
+		
+	@Tag6
+	Scenario: As a Scrum Master I can add to the sprint backlog from the product backlog
+	
+		Given url 'http://localhost:8080/tasks/d7167cb6-bb25-496e-b83a-b7222c9aca4a/PRODUCT_BACKLOG/0044ef10-49ef-440e-b9d4-097dbba34d07'
+		And request { scrumboardID: 'd0230d19-96bf-4a9d-bcd8-ae8e107be26b', status: 'CURRENT'}
+		When method patch
+		Then status 200
+		And match response contains  { scrumboardID: 'd0230d19-96bf-4a9d-bcd8-ae8e107be26b'}
+		
+	@Tag6
+	Scenario: Undo As a Scrum Master I can add to the sprint backlog from the product backlog
+	
+		Given url 'http://localhost:8080/tasks/d0230d19-96bf-4a9d-bcd8-ae8e107be26b/BACKLOG/0044ef10-49ef-440e-b9d4-097dbba34d07/d7167cb6-bb25-496e-b83a-b7222c9aca4a'
+		And request { scrumboardID: 'd0230d19-96bf-4a9d-bcd8-ae8e107be26b', status: 'CURRENT'}
+		When method patch
+		Then status 200
 	

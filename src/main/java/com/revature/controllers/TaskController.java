@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,8 +52,8 @@ public class TaskController {
 	@PostMapping("/{productId}")
 	public Mono<ResponseEntity<Task>> addToProductBackLog(@PathVariable("productId") UUID productId, @RequestBody TaskDTO task){
 		return taskService.addToProductBackLog(productId, task)
-				.flatMap(s ->Mono.just(ResponseEntity.ok(s)))
-				.defaultIfEmpty(ResponseEntity.status(409).build());
+			.flatMap(s ->Mono.just(ResponseEntity.ok(s)))
+			.defaultIfEmpty(ResponseEntity.status(409).build());
 	}
 	
 	
@@ -61,16 +62,16 @@ public class TaskController {
 	@IsProductMaster
 	public Mono<ResponseEntity<Task>> makePriority(@PathVariable ("masterBoardId") String masterBoardId, @PathVariable ("taskId") String taskId, @PathVariable ("priority") TaskPriority priority, WebSession session){
 		return taskService.makePriority(UUID.fromString(masterBoardId), UUID.fromString(taskId), priority)
-				.flatMap(s -> Mono.just(ResponseEntity.ok(s))
-				.defaultIfEmpty(ResponseEntity.status(409).build()));
-	
+				.map(s -> ResponseEntity.ok(s))
+				.defaultIfEmpty(ResponseEntity.status(409).build()); 
 	}
 	
-	//As a Scrum Master, I can add to the Sprint backLog from the Product Backlog
+	//As a Scrum Master, I can add to the Sprint backLog from the Product Backlog or from a finished sprint
 	@PatchMapping(value = "/{taskBoardId}/{taskStatus}/{taskId}", produces = MediaType.APPLICATION_NDJSON_VALUE)
 	public Mono<ResponseEntity<Sprint>> addToSprintBackLog(@PathVariable ("taskBoardId") UUID taskBoardId, @PathVariable ("taskStatus") TaskCompletionStatus taskStatus, @PathVariable ("taskId") UUID taskId, @RequestBody Sprint sprint, WebSession session){
-		return taskService.addToSprintBackLog(sprint.getScrumboardID(), sprint.getStatus(), taskBoardId, taskStatus, taskId).flatMap(s -> Mono.just(ResponseEntity.ok(s))
-				.defaultIfEmpty(ResponseEntity.status(409).build()));
+		return taskService.addToSprintBackLog(sprint.getScrumboardID(), sprint.getStatus(), taskBoardId, taskStatus, taskId)
+				.map(s -> ResponseEntity.ok(s))
+				.defaultIfEmpty(ResponseEntity.status(409).build()); 
 	}
 	
 	@PatchMapping(value = "/assign/{id}/users/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -100,4 +101,3 @@ public class TaskController {
 	}
 	
 }
-

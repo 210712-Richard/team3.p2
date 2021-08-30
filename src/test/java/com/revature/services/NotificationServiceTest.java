@@ -69,7 +69,7 @@ public class NotificationServiceTest {
 		nDto = new NotificationDTO(n);
 		pDto = new ProductDTO();
 		pDto.setId(UUID.randomUUID());
-		pDto.setMasterBoardID(UUID.randomUUID());
+		pDto.setMasterBoardId(UUID.randomUUID());
 		pDto.setProductName(u.getUsername());
 		pDto.setProductOwner(u.getUsername());
 		u.getProductIds().add(pDto.getId());

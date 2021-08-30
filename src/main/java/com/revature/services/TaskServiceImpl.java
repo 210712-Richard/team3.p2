@@ -44,6 +44,9 @@ public class TaskServiceImpl implements TaskService{
         this.productDAO = productDAO;
     }
 	
+	public TaskServiceImpl() {
+	}
+
 	@Override
 	public Mono<Task> moveTask(TaskCompletionStatus status, Task task) {
 		//Move task within scrumboard by changing the status
@@ -60,7 +63,7 @@ public class TaskServiceImpl implements TaskService{
 	public Mono<Task> addToProductBackLog(UUID product, TaskDTO task) {
 		//New task added to product backlog
 		return productDAO.findByProductid(product).flatMap(dto -> {
-			task.setBoardid(dto.getMasterBoardID());
+			task.setBoardid(dto.getMasterBoardId());
 			task.setStatus(TaskCompletionStatus.PRODUCT_BACKLOG);
 			task.setId(UUID.randomUUID());
 			return taskDAO.save(task);
@@ -76,7 +79,6 @@ public class TaskServiceImpl implements TaskService{
 			log.warn(dto.toString());
 			return taskDAO.save(dto);
 		}).map(t -> t.getTask());
-		
 	}
 
 	@Override
@@ -97,6 +99,13 @@ public class TaskServiceImpl implements TaskService{
 			t.setStatus(TaskCompletionStatus.BACKLOG);
 			taskDAO.save(new TaskDTO(t)).subscribe();
 			List<UUID> nList = new ArrayList<>();
+			if(s.getTaskIds() != null) {
+				//Collections.copy(nList, s.getTaskIds());
+				nList.addAll(s.getTaskIds());
+			}
+			if(nList.contains(t.getId())) {
+				nList.remove(t.getId());
+			}
 //			if(s.getTaskIds() != null) {
 //				Collections.copy(nList, s.getTaskIds());
 //			}
@@ -126,9 +135,8 @@ public class TaskServiceImpl implements TaskService{
 			return userDAO.save(dto);
 		}).map(u -> u.getUser());
 	}
-	private void deleteTask(TaskDTO t) {
-		taskDAO.delete(t).subscribe();
-	}
+
 }
+
 
 
